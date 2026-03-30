@@ -18,7 +18,9 @@ This is a baseball friendship match review webpage featuring seven tactical clip
 ```
 redfoxes-baseball/
 ├── index.html      # Main page (password protection, video embedding, tactical analysis)
+├── img/            # Static image assets (16 PNG files for decorative icons)
 ├── README.md       # Project documentation
+├── AGENTS.md       # Developer guide for AI coding agents
 └── LICENSE         # CC BY-NC-SA 4.0 License
 ```
 
@@ -42,9 +44,16 @@ Password is required to enter the review center. Password hint:
 ## 🛠️ Tech Stack
 
 - HTML5
-- CSS3 (Flexbox + Grid)
-- Vanilla JavaScript
+- CSS3 (Flexbox + Grid, CSS Variables)
+- Vanilla JavaScript (ES6+)
+- Google Fonts (Noto Serif SC)
 - Bilibili Video Embedding
+- Google Analytics 4
+- 🦊 SVG Emoji Favicon
+
+## 📊 Analytics
+
+This site uses Google Analytics 4 (Measurement ID: `G-QJ6EXQH8SW`) to track visitor engagement and improve content.
 
 ## 📜 License
 
