@@ -4,22 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>烈光 vs 飞雪 友谊赛复盘 | 七个战术片段</title>
+    <base target="_blank">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&display=swap" rel="stylesheet">
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&display=swap');
+        /* ============================================
+           CSS Reset & Base Styles
+           ============================================ */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --color-primary: #8B4513;
+            --color-accent: #DC143C;
+            --color-bg-dark: #2d5a27;
+            --color-bg-darker: #1a3d17;
+            --color-text: #555;
+            --color-text-light: #fafafa;
+            --font-serif: 'Noto Serif SC', serif;
+            --font-mono: 'Courier New', monospace;
+            --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', sans-serif;
+        }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', sans-serif;
-            background: linear-gradient(135deg, #2d5a27 0%, #1a3d17 100%);
+            font-family: var(--font-sans);
+            background: linear-gradient(135deg, var(--color-bg-dark) 0%, var(--color-bg-darker) 100%);
             min-height: 100vh;
             padding: 20px;
         }
         
-        /* 密码层 */
+        /* ============================================
+           Password Overlay
+           ============================================ */
         #passwordOverlay {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            inset: 0;
             background: linear-gradient(135deg, rgba(139, 69, 19, 0.98) 0%, rgba(93, 58, 26, 0.99) 100%);
             z-index: 9999;
             display: flex;
@@ -31,31 +57,31 @@
             background: white;
             padding: 50px 40px;
             border-radius: 20px;
-            border: 4px dashed #DC143C;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            border: 4px dashed var(--color-accent);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
             text-align: center;
             max-width: 450px;
             width: 90%;
         }
         
         .password-box h2 {
-            font-family: 'Noto Serif SC', serif;
-            color: #8B4513;
+            font-family: var(--font-serif);
+            color: var(--color-primary);
             margin-bottom: 10px;
             font-size: 1.8em;
         }
         
         .hint-box {
             background: #f5f5f5;
-            border-left: 4px solid #DC143C;
+            border-left: 4px solid var(--color-accent);
             padding: 20px;
             margin: 20px 0;
-            font-family: 'Noto Serif SC', serif;
+            font-family: var(--font-serif);
             font-size: 1.1em;
         }
         
         .hint-box .name {
-            color: #8B4513;
+            color: var(--color-primary);
             font-weight: 700;
             font-size: 1.2em;
         }
@@ -63,77 +89,98 @@
         .password-input {
             width: 100%;
             padding: 15px;
-            border: 3px solid #8B4513;
+            border: 3px solid var(--color-primary);
             border-radius: 10px;
             font-size: 1.3em;
             text-align: center;
             letter-spacing: 10px;
             margin: 20px 0;
-            font-family: 'Courier New', monospace;
+            font-family: var(--font-mono);
         }
         
         .password-btn {
-            background: #8B4513;
+            background: var(--color-primary);
             color: white;
-            border: none;
+            border: 2px solid var(--color-accent);
             padding: 14px 50px;
             border-radius: 25px;
             font-size: 1.1em;
             cursor: pointer;
-            border: 2px solid #DC143C;
-            font-family: 'Noto Serif SC', serif;
+            font-family: var(--font-serif);
+            transition: background 0.3s ease;
         }
         
-        .password-btn:hover { background: #DC143C; }
+        .password-btn:hover {
+            background: var(--color-accent);
+        }
         
         .error-msg {
-            color: #DC143C;
+            color: var(--color-accent);
             font-size: 0.9em;
             margin-top: 15px;
             opacity: 0;
             transition: opacity 0.3s;
         }
         
-        .error-msg.show { opacity: 1; }
+        .error-msg.show {
+            opacity: 1;
+        }
         
-        #mainContent { display: none; }
-        #mainContent.visible { display: block; animation: fadeIn 0.5s; }
+        /* ============================================
+           Main Content
+           ============================================ */
+        #mainContent {
+            display: none;
+        }
         
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        #mainContent.visible {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
         
-        /* 头部 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Header */
         header {
             text-align: center;
             padding: 40px 20px;
-            background: linear-gradient(180deg, #8B4513 0%, #654321 100%);
+            background: linear-gradient(180deg, var(--color-primary) 0%, #654321 100%);
             border-radius: 20px;
-            border: 4px dashed #DC143C;
+            border: 4px dashed var(--color-accent);
             margin-bottom: 30px;
             color: white;
         }
         
         h1 {
-            font-family: 'Noto Serif SC', serif;
+            font-family: var(--font-serif);
             font-size: 2.4em;
             margin-bottom: 10px;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
         }
         
         .match-info {
             font-size: 1.2em;
             opacity: 0.95;
-            font-family: 'Courier New', monospace;
+            font-family: var(--font-mono);
         }
         
-        .container { max-width: 1400px; margin: 0 auto; }
-        
-        /* 视频卡片 */
+        /* ============================================
+           Video Cards
+           ============================================ */
         .video-card {
             background: white;
             border-radius: 16px;
             overflow: hidden;
             border: 6px solid #f0f0f0;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
             margin-bottom: 30px;
             position: relative;
         }
@@ -141,15 +188,16 @@
         .video-card::before {
             content: '';
             position: absolute;
-            top: -3px; left: -3px; right: -3px; bottom: -3px;
-            border: 2px dashed #DC143C;
+            inset: -3px;
+            border: 2px dashed var(--color-accent);
             border-radius: 18px;
             pointer-events: none;
             z-index: 10;
         }
         
+        /* Video Header */
         .video-header {
-            background: #8B4513;
+            background: var(--color-primary);
             color: white;
             padding: 15px 20px;
             display: flex;
@@ -157,14 +205,18 @@
             gap: 12px;
         }
         
-        .video-header img { height: 40px; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)); }
+        .video-header img {
+            height: 40px;
+            filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3));
+        }
         
         .video-title-text {
             font-weight: 700;
             font-size: 1.15em;
-            font-family: 'Courier New', monospace;
+            font-family: var(--font-mono);
         }
         
+        /* Video Container */
         .video-container {
             position: relative;
             padding-bottom: 56.25%;
@@ -175,33 +227,34 @@
         
         .video-container iframe {
             position: absolute;
-            top: 0; left: 0;
+            inset: 0;
             width: 100%;
             height: 100%;
             border: none;
         }
         
+        /* Video Description */
         .video-desc {
             padding: 20px;
-            background: #fafafa;
-            color: #555;
+            background: var(--color-text-light);
+            color: var(--color-text);
             border-top: 2px solid #e0e0e0;
             line-height: 1.8;
             font-size: 1em;
         }
         
         .tactic-highlight {
-            color: #DC143C;
+            color: var(--color-accent);
             font-weight: 700;
             font-size: 1.1em;
             display: block;
             margin-bottom: 8px;
-            font-family: 'Noto Serif SC', serif;
+            font-family: var(--font-serif);
         }
         
         .mistake-point {
             background: #fff5f5;
-            border-left: 3px solid #DC143C;
+            border-left: 3px solid var(--color-accent);
             padding: 10px 15px;
             margin: 10px 0;
             border-radius: 0 5px 5px 0;
@@ -215,205 +268,283 @@
             border-radius: 0 5px 5px 0;
         }
         
+        /* ============================================
+           Footer
+           ============================================ */
         footer {
             text-align: center;
             margin-top: 50px;
             padding: 30px;
-            color: rgba(255,255,255,0.9);
+            color: rgba(255, 255, 255, 0.9);
         }
         
-        footer img { height: 80px; margin: 0 10px; }
+        footer img {
+            height: 80px;
+            margin: 0 10px;
+        }
         
+        footer p {
+            margin-top: 15px;
+            font-family: var(--font-serif);
+        }
+        
+        /* ============================================
+           Responsive
+           ============================================ */
         @media (max-width: 768px) {
-            h1 { font-size: 1.8em; }
+            h1 {
+                font-size: 1.8em;
+            }
         }
     </style>
-<base target="_blank">
 </head>
 <body>
 
-    <!-- 密码保护 -->
+    <!-- ============================================
+         Password Protection Overlay
+         ============================================ -->
     <div id="passwordOverlay">
         <div class="password-box">
             <h2>⚾ 烈光 vs 飞雪 友谊赛</h2>
             <div class="hint-box">
                 <span class="name">张锦新</span> 哪年开始接触从事棒球运动？
             </div>
-            <input type="password" class="password-input" id="passwordInput" placeholder="●●●●" maxlength="4">
+            <input 
+                type="password" 
+                class="password-input" 
+                id="passwordInput" 
+                placeholder="●●●●" 
+                maxlength="4"
+                autocomplete="off"
+            >
             <br>
-            <button class="password-btn" onclick="checkPassword().catch(console.error)">进入复盘中心</button>
-            <div class="error-msg" id="errorMsg">密码错误，请输入正确年份（4位数字）</div>
+            <button class="password-btn" onclick="checkPassword().catch(console.error)">
+                进入复盘中心
+            </button>
+            <div class="error-msg" id="errorMsg">
+                密码错误，请输入正确年份（4位数字）
+            </div>
         </div>
     </div>
 
+    <!-- ============================================
+         Main Content
+         ============================================ -->
     <div class="container" id="mainContent">
+        
+        <!-- Header -->
         <header>
             <h1>⚾ 烈光 vs 飞雪 友谊赛</h1>
             <div class="match-info">2026年3月29日 上午 · 七个战术片段分析</div>
         </header>
 
-        <!-- 片段1：三振逃的规则 -->
-        <div class="video-card">
-            <div class="video-header">
-                <img src="/mnt/kimi/upload/04_三振出局_主图(1).png" alt="">
-                <span class="video-title-text">片段一：三振逃的规则解析</span>
-            </div>
-            <div class="video-container">
-                <iframe src="https://player.bilibili.com/player.html?bvid=BV1z4XhBDEd6&page=1&high_quality=1&danmaku=0&autoplay=0" 
-                        scrolling="no" frameborder="0" allowfullscreen 
-                        sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"></iframe>
-            </div>
-            <div class="video-desc">
-                <span class="tactic-highlight">📋 规则科普：三振逃（Dropped Third Strike）</span>
-                这个视频有两个注意的细节：
-                <br><br>
-                <div class="mistake-point">
-                    <strong>细节一（防守方）：</strong>对方投捕经验不足，捕手漏球后捡球状态随意，等发现偷本垒时已经来不及回传本垒，同时投手没能及时到本垒板补位，造成偷本垒成功。
+        <!-- Video Clips -->
+        <main>
+            
+            <!-- 片段1：三振逃的规则 -->
+            <article class="video-card">
+                <div class="video-header">
+                    <img src="img/04_三振出局_主图.png" alt="三振出局">
+                    <span class="video-title-text">片段一：三振逃的规则解析</span>
                 </div>
-                <div class="rule-highlight">
-                    <strong>细节二（进攻方）：</strong>我方打者触发了<strong>三振逃</strong>的规则，此规则的确有些偏门——当打者被三振，但捕手没能拿到球时，打者可跑向一垒。这种局面在投打规则下会不时的出现，娃们需要了解这个规则。
+                <div class="video-container">
+                    <iframe 
+                        src="https://player.bilibili.com/player.html?bvid=BV1z4XhBDEd6&page=1&high_quality=1&danmaku=0&autoplay=0" 
+                        scrolling="no" 
+                        frameborder="0" 
+                        allowfullscreen 
+                        sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"
+                    ></iframe>
                 </div>
-            </div>
-        </div>
-
-        <!-- 片段2：跑垒训练 -->
-        <div class="video-card">
-            <div class="video-header">
-                <img src="/mnt/kimi/upload/09_冲鸭_主图(1).png" alt="">
-                <span class="video-title-text">片段二：跑垒训练 - 玩命跑的艺术</span>
-            </div>
-            <div class="video-container">
-                <iframe src="https://player.bilibili.com/player.html?bvid=BV1B8XhBmEWG&page=1&high_quality=1&danmaku=0&autoplay=0" 
-                        scrolling="no" frameborder="0" allowfullscreen 
-                        sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"></iframe>
-            </div>
-            <div class="video-desc">
-                <span class="tactic-highlight">💡 核心要点</span>
-                娃们跑垒一定要玩命的跑，能跑多快跑多快，棒球就是人和球抢时间的运动。
-            </div>
-        </div>
-
-        <!-- 片段3：死杀一垒 -->
-        <div class="video-card">
-            <div class="video-header">
-                <img src="/mnt/kimi/upload/07_接杀_主图(1).png" alt="">
-                <span class="video-title-text">片段三：死杀一垒战术解析</span>
-            </div>
-            <div class="video-container">
-                <iframe src="https://player.bilibili.com/player.html?bvid=BV1B8XhBmEup&page=1&high_quality=1&danmaku=0&autoplay=0" 
-                        scrolling="no" frameborder="0" allowfullscreen 
-                        sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"></iframe>
-            </div>
-            <div class="video-desc">
-                <span class="tactic-highlight">⚾ 战术重点：二出局死杀一垒</span>
-                此时对方已经二出，教练有一句话，<strong>二出时死杀一垒</strong>。之前可能有疑惑，为啥不杀本垒？本垒要得分啊！原因如下：
-                <br><br>
-                杀一垒时，本垒得分无效。三垒队员一般是离垒状态，距离本垒较近，腿快的队员很快就能到达本垒，而一垒队员距离一垒较远，所以必须死杀一垒。当然场面情况复杂多变，就近杀也是常见情况。
-            </div>
-        </div>
-
-        <!-- 片段4：精神不集中 -->
-        <div class="video-card">
-            <div class="video-header">
-                <img src="/mnt/kimi/upload/15_稳住_主图(1).png" alt="">
-                <span class="video-title-text">片段四：精神集中度与防守意识</span>
-            </div>
-            <div class="video-container">
-                <iframe src="https://player.bilibili.com/player.html?bvid=BV1B8XhBmEmW&page=1&high_quality=1&danmaku=0&autoplay=0" 
-                        scrolling="no" frameborder="0" allowfullscreen 
-                        sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"></iframe>
-            </div>
-            <div class="video-desc">
-                <span class="tactic-highlight">⚠️ 失误复盘：精神集中与局面感</span>
-                这个视频暴露我家两个失误点：
-                <div class="mistake-point">
-                    <strong>失误一：</strong>懒得跑导致防守区域过小，多跑两步就能接杀。
+                <div class="video-desc">
+                    <span class="tactic-highlight">📋 规则科普：三振逃（Dropped Third Strike）</span>
+                    这个视频有两个注意的细节：
+                    <br><br>
+                    <div class="mistake-point">
+                        <strong>细节一（防守方）：</strong>对方投捕经验不足，捕手漏球后捡球状态随意，等发现偷本垒时已经来不及回传本垒，同时投手没能及时到本垒板补位，造成偷本垒成功。
+                    </div>
+                    <div class="rule-highlight">
+                        <strong>细节二（进攻方）：</strong>我方打者触发了<strong>三振逃</strong>的规则，此规则的确有些偏门——当打者被三振，但捕手没能拿到球时，打者可跑向一垒。这种局面在投打规则下会不时的出现，娃们需要了解这个规则。
+                    </div>
                 </div>
-                <div class="mistake-point">
-                    <strong>失误二：</strong>精神不集中。在精神集中情况下，球飞出时就可以预判一垒队员往二垒跑，此时接球不用犹豫直接传二垒，杀掉二垒后极有可能再传杀一垒形成双杀。
-                </div>
-                <strong>💎 经验总结：</strong>吃我家的堑长其他娃的智。在U10娃奔跑速度下，双杀的成功率还是比较高的，希望娃们一定要有防守双杀的欲望和局面感。
-            </div>
-        </div>
+            </article>
 
-        <!-- 片段5：接传球失误 -->
-        <div class="video-card">
-            <div class="video-header">
-                <img src="/mnt/kimi/upload/11_弱爆了_主图(1).png" alt="">
-                <span class="video-title-text">片段五：接传球失误分析</span>
-            </div>
-            <div class="video-container">
-                <iframe src="https://player.bilibili.com/player.html?bvid=BV1E8XhBUEHy&page=1&high_quality=1&danmaku=0&autoplay=0" 
-                        scrolling="no" frameborder="0" allowfullscreen 
-                        sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"></iframe>
-            </div>
-            <div class="video-desc">
-                <span class="tactic-highlight">❌ 常见失误：慌忙中的接传球</span>
-                这个视频是防守队员慌忙中传球，造成接传球失误，对方一垒队员跑到本垒得分，打击队员跑到二垒。
-                <br><br>
-                <div class="mistake-point">
-                    <strong>问题本质：</strong>比赛经验不足，紧张导致技术动作变形，传球目标不明确。
+            <!-- 片段2：跑垒训练 -->
+            <article class="video-card">
+                <div class="video-header">
+                    <img src="img/09_冲鸭_主图.png" alt="冲鸭">
+                    <span class="video-title-text">片段二：跑垒训练 - 玩命跑的艺术</span>
                 </div>
-                <strong>💡 改进建议：</strong>这种失误是比赛经验不足的队员很容易出现的情况。需要在日常训练中模拟比赛压力，强化基本功，养成"先看再传"的好习惯，避免盲目传球。
-            </div>
-        </div>
-
-        <!-- 片段6：经验问题 -->
-        <div class="video-card">
-            <div class="video-header">
-                <img src="/mnt/kimi/upload/12_绝绝子_主图(1).png" alt="">
-                <span class="video-title-text">片段六：经验问题 - 错失得分良机</span>
-            </div>
-            <div class="video-container">
-                <iframe src="https://player.bilibili.com/player.html?bvid=BV1B8XhBmEbo&page=1&high_quality=1&danmaku=0&autoplay=0" 
-                        scrolling="no" frameborder="0" allowfullscreen 
-                        sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"></iframe>
-            </div>
-            <div class="video-desc">
-                <span class="tactic-highlight">🎯 经验积累：捕捉瞬间得分机会</span>
-                三垒垒上队员没能抓住捕手漏球的机会得分，这个是经验问题。
-                <br><br>
-                <div class="mistake-point">
-                    <strong>问题分析：</strong>捕手漏球是绝佳的得分机会，但三垒队员未能及时反应启动，错失轻松得分良机。
+                <div class="video-container">
+                    <iframe 
+                        src="https://player.bilibili.com/player.html?bvid=BV1B8XhBmEWG&page=1&high_quality=1&danmaku=0&autoplay=0" 
+                        scrolling="no" 
+                        frameborder="0" 
+                        allowfullscreen 
+                        sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"
+                    ></iframe>
                 </div>
-                <strong>💡 教练要求：</strong>娃们需要<strong>精神集中</strong>，时刻准备跑垒，抓住这种意外的得分机会。棒球比赛瞬息万变，漏接、暴投都是得分良机，垒上队员必须保持高度警觉，随时准备冲垒。
-            </div>
-        </div>
-
-        <!-- 片段7：投手低头回投手板 -->
-        <div class="video-card">
-            <div class="video-header">
-                <img src="/mnt/kimi/upload/06_投出好球_主图(1).png" alt="">
-                <span class="video-title-text">片段七：投手细节 - 回板看局面</span>
-            </div>
-            <div class="video-container">
-                <iframe src="https://player.bilibili.com/player.html?bvid=BV1z4XhBSE9T&page=1&high_quality=1&danmaku=0&autoplay=0" 
-                        scrolling="no" frameborder="0" allowfullscreen 
-                        sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"></iframe>
-            </div>
-            <div class="video-desc">
-                <span class="tactic-highlight">⚾ 投手细节：时刻关注垒上局面</span>
-                投手低头回投手板，没看局面，造成三垒偷本垒成功。
-                <br><br>
-                <div class="mistake-point">
-                    <strong>问题分析：</strong>投手在完成投球动作后，低头走回投手板的过程中没有观察垒上跑者动向，给三垒队员创造了偷垒机会，轻松得分。
+                <div class="video-desc">
+                    <span class="tactic-highlight">💡 核心要点</span>
+                    娃们跑垒一定要玩命的跑，能跑多快跑多快，棒球就是人和球抢时间的运动。
                 </div>
-                <strong>💡 教练提醒：</strong>我们投手小家伙们需要注意这个细节——<strong>回投手板时抬头看局面</strong>。投手是防守核心，必须时刻关注垒上跑者的动静，防止偷垒。每一次回板都要保持警觉，养成"边走边看"的好习惯。
-            </div>
-        </div>
+            </article>
 
+            <!-- 片段3：死杀一垒 -->
+            <article class="video-card">
+                <div class="video-header">
+                    <img src="img/07_接杀_主图.png" alt="接杀">
+                    <span class="video-title-text">片段三：死杀一垒战术解析</span>
+                </div>
+                <div class="video-container">
+                    <iframe 
+                        src="https://player.bilibili.com/player.html?bvid=BV1B8XhBmEup&page=1&high_quality=1&danmaku=0&autoplay=0" 
+                        scrolling="no" 
+                        frameborder="0" 
+                        allowfullscreen 
+                        sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"
+                    ></iframe>
+                </div>
+                <div class="video-desc">
+                    <span class="tactic-highlight">⚾ 战术重点：二出局死杀一垒</span>
+                    此时对方已经二出，教练有一句话，<strong>二出时死杀一垒</strong>。之前可能有疑惑，为啥不杀本垒？本垒要得分啊！原因如下：
+                    <br><br>
+                    杀一垒时，本垒得分无效。三垒队员一般是离垒状态，距离本垒较近，腿快的队员很快就能到达本垒，而一垒队员距离一垒较远，所以必须死杀一垒。当然场面情况复杂多变，就近杀也是常见情况。
+                </div>
+            </article>
+
+            <!-- 片段4：精神不集中 -->
+            <article class="video-card">
+                <div class="video-header">
+                    <img src="img/15_稳住_主图.png" alt="稳住">
+                    <span class="video-title-text">片段四：精神集中度与防守意识</span>
+                </div>
+                <div class="video-container">
+                    <iframe 
+                        src="https://player.bilibili.com/player.html?bvid=BV1B8XhBmEmW&page=1&high_quality=1&danmaku=0&autoplay=0" 
+                        scrolling="no" 
+                        frameborder="0" 
+                        allowfullscreen 
+                        sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"
+                    ></iframe>
+                </div>
+                <div class="video-desc">
+                    <span class="tactic-highlight">⚠️ 失误复盘：精神集中与局面感</span>
+                    这个视频暴露我家两个失误点：
+                    <div class="mistake-point">
+                        <strong>失误一：</strong>懒得跑导致防守区域过小，多跑两步就能接杀。
+                    </div>
+                    <div class="mistake-point">
+                        <strong>失误二：</strong>精神不集中。在精神集中情况下，球飞出时就可以预判一垒队员往二垒跑，此时接球不用犹豫直接传二垒，杀掉二垒后极有可能再传杀一垒形成双杀。
+                    </div>
+                    <strong>💎 经验总结：</strong>吃我家的堑长其他娃的智。在U10娃奔跑速度下，双杀的成功率还是比较高的，希望娃们一定要有防守双杀的欲望和局面感。
+                </div>
+            </article>
+
+            <!-- 片段5：接传球失误 -->
+            <article class="video-card">
+                <div class="video-header">
+                    <img src="img/11_弱爆了_主图.png" alt="弱爆了">
+                    <span class="video-title-text">片段五：接传球失误分析</span>
+                </div>
+                <div class="video-container">
+                    <iframe 
+                        src="https://player.bilibili.com/player.html?bvid=BV1E8XhBUEHy&page=1&high_quality=1&danmaku=0&autoplay=0" 
+                        scrolling="no" 
+                        frameborder="0" 
+                        allowfullscreen 
+                        sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"
+                    ></iframe>
+                </div>
+                <div class="video-desc">
+                    <span class="tactic-highlight">❌ 常见失误：慌忙中的接传球</span>
+                    这个视频是防守队员慌忙中传球，造成接传球失误，对方一垒队员跑到本垒得分，打击队员跑到二垒。
+                    <br><br>
+                    <div class="mistake-point">
+                        <strong>问题本质：</strong>比赛经验不足，紧张导致技术动作变形，传球目标不明确。
+                    </div>
+                    <strong>💡 改进建议：</strong>这种失误是比赛经验不足的队员很容易出现的情况。需要在日常训练中模拟比赛压力，强化基本功，养成"先看再传"的好习惯，避免盲目传球。
+                </div>
+            </article>
+
+            <!-- 片段6：经验问题 -->
+            <article class="video-card">
+                <div class="video-header">
+                    <img src="img/12_绝绝子_主图.png" alt="绝绝子">
+                    <span class="video-title-text">片段六：经验问题 - 错失得分良机</span>
+                </div>
+                <div class="video-container">
+                    <iframe 
+                        src="https://player.bilibili.com/player.html?bvid=BV1B8XhBmEbo&page=1&high_quality=1&danmaku=0&autoplay=0" 
+                        scrolling="no" 
+                        frameborder="0" 
+                        allowfullscreen 
+                        sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"
+                    ></iframe>
+                </div>
+                <div class="video-desc">
+                    <span class="tactic-highlight">🎯 经验积累：捕捉瞬间得分机会</span>
+                    三垒垒上队员没能抓住捕手漏球的机会得分，这个是经验问题。
+                    <br><br>
+                    <div class="mistake-point">
+                        <strong>问题分析：</strong>捕手漏球是绝佳的得分机会，但三垒队员未能及时反应启动，错失轻松得分良机。
+                    </div>
+                    <strong>💡 教练要求：</strong>娃们需要<strong>精神集中</strong>，时刻准备跑垒，抓住这种意外的得分机会。棒球比赛瞬息万变，漏接、暴投都是得分良机，垒上队员必须保持高度警觉，随时准备冲垒。
+                </div>
+            </article>
+
+            <!-- 片段7：投手低头回投手板 -->
+            <article class="video-card">
+                <div class="video-header">
+                    <img src="img/06_投出好球_主图.png" alt="投出好球">
+                    <span class="video-title-text">片段七：投手细节 - 回板看局面</span>
+                </div>
+                <div class="video-container">
+                    <iframe 
+                        src="https://player.bilibili.com/player.html?bvid=BV1z4XhBSE9T&page=1&high_quality=1&danmaku=0&autoplay=0" 
+                        scrolling="no" 
+                        frameborder="0" 
+                        allowfullscreen 
+                        sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"
+                    ></iframe>
+                </div>
+                <div class="video-desc">
+                    <span class="tactic-highlight">⚾ 投手细节：时刻关注垒上局面</span>
+                    投手低头回投手板，没看局面，造成三垒偷本垒成功。
+                    <br><br>
+                    <div class="mistake-point">
+                        <strong>问题分析：</strong>投手在完成投球动作后，低头走回投手板的过程中没有观察垒上跑者动向，给三垒队员创造了偷垒机会，轻松得分。
+                    </div>
+                    <strong>💡 教练提醒：</strong>我们投手小家伙们需要注意这个细节——<strong>回投手板时抬头看局面</strong>。投手是防守核心，必须时刻关注垒上跑者的动静，防止偷垒。每一次回板都要保持警觉，养成"边走边看"的好习惯。
+                </div>
+            </article>
+
+        </main>
+
+        <!-- Footer -->
         <footer>
-            <img src="/mnt/kimi/upload/08_加油打气_主图(1).png" alt="">
-            <img src="/mnt/kimi/upload/13_OK啦_主图(1).png" alt="">
-            <img src="/mnt/kimi/upload/10_MVP在此_主图(1).png" alt="">
-            <p style="margin-top: 15px; font-family: 'Noto Serif SC', serif;">友谊第一，比赛第二 · 烈光少棒加油</p>
+            <img src="img/08_加油打气_主图.png" alt="加油打气">
+            <img src="img/13_OK啦_主图.png" alt="OK啦">
+            <img src="img/10_MVP在此_主图.png" alt="MVP在此">
+            <p>友谊第一，比赛第二 · 烈光少棒加油</p>
         </footer>
+
     </div>
 
+    <!-- ============================================
+         JavaScript
+         ============================================ -->
     <script>
-        // SHA-256 hash of correct password
+        // ============================================
+        // Password Verification (SHA-256 hashed)
+        // ============================================
         const PASSWORD_HASH = '0a95adbf8581859ae0cc477127abeaf4ad89916405c41855af8fbc482e1634e8';
         
+        /**
+         * Calculate SHA-256 hash of a string
+         * @param {string} message - Input message
+         * @returns {Promise<string>} Hex-encoded hash
+         */
         async function sha256(message) {
             const encoder = new TextEncoder();
             const data = encoder.encode(message);
@@ -422,6 +553,9 @@
             return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
         
+        /**
+         * Check password and show main content if correct
+         */
         async function checkPassword() {
             const input = document.getElementById('passwordInput').value;
             const errorMsg = document.getElementById('errorMsg');
@@ -438,16 +572,22 @@
             }
         }
         
-        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') checkPassword().catch(console.error);
+        // ============================================
+        // Event Listeners
+        // ============================================
+        document.getElementById('passwordInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                checkPassword().catch(console.error);
+            }
         });
         
-        window.onload = function() {
+        // Check if user is already authenticated
+        window.addEventListener('load', () => {
             if (sessionStorage.getItem('baseball_auth') === 'true') {
                 document.getElementById('passwordOverlay').style.display = 'none';
                 document.getElementById('mainContent').classList.add('visible');
             }
-        };
+        });
     </script>
 
 </body>
