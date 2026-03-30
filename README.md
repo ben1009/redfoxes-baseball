@@ -53,7 +53,7 @@ Password is required to enter the review center. Password hint:
 
 ## 📊 Analytics
 
-This site uses Google Analytics 4 (Measurement ID: `G-QJ6EXQH8SW`) to track visitor engagement and improve content.
+This site uses Google Analytics 4 to track visitor engagement and improve content.
 
 ## 📜 License
 
