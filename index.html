@@ -241,7 +241,7 @@
             </div>
             <input type="password" class="password-input" id="passwordInput" placeholder="●●●●" maxlength="4">
             <br>
-            <button class="password-btn" onclick="checkPassword()">进入复盘中心</button>
+            <button class="password-btn" onclick="checkPassword().catch(console.error)">进入复盘中心</button>
             <div class="error-msg" id="errorMsg">密码错误，请输入正确年份（4位数字）</div>
         </div>
     </div>
@@ -411,11 +411,23 @@
     </div>
 
     <script>
-        function checkPassword() {
+        // SHA-256 hash of correct password
+        const PASSWORD_HASH = '0a95adbf8581859ae0cc477127abeaf4ad89916405c41855af8fbc482e1634e8';
+        
+        async function sha256(message) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+        
+        async function checkPassword() {
             const input = document.getElementById('passwordInput').value;
             const errorMsg = document.getElementById('errorMsg');
+            const inputHash = await sha256(input);
             
-            if (input === '1972') {
+            if (inputHash === PASSWORD_HASH) {
                 document.getElementById('passwordOverlay').style.display = 'none';
                 document.getElementById('mainContent').classList.add('visible');
                 sessionStorage.setItem('baseball_auth', 'true');
@@ -427,7 +439,7 @@
         }
         
         document.getElementById('passwordInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') checkPassword();
+            if (e.key === 'Enter') checkPassword().catch(console.error);
         });
         
         window.onload = function() {
