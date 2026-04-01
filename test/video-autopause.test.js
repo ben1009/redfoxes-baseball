@@ -64,14 +64,22 @@ describe('Video Autopause Feature', () => {
         await page.waitForTimeout(2000);
     }
 
-    test('should have 7 video containers with iframes initially', async () => {
+    test('should have 7 video containers with data-src attributes', async () => {
         await loginToPage();
-        // Scroll to top to ensure all iframes are loaded (lazy-loading may have removed some)
-        await page.evaluate(() => window.scrollTo(0, 0));
-        await new Promise(r => setTimeout(r, 1000));
         
-        const iframes = await page.$$('.video-container iframe');
-        expect(iframes.length).toBe(7);
+        // Check that all 7 video containers exist
+        const containers = await page.$$('.video-container');
+        expect(containers.length).toBe(7);
+        
+        // Check that each container has a data-src (lazy-loading stores src here)
+        // or has an iframe (if currently visible)
+        let hasVideoSource = 0;
+        for (const container of containers) {
+            const hasDataSrc = await container.evaluate(el => !!el.dataset.src);
+            const hasIframe = await container.$('iframe') !== null;
+            if (hasDataSrc || hasIframe) hasVideoSource++;
+        }
+        expect(hasVideoSource).toBe(7);
     });
 
     test('should detect video visibility with IntersectionObserver', async () => {
