@@ -79,7 +79,12 @@ describe('Video Autopause Feature', () => {
         expect(hasObserverLogic).toBe(true);
     });
 
-    test('should send pause signal when video scrolled out of viewport', async () => {
+    test('should attempt to pause video when scrolled out of viewport', async () => {
+        // NOTE: This test verifies that pause SIGNALS are sent when videos leave viewport.
+        // However, Bilibili iframe videos CANNOT actually be paused via postMessage due to
+        // cross-origin security restrictions. The player ignores these commands.
+        // This is a known limitation - see index.html for details.
+        
         await loginToPage();
         
         // Wait for autopause to initialize
@@ -95,7 +100,7 @@ describe('Video Autopause Feature', () => {
             window._videoPauseSignals = [];
         });
 
-        // Scroll down to move video out of viewport (triggers autopause)
+        // Scroll down to move video out of viewport (triggers autopause attempt)
         await page.evaluate(() => {
             window.scrollTo(0, document.body.scrollHeight);
         });
@@ -106,9 +111,11 @@ describe('Video Autopause Feature', () => {
             return window._videoPauseSignals || [];
         });
         
-        console.log('Pause signals captured:', JSON.stringify(pauseSignals, null, 2));
+        console.log('Pause signals sent (Bilibili ignores these due to CORS):');
+        console.log(JSON.stringify(pauseSignals.slice(0, 3), null, 2));
+        console.log(`... and ${pauseSignals.length - 3} more signals`);
 
-        // Verify that pause signals were sent
+        // Verify that pause signals WERE ATTEMPTED
         expect(pauseSignals.length).toBeGreaterThan(0);
         
         // Verify signals contain pause commands
@@ -125,6 +132,8 @@ describe('Video Autopause Feature', () => {
         // Verify signals were sent when video was not visible
         const allSignalsWhenHidden = pauseSignals.every(record => record.videoVisible === false);
         expect(allSignalsWhenHidden).toBe(true);
+        
+        // NOTE: The video may still be playing audio - Bilibili blocks external control
     });
 
     test('should maintain video src after scroll', async () => {

@@ -610,7 +610,14 @@
         
         /**
          * Initialize Intersection Observer to pause videos when scrolled out of view
-         * Bilibili player postMessage API: { action: 'pauseVideo' } or { action: 'pause' }
+         * 
+         * NOTE: Bilibili iframe videos cannot be paused via postMessage due to
+         * cross-origin security restrictions. The player doesn't expose a public API.
+         * This feature attempts to send pause commands but they will be ignored by
+         * Bilibili's player. The video will continue playing audio even when out of view.
+         * 
+         * To actually stop playback, we would need to lazy-load/remove the iframe,
+         * which would reset the video position. This is a known limitation.
          */
         function initVideoAutopause() {
             const iframes = document.querySelectorAll('.video-container iframe');
@@ -621,8 +628,8 @@
                     const iframe = entry.target;
                     
                     if (!entry.isIntersecting && !pausedIframes.has(iframe)) {
-                        // Video is out of viewport - send pause command to Bilibili player
-                        // Try multiple message formats for compatibility
+                        // Attempt to pause video - NOTE: Bilibili ignores these due to CORS
+                        // We try multiple formats in case any work in the future
                         const pauseSignals = [
                             { action: 'pauseVideo' },
                             { cmd: 'pause' },
@@ -635,26 +642,26 @@
                                     typeof signal === 'string' ? signal : JSON.stringify(signal),
                                     '*'
                                 );
-                                // Track for testing
+                                // Track for testing (signals are sent but Bilibili ignores them)
                                 window._videoPauseSignals.push({
                                     timestamp: Date.now(),
                                     signal: signal,
                                     videoVisible: false
                                 });
                             } catch (e) {
-                                // Ignore cross-origin errors
+                                // Cross-origin errors expected - Bilibili blocks external control
                             }
                         });
                         
                         pausedIframes.add(iframe);
                     } else if (entry.isIntersecting) {
-                        // Video is back in viewport - user can click to resume
+                        // Video is back in viewport
                         pausedIframes.delete(iframe);
                     }
                 });
             }, {
-                threshold: 0.05,   // Trigger when less than 5% visible
-                rootMargin: '-20px' // Small buffer
+                threshold: 0.05,
+                rootMargin: '-20px'
             });
             
             iframes.forEach(iframe => observer.observe(iframe));
