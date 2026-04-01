@@ -600,6 +600,45 @@
                 document.getElementById('mainContent').classList.add('visible');
             }
         });
+        
+        // ============================================
+        // Auto-pause Videos When Out of Viewport
+        // ============================================
+        
+        /**
+         * Initialize Intersection Observer to pause videos when scrolled out of view
+         */
+        function initVideoAutopause() {
+            const iframes = document.querySelectorAll('.video-container iframe');
+            
+            // Store original src for each iframe
+            iframes.forEach(iframe => {
+                iframe.dataset.src = iframe.src;
+            });
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const iframe = entry.target;
+                    
+                    if (!entry.isIntersecting) {
+                        // Video is out of viewport - reload to stop playback
+                        // This resets the video to paused state
+                        iframe.src = iframe.dataset.src;
+                    }
+                });
+            }, {
+                threshold: 0.1,  // Trigger when less than 10% visible
+                rootMargin: '0px'
+            });
+            
+            iframes.forEach(iframe => observer.observe(iframe));
+        }
+        
+        // Initialize video autopause after page loads
+        window.addEventListener('load', () => {
+            // Wait for authentication check first
+            setTimeout(initVideoAutopause, 100);
+        });
     </script>
 
 </body>
