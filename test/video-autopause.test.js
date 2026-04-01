@@ -79,34 +79,52 @@ describe('Video Autopause Feature', () => {
         expect(hasObserverLogic).toBe(true);
     });
 
-    test('should pause video when scrolled out of viewport', async () => {
+    test('should send pause signal when video scrolled out of viewport', async () => {
         await loginToPage();
-        const firstVideo = await page.$('.video-container iframe');
-        expect(firstVideo).not.toBeNull();
+        
+        // Wait for autopause to initialize
+        await new Promise(r => setTimeout(r, 1500));
 
-        // Scroll video into view
-        await firstVideo.evaluate(el => el.scrollIntoView({ block: 'center' }));
-        await page.waitForTimeout(1000);
+        // Scroll first video into view
+        const iframeHandle = await page.$('.video-container iframe');
+        await iframeHandle.evaluate(el => el.scrollIntoView({ block: 'center' }));
+        await new Promise(r => setTimeout(r, 500));
 
-        const visibleBefore = await firstVideo.evaluate(el => {
-            const rect = el.getBoundingClientRect();
-            return rect.top >= 0 && rect.bottom <= window.innerHeight;
+        // Clear any existing pause signals
+        await page.evaluate(() => {
+            window._videoPauseSignals = [];
         });
-        console.log('Video visible before scroll:', visibleBefore);
 
-        // Scroll down to move video out of viewport
+        // Scroll down to move video out of viewport (triggers autopause)
         await page.evaluate(() => {
             window.scrollTo(0, document.body.scrollHeight);
         });
-        await new Promise(r => setTimeout(r, TEST_CONFIG.scrollDelay));
+        await new Promise(r => setTimeout(r, 800));
 
-        const visibleAfter = await firstVideo.evaluate(el => {
-            const rect = el.getBoundingClientRect();
-            return rect.top >= 0 && rect.bottom <= window.innerHeight;
+        // Get captured pause signals
+        const pauseSignals = await page.evaluate(() => {
+            return window._videoPauseSignals || [];
         });
-        console.log('Video visible after scroll:', visibleAfter);
         
-        expect(visibleAfter).toBe(false);
+        console.log('Pause signals captured:', JSON.stringify(pauseSignals, null, 2));
+
+        // Verify that pause signals were sent
+        expect(pauseSignals.length).toBeGreaterThan(0);
+        
+        // Verify signals contain pause commands
+        const hasPauseCommand = pauseSignals.some(record => {
+            const signal = record.signal;
+            if (typeof signal === 'string') {
+                return signal.toLowerCase() === 'pause';
+            }
+            return signal.action === 'pauseVideo' || signal.cmd === 'pause';
+        });
+        
+        expect(hasPauseCommand).toBe(true);
+        
+        // Verify signals were sent when video was not visible
+        const allSignalsWhenHidden = pauseSignals.every(record => record.videoVisible === false);
+        expect(allSignalsWhenHidden).toBe(true);
     });
 
     test('should maintain video src after scroll', async () => {

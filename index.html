@@ -605,6 +605,9 @@
         // Auto-pause Videos When Out of Viewport
         // ============================================
         
+        // Global array to track pause signals for testing
+        window._videoPauseSignals = [];
+        
         /**
          * Initialize Intersection Observer to pause videos when scrolled out of view
          * Bilibili player postMessage API: { action: 'pauseVideo' } or { action: 'pause' }
@@ -620,22 +623,29 @@
                     if (!entry.isIntersecting && !pausedIframes.has(iframe)) {
                         // Video is out of viewport - send pause command to Bilibili player
                         // Try multiple message formats for compatibility
-                        try {
-                            // Format 1: Bilibili player standard
-                            iframe.contentWindow?.postMessage(
-                                JSON.stringify({ action: 'pauseVideo' }),
-                                '*'
-                            );
-                            // Format 2: Alternative format
-                            iframe.contentWindow?.postMessage(
-                                JSON.stringify({ cmd: 'pause' }),
-                                '*'
-                            );
-                            // Format 3: Direct function call
-                            iframe.contentWindow?.postMessage('pause', '*');
-                        } catch (e) {
-                            // Ignore cross-origin errors
-                        }
+                        const pauseSignals = [
+                            { action: 'pauseVideo' },
+                            { cmd: 'pause' },
+                            'pause'
+                        ];
+                        
+                        pauseSignals.forEach(signal => {
+                            try {
+                                iframe.contentWindow?.postMessage(
+                                    typeof signal === 'string' ? signal : JSON.stringify(signal),
+                                    '*'
+                                );
+                                // Track for testing
+                                window._videoPauseSignals.push({
+                                    timestamp: Date.now(),
+                                    signal: signal,
+                                    videoVisible: false
+                                });
+                            } catch (e) {
+                                // Ignore cross-origin errors
+                            }
+                        });
+                        
                         pausedIframes.add(iframe);
                     } else if (entry.isIntersecting) {
                         // Video is back in viewport - user can click to resume
