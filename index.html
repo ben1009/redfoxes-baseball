@@ -606,6 +606,21 @@
         // ============================================
         
         /**
+         * Create a Bilibili iframe element with standard attributes
+         * @param {string} src - Video URL
+         * @returns {HTMLIFrameElement}
+         */
+        function createVideoIframe(src) {
+            const iframe = document.createElement('iframe');
+            iframe.src = src;
+            iframe.setAttribute('scrolling', 'no');
+            iframe.setAttribute('frameborder', '0');
+            iframe.setAttribute('allowfullscreen', '');
+            iframe.setAttribute('sandbox', 'allow-top-navigation allow-same-origin allow-forms allow-scripts');
+            return iframe;
+        }
+        
+        /**
          * Initialize Intersection Observer to pause videos when scrolled out of view.
          * 
          * Since Bilibili iframe cannot be controlled via postMessage (CORS), we use
@@ -626,13 +641,7 @@
                         iframe.remove();
                     } else if (entry.isIntersecting && !iframe && container.dataset.src) {
                         // Video back in view - restore iframe
-                        const newIframe = document.createElement('iframe');
-                        newIframe.src = container.dataset.src;
-                        newIframe.setAttribute('scrolling', 'no');
-                        newIframe.setAttribute('frameborder', '0');
-                        newIframe.setAttribute('allowfullscreen', '');
-                        newIframe.setAttribute('sandbox', 'allow-top-navigation allow-same-origin allow-forms allow-scripts');
-                        container.appendChild(newIframe);
+                        container.appendChild(createVideoIframe(container.dataset.src));
                     }
                 });
             }, {

@@ -45,7 +45,7 @@ describe('Video Autopause Feature', () => {
         if (!isLoggedIn) {
             // Wait for password input
             await page.waitForSelector('#passwordInput', { timeout: 5000 });
-            await page.waitForTimeout(100);
+            await new Promise(r => setTimeout(r, 100));
             
             // Enter password
             await page.type('#passwordInput', TEST_CONFIG.password);
@@ -61,7 +61,7 @@ describe('Video Autopause Feature', () => {
         }
         
         // Wait for iframes
-        await page.waitForTimeout(2000);
+        await new Promise(r => setTimeout(r, 2000));
     }
 
     test('should have 7 video containers with data-src attributes', async () => {
