@@ -605,66 +605,42 @@
         // Auto-pause Videos When Out of Viewport
         // ============================================
         
-        // Global array to track pause signals for testing
-        window._videoPauseSignals = [];
-        
         /**
-         * Initialize Intersection Observer to pause videos when scrolled out of view
+         * Initialize Intersection Observer to pause videos when scrolled out of view.
          * 
-         * NOTE: Bilibili iframe videos cannot be paused via postMessage due to
-         * cross-origin security restrictions. The player doesn't expose a public API.
-         * This feature attempts to send pause commands but they will be ignored by
-         * Bilibili's player. The video will continue playing audio even when out of view.
-         * 
-         * To actually stop playback, we would need to lazy-load/remove the iframe,
-         * which would reset the video position. This is a known limitation.
+         * Since Bilibili iframe cannot be controlled via postMessage (CORS), we use
+         * a lazy-loading approach: remove the iframe when out of view and restore
+         * when back in view. This actually stops playback but resets video position.
          */
         function initVideoAutopause() {
-            const iframes = document.querySelectorAll('.video-container iframe');
-            const pausedIframes = new Set();
+            const videoContainers = document.querySelectorAll('.video-container');
             
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
-                    const iframe = entry.target;
+                    const container = entry.target;
+                    const iframe = container.querySelector('iframe');
                     
-                    if (!entry.isIntersecting && !pausedIframes.has(iframe)) {
-                        // Attempt to pause video - NOTE: Bilibili ignores these due to CORS
-                        // We try multiple formats in case any work in the future
-                        const pauseSignals = [
-                            { action: 'pauseVideo' },
-                            { cmd: 'pause' },
-                            'pause'
-                        ];
-                        
-                        pauseSignals.forEach(signal => {
-                            try {
-                                iframe.contentWindow?.postMessage(
-                                    typeof signal === 'string' ? signal : JSON.stringify(signal),
-                                    '*'
-                                );
-                                // Track for testing (signals are sent but Bilibili ignores them)
-                                window._videoPauseSignals.push({
-                                    timestamp: Date.now(),
-                                    signal: signal,
-                                    videoVisible: false
-                                });
-                            } catch (e) {
-                                // Cross-origin errors expected - Bilibili blocks external control
-                            }
-                        });
-                        
-                        pausedIframes.add(iframe);
-                    } else if (entry.isIntersecting) {
-                        // Video is back in viewport
-                        pausedIframes.delete(iframe);
+                    if (!entry.isIntersecting && iframe) {
+                        // Video out of view - store src and remove iframe
+                        container.dataset.src = iframe.src;
+                        iframe.remove();
+                    } else if (entry.isIntersecting && !iframe && container.dataset.src) {
+                        // Video back in view - restore iframe
+                        const newIframe = document.createElement('iframe');
+                        newIframe.src = container.dataset.src;
+                        newIframe.setAttribute('scrolling', 'no');
+                        newIframe.setAttribute('frameborder', '0');
+                        newIframe.setAttribute('allowfullscreen', '');
+                        newIframe.setAttribute('sandbox', 'allow-top-navigation allow-same-origin allow-forms allow-scripts');
+                        container.appendChild(newIframe);
                     }
                 });
             }, {
-                threshold: 0.05,
-                rootMargin: '-20px'
+                threshold: 0.1,
+                rootMargin: '50px' // Load slightly before visible
             });
             
-            iframes.forEach(iframe => observer.observe(iframe));
+            videoContainers.forEach(container => observer.observe(container));
         }
         
         // Initialize video autopause after page loads

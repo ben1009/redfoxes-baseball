@@ -79,61 +79,52 @@ describe('Video Autopause Feature', () => {
         expect(hasObserverLogic).toBe(true);
     });
 
-    test('should attempt to pause video when scrolled out of viewport', async () => {
-        // NOTE: This test verifies that pause SIGNALS are sent when videos leave viewport.
-        // However, Bilibili iframe videos CANNOT actually be paused via postMessage due to
-        // cross-origin security restrictions. The player ignores these commands.
-        // This is a known limitation - see index.html for details.
-        
+    test('should remove iframe when scrolled out of viewport and restore when back', async () => {
         await loginToPage();
         
         // Wait for autopause to initialize
         await new Promise(r => setTimeout(r, 1500));
 
+        // Get first video container
+        const containerHandle = await page.$('.video-container');
+        
         // Scroll first video into view
-        const iframeHandle = await page.$('.video-container iframe');
-        await iframeHandle.evaluate(el => el.scrollIntoView({ block: 'center' }));
+        await containerHandle.evaluate(el => el.scrollIntoView({ block: 'center' }));
         await new Promise(r => setTimeout(r, 500));
 
-        // Clear any existing pause signals
-        await page.evaluate(() => {
-            window._videoPauseSignals = [];
-        });
+        // Verify iframe exists before scroll
+        const iframeBefore = await containerHandle.$('iframe');
+        expect(iframeBefore).not.toBeNull();
+        const srcBefore = await iframeBefore.evaluate(el => el.src);
+        expect(srcBefore).toContain('bilibili.com');
 
-        // Scroll down to move video out of viewport (triggers autopause attempt)
+        // Scroll down to move video out of viewport (triggers iframe removal)
         await page.evaluate(() => {
             window.scrollTo(0, document.body.scrollHeight);
         });
         await new Promise(r => setTimeout(r, 800));
 
-        // Get captured pause signals
-        const pauseSignals = await page.evaluate(() => {
-            return window._videoPauseSignals || [];
-        });
+        // Verify iframe was removed
+        const iframeAfterScroll = await containerHandle.$('iframe');
+        expect(iframeAfterScroll).toBeNull();
         
-        console.log('Pause signals sent (Bilibili ignores these due to CORS):');
-        console.log(JSON.stringify(pauseSignals.slice(0, 3), null, 2));
-        console.log(`... and ${pauseSignals.length - 3} more signals`);
+        // Verify src was stored in data attribute
+        const hasStoredSrc = await containerHandle.evaluate(el => !!el.dataset.src);
+        expect(hasStoredSrc).toBe(true);
 
-        // Verify that pause signals WERE ATTEMPTED
-        expect(pauseSignals.length).toBeGreaterThan(0);
-        
-        // Verify signals contain pause commands
-        const hasPauseCommand = pauseSignals.some(record => {
-            const signal = record.signal;
-            if (typeof signal === 'string') {
-                return signal.toLowerCase() === 'pause';
-            }
-            return signal.action === 'pauseVideo' || signal.cmd === 'pause';
+        // Scroll back to top to trigger iframe restoration
+        await page.evaluate(() => {
+            window.scrollTo(0, 0);
         });
+        await new Promise(r => setTimeout(r, 800));
+
+        // Verify iframe was restored
+        const iframeRestored = await containerHandle.$('iframe');
+        expect(iframeRestored).not.toBeNull();
         
-        expect(hasPauseCommand).toBe(true);
-        
-        // Verify signals were sent when video was not visible
-        const allSignalsWhenHidden = pauseSignals.every(record => record.videoVisible === false);
-        expect(allSignalsWhenHidden).toBe(true);
-        
-        // NOTE: The video may still be playing audio - Bilibili blocks external control
+        // Verify src is correct
+        const srcRestored = await iframeRestored.evaluate(el => el.src);
+        expect(srcRestored).toBe(srcBefore);
     });
 
     test('should maintain video src after scroll', async () => {
