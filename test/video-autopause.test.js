@@ -64,8 +64,12 @@ describe('Video Autopause Feature', () => {
         await page.waitForTimeout(2000);
     }
 
-    test('should have 7 video iframes', async () => {
+    test('should have 7 video containers with iframes initially', async () => {
         await loginToPage();
+        // Scroll to top to ensure all iframes are loaded (lazy-loading may have removed some)
+        await page.evaluate(() => window.scrollTo(0, 0));
+        await new Promise(r => setTimeout(r, 1000));
+        
         const iframes = await page.$$('.video-container iframe');
         expect(iframes.length).toBe(7);
     });
