@@ -607,7 +607,7 @@
         
         /**
          * Initialize Intersection Observer to pause videos when scrolled out of view
-         * Uses postMessage to pause Bilibili player without resetting playback position
+         * Bilibili player postMessage API: { action: 'pauseVideo' } or { action: 'pause' }
          */
         function initVideoAutopause() {
             const iframes = document.querySelectorAll('.video-container iframe');
@@ -618,22 +618,33 @@
                     const iframe = entry.target;
                     
                     if (!entry.isIntersecting && !pausedIframes.has(iframe)) {
-                        // Video is completely out of viewport - send pause command
-                        // Bilibili player accepts postMessage commands
-                        iframe.contentWindow?.postMessage(
-                            JSON.stringify({ event: 'pause' }),
-                            '*'
-                        );
+                        // Video is out of viewport - send pause command to Bilibili player
+                        // Try multiple message formats for compatibility
+                        try {
+                            // Format 1: Bilibili player standard
+                            iframe.contentWindow?.postMessage(
+                                JSON.stringify({ action: 'pauseVideo' }),
+                                '*'
+                            );
+                            // Format 2: Alternative format
+                            iframe.contentWindow?.postMessage(
+                                JSON.stringify({ cmd: 'pause' }),
+                                '*'
+                            );
+                            // Format 3: Direct function call
+                            iframe.contentWindow?.postMessage('pause', '*');
+                        } catch (e) {
+                            // Ignore cross-origin errors
+                        }
                         pausedIframes.add(iframe);
                     } else if (entry.isIntersecting) {
-                        // Video is back in viewport - remove from paused set
-                        // User can click play to resume
+                        // Video is back in viewport - user can click to resume
                         pausedIframes.delete(iframe);
                     }
                 });
             }, {
-                threshold: 0,      // Trigger only when completely out of view
-                rootMargin: '-50px' // Add 50px buffer zone
+                threshold: 0.05,   // Trigger when less than 5% visible
+                rootMargin: '-20px' // Small buffer
             });
             
             iframes.forEach(iframe => observer.observe(iframe));
@@ -641,7 +652,7 @@
         
         // Initialize video autopause after page loads
         window.addEventListener('load', () => {
-            setTimeout(initVideoAutopause, 500);
+            setTimeout(initVideoAutopause, 1000);
         });
     </script>
 
