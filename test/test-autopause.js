@@ -8,7 +8,7 @@ const puppeteer = require('puppeteer');
 const path = require('path');
 
 const CONFIG = {
-    password: '1972',
+    password: process.env.TEST_PASSWORD || '1972',
     viewport: { width: 1280, height: 800 },
     timeout: 10000
 };
@@ -38,7 +38,7 @@ async function runTest() {
         console.log('✅ Login successful\n');
         
         // Wait for iframes
-        await page.waitForTimeout(2000);
+        await new Promise(r => setTimeout(r, 2000));
         
         // Test 1: Check video count
         console.log('Test 1: Check video count');
@@ -68,7 +68,7 @@ async function runTest() {
         
         // Scroll to video
         await firstVideo.evaluate(el => el.scrollIntoView({ block: 'center' }));
-        await page.waitForTimeout(500);
+        await new Promise(r => setTimeout(r, 500));
         
         const visibleBefore = await firstVideo.evaluate(el => {
             const rect = el.getBoundingClientRect();
@@ -80,7 +80,7 @@ async function runTest() {
         await page.evaluate(() => {
             window.scrollTo(0, document.body.scrollHeight);
         });
-        await page.waitForTimeout(1000);
+        await new Promise(r => setTimeout(r, 1000));
         
         const visibleAfter = await firstVideo.evaluate(el => {
             const rect = el.getBoundingClientRect();
@@ -109,7 +109,7 @@ async function runTest() {
         const originalSrc = await firstVideo.evaluate(el => el.src);
         
         await page.evaluate(() => window.scrollTo(0, 0));
-        await page.waitForTimeout(500);
+        await new Promise(r => setTimeout(r, 500));
         
         const currentSrc = await firstVideo.evaluate(el => el.src);
         if (originalSrc !== currentSrc) {

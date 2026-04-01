@@ -28,6 +28,8 @@ jobs:
         sudo apt-get install -y libgbm-dev
         
     - name: Run tests
+      env:
+        TEST_PASSWORD: ${{ secrets.TEST_PASSWORD || '1972' }}
       run: npm test
       
     - name: Upload test results

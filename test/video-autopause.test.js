@@ -7,7 +7,7 @@ const puppeteer = require('puppeteer');
 const path = require('path');
 
 const TEST_CONFIG = {
-    password: '1972',
+    password: process.env.TEST_PASSWORD || '1972',
     viewport: { width: 1280, height: 800 },
     scrollDelay: 500,
     timeout: 30000
@@ -98,7 +98,7 @@ describe('Video Autopause Feature', () => {
         await page.evaluate(() => {
             window.scrollTo(0, document.body.scrollHeight);
         });
-        await page.waitForTimeout(TEST_CONFIG.scrollDelay);
+        await new Promise(r => setTimeout(r, TEST_CONFIG.scrollDelay));
 
         const visibleAfter = await firstVideo.evaluate(el => {
             const rect = el.getBoundingClientRect();
@@ -120,12 +120,12 @@ describe('Video Autopause Feature', () => {
         await page.evaluate(() => {
             window.scrollTo(0, document.body.scrollHeight);
         });
-        await page.waitForTimeout(500);
+        await new Promise(r => setTimeout(r, 500));
 
         await page.evaluate(() => {
             window.scrollTo(0, 0);
         });
-        await page.waitForTimeout(500);
+        await new Promise(r => setTimeout(r, 500));
 
         const currentSrc = await firstVideo.evaluate(el => el.src);
         expect(currentSrc).toBe(originalSrc);
