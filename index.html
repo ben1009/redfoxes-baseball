@@ -606,48 +606,50 @@
         // ============================================
         
         /**
-         * Initialize Intersection Observer to pause videos when scrolled out of view
-         * Bilibili player postMessage API: { action: 'pauseVideo' } or { action: 'pause' }
+         * Create a Bilibili iframe element with standard attributes
+         * @param {string} src - Video URL
+         * @returns {HTMLIFrameElement}
+         */
+        function createVideoIframe(src) {
+            const iframe = document.createElement('iframe');
+            iframe.src = src;
+            iframe.setAttribute('scrolling', 'no');
+            iframe.setAttribute('frameborder', '0');
+            iframe.setAttribute('allowfullscreen', '');
+            iframe.setAttribute('sandbox', 'allow-top-navigation allow-same-origin allow-forms allow-scripts');
+            return iframe;
+        }
+        
+        /**
+         * Initialize Intersection Observer to pause videos when scrolled out of view.
+         * 
+         * Since Bilibili iframe cannot be controlled via postMessage (CORS), we use
+         * a lazy-loading approach: remove the iframe when out of view and restore
+         * when back in view. This actually stops playback but resets video position.
          */
         function initVideoAutopause() {
-            const iframes = document.querySelectorAll('.video-container iframe');
-            const pausedIframes = new Set();
+            const videoContainers = document.querySelectorAll('.video-container');
             
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
-                    const iframe = entry.target;
+                    const container = entry.target;
+                    const iframe = container.querySelector('iframe');
                     
-                    if (!entry.isIntersecting && !pausedIframes.has(iframe)) {
-                        // Video is out of viewport - send pause command to Bilibili player
-                        // Try multiple message formats for compatibility
-                        try {
-                            // Format 1: Bilibili player standard
-                            iframe.contentWindow?.postMessage(
-                                JSON.stringify({ action: 'pauseVideo' }),
-                                '*'
-                            );
-                            // Format 2: Alternative format
-                            iframe.contentWindow?.postMessage(
-                                JSON.stringify({ cmd: 'pause' }),
-                                '*'
-                            );
-                            // Format 3: Direct function call
-                            iframe.contentWindow?.postMessage('pause', '*');
-                        } catch (e) {
-                            // Ignore cross-origin errors
-                        }
-                        pausedIframes.add(iframe);
-                    } else if (entry.isIntersecting) {
-                        // Video is back in viewport - user can click to resume
-                        pausedIframes.delete(iframe);
+                    if (!entry.isIntersecting && iframe) {
+                        // Video out of view - store src and remove iframe
+                        container.dataset.src = iframe.src;
+                        iframe.remove();
+                    } else if (entry.isIntersecting && !iframe && container.dataset.src) {
+                        // Video back in view - restore iframe
+                        container.appendChild(createVideoIframe(container.dataset.src));
                     }
                 });
             }, {
-                threshold: 0.05,   // Trigger when less than 5% visible
-                rootMargin: '-20px' // Small buffer
+                threshold: 0.1,
+                rootMargin: '50px' // Load slightly before visible
             });
             
-            iframes.forEach(iframe => observer.observe(iframe));
+            videoContainers.forEach(container => observer.observe(container));
         }
         
         // Initialize video autopause after page loads

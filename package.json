@@ -1,0 +1,32 @@
+{
+  "name": "redfoxes-baseball",
+  "version": "1.0.0",
+  "description": "Red Foxes vs Feixue Baseball Match Review - Youth baseball tactical analysis",
+  "main": "index.html",
+  "scripts": {
+    "test": "jest --passWithNoTests",
+    "test:video": "jest test/video-autopause.test.js --verbose",
+    "test:standalone": "node test/test-autopause.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ben1009/redfoxes-baseball.git"
+  },
+  "keywords": [
+    "baseball",
+    "youth-sports",
+    "tactical-analysis",
+    "bilibili",
+    "github-pages"
+  ],
+  "author": "ben1009",
+  "license": "CC-BY-NC-SA-4.0",
+  "bugs": {
+    "url": "https://github.com/ben1009/redfoxes-baseball/issues"
+  },
+  "homepage": "https://ben1009.github.io/redfoxes-baseball/",
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "puppeteer": "^21.6.1"
+  }
+}
