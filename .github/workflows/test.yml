@@ -22,24 +22,18 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20'
+        cache: 'npm'
         
     - name: Install dependencies
+      env:
+        PUPPETEER_SKIP_DOWNLOAD: 'true'
       run: npm install
       
-    - name: Install Chrome dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y libgbm-dev
-        
     - name: Run tests
       env:
         TEST_PASSWORD: ${{ secrets.TEST_PASSWORD || '1972' }}
-      run: npm test
-      
-    - name: Upload test results
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: test-results
-        path: test-results/
-        if-no-files-found: ignore
+        PUPPETEER_SKIP_DOWNLOAD: 'true'
+      run: |
+        # Use pre-installed Chromium in Ubuntu
+        export PUPPETEER_EXECUTABLE_PATH=$(which chromium-browser || which chromium || which google-chrome-stable || echo '')
+        npm test
