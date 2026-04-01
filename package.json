@@ -1,0 +1,22 @@
+{
+  "name": "redfoxes-baseball",
+  "version": "1.0.0",
+  "description": "[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/) [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-brightgreen)](https://ben1009.github.io/redfoxes-baseball/)",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "test:video": "jest test/video-autopause.test.js --verbose"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ben1009/redfoxes-baseball.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/ben1009/redfoxes-baseball/issues"
+  },
+  "homepage": "https://github.com/ben1009/redfoxes-baseball#readme"
+}
