@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>猛虎杯 U10投手投打组 竞赛章程 | 烈光少棒赤狐队</title>
+    <style>
+        /* ============================================
+           CSS Variables & Reset
+           ============================================ */
+        :root {
+            --color-primary: #8b4513;
+            --color-primary-light: #a0522d;
+            --color-accent: #c41e3a;
+            --color-bg-dark: #1e3c2f;
+            --color-bg-medium: #2d5a3d;
+            --color-paper: #f5f1e8;
+            --color-paper-light: #fff8e1;
+            --color-paper-accent: #ffecb3;
+            --color-text: #3e2723;
+            --color-text-secondary: #5d3a1a;
+            --color-warning-bg: #ffebee;
+            --color-info-bg: #e3f2fd;
+            --color-info-border: #1976d2;
+            --color-team-badge: #ff6f00;
+            --shadow-large: 0 20px 60px rgba(0,0,0,0.4);
+            --shadow-medium: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-small: 0 2px 8px rgba(0,0,0,0.1);
+            --shadow-image: 0 4px 12px rgba(0,0,0,0.15);
+            --border-radius-large: 12px;
+            --border-radius-medium: 8px;
+            --border-radius-small: 20px;
+        }
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* ============================================
+           Base Styles
+           ============================================ */
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, var(--color-bg-dark) 0%, var(--color-bg-medium) 50%, var(--color-bg-dark) 100%);
+            background-attachment: fixed;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(255,255,255,0.03) 2px,
+                rgba(255,255,255,0.03) 4px
+            );
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* ============================================
+           Layout Container
+           ============================================ */
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: var(--color-paper);
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-large), inset 0 0 100px rgba(139, 69, 19, 0.1);
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            bottom: 15px;
+            border: 3px dashed var(--color-accent);
+            border-radius: var(--border-radius-medium);
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        /* ============================================
+           Header
+           ============================================ */
+        header {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 50%, var(--color-primary) 100%);
+            color: #fff;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            border-bottom: 4px solid var(--color-accent);
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 20px;
+            background: var(--color-accent);
+            border-radius: 50%;
+            opacity: 0.3;
+        }
+
+        h1 {
+            font-size: 2.2em;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.3em;
+            color: var(--color-paper);
+            font-weight: 500;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .badge-container {
+            margin-top: 15px;
+        }
+
+        .tournament-badge {
+            display: inline-block;
+            background: var(--color-accent);
+            color: white;
+            padding: 8px 20px;
+            border-radius: var(--border-radius-small);
+            font-size: 0.9em;
+            font-weight: bold;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .team-badge {
+            display: inline-block;
+            background: var(--color-team-badge);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            margin-left: 10px;
+            font-weight: bold;
+        }
+
+        /* ============================================
+           Main Content
+           ============================================ */
+        .content {
+            padding: 40px 50px;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%239C92AC' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+
+        section {
+            margin-bottom: 35px;
+            page-break-inside: avoid;
+        }
+
+        /* ============================================
+           Typography
+           ============================================ */
+        h2 {
+            color: var(--color-primary);
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--color-accent);
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+        }
+
+        h2::before {
+            content: '◆';
+            color: var(--color-accent);
+            margin-right: 10px;
+            font-size: 0.8em;
+        }
+
+        h3 {
+            color: var(--color-text-secondary);
+            font-size: 1.2em;
+            margin: 20px 0 12px 0;
+            font-weight: 600;
+        }
+
+        p, li {
+            line-height: 1.8;
+            color: var(--color-text);
+            font-size: 1.05em;
+            margin-bottom: 10px;
+        }
+
+        ul, ol {
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            position: relative;
+        }
+
+        li::marker {
+            color: var(--color-accent);
+        }
+
+        /* ============================================
+           Components - Highlight Box
+           ============================================ */
+        .highlight-box {
+            background: linear-gradient(135deg, var(--color-paper-light) 0%, var(--color-paper-accent) 100%);
+            border-left: 5px solid var(--color-accent);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--border-radius-medium) var(--border-radius-medium) 0;
+            box-shadow: var(--shadow-small);
+        }
+
+        .highlight-box strong {
+            color: var(--color-accent);
+            font-size: 1.1em;
+        }
+
+        .highlight-box ul {
+            margin-top: 10px;
+            margin-bottom: 0;
+        }
+
+        /* ============================================
+           Components - Warning Box
+           ============================================ */
+        .warning-box {
+            background: var(--color-warning-bg);
+            border: 2px solid var(--color-accent);
+            border-radius: var(--border-radius-medium);
+            padding: 20px;
+            margin: 20px 0;
+            color: var(--color-accent);
+            font-weight: 500;
+        }
+
+        .warning-box::before {
+            content: '⚠️ ';
+            font-size: 1.2em;
+        }
+
+        /* ============================================
+           Components - Info Box
+           ============================================ */
+        .info-box {
+            background: var(--color-info-bg);
+            border-left: 5px solid var(--color-info-border);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--border-radius-medium) var(--border-radius-medium) 0;
+        }
+
+        /* ============================================
+           Components - Image Container
+           ============================================ */
+        .image-container {
+            background: white;
+            border: 3px solid var(--color-primary);
+            border-radius: var(--border-radius-large);
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: var(--shadow-image);
+            text-align: center;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--border-radius-medium);
+            display: block;
+            margin: 0 auto;
+        }
+
+        .image-caption {
+            margin-top: 15px;
+            color: var(--color-text-secondary);
+            font-size: 0.95em;
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        /* ============================================
+           Components - Tables
+           ============================================ */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: var(--border-radius-medium);
+            overflow: hidden;
+            box-shadow: var(--shadow-small);
+        }
+
+        th {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+            color: white;
+            padding: 14px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.05em;
+        }
+
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #e0e0e0;
+            color: var(--color-text);
+        }
+
+        tr:nth-child(even) {
+            background: #faf7f2;
+        }
+
+        tr:hover {
+            background: var(--color-paper);
+        }
+
+        /* ============================================
+           Components - Metric Cards
+           ============================================ */
+        .key-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .metric-card {
+            background: white;
+            border: 2px solid var(--color-accent);
+            border-radius: var(--border-radius-medium);
+            padding: 20px;
+            text-align: center;
+            box-shadow: var(--shadow-medium);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .metric-value {
+            font-size: 2em;
+            color: var(--color-accent);
+            font-weight: 700;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            color: var(--color-text-secondary);
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+
+        /* ============================================
+           Footer
+           ============================================ */
+        .contact-footer {
+            background: var(--color-text);
+            color: var(--color-paper);
+            padding: 30px;
+            text-align: center;
+            margin-top: 40px;
+            border-radius: 0 0 var(--border-radius-large) var(--border-radius-large);
+        }
+
+        .contact-footer p {
+            color: var(--color-paper);
+            margin: 5px 0;
+        }
+
+        /* ============================================
+           Responsive Design
+           ============================================ */
+        @media (max-width: 768px) {
+            .container {
+                margin: 20px 10px;
+            }
+
+            .content {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 1.6em;
+            }
+
+            .key-metrics {
+                grid-template-columns: 1fr;
+            }
+
+            .image-container {
+                padding: 10px;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+
+            .team-badge {
+                margin-left: 0;
+                margin-top: 10px;
+            }
+        }
+
+        /* ============================================
+           Print Styles
+           ============================================ */
+        @media print {
+            body {
+                background: white;
+            }
+
+            .container {
+                box-shadow: none;
+                margin: 0;
+            }
+
+            .container::before {
+                display: none;
+            }
+
+            .image-container {
+                break-inside: avoid;
+            }
+        }
+    </style>
+    <base target="_blank">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>北京市第八届"猛虎杯"春季棒球比赛</h1>
+            <div class="subtitle">男子U10组（投手投打组）竞赛章程</div>
+            <div class="badge-container">
+                <span class="tournament-badge">2026年3月14日-5月17日</span>
+                <span class="team-badge">🏆 烈光少棒（赤狐队）</span>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="content">
+            <!-- 烈光少棒赤狐队赛程图片 -->
+            <section>
+                <h2>烈光少棒（赤狐队）U10俱乐部组完整赛程</h2>
+                <div class="image-container">
+                    <img src="img/schedule.png" alt="烈光少棒赤狐队U10俱乐部组完整赛程表">
+                    <div class="image-caption">📅 小组赛：4月5-6日 | 决赛：4月12日（基于小组排名）</div>
+                </div>
+                <div class="info-box">
+                    <strong>💡 温馨提示：</strong>4月12日的具体场地和对阵将取决于小组赛最终排名，请密切关注群通知！
+                </div>
+            </section>
+
+            <!-- 场地地图图片 -->
+            <section>
+                <h2>芦城体校棒垒球场场地指引</h2>
+                <div class="image-container">
+                    <img src="img/venue_map.jpg" alt="芦城体校棒垒球场场地地图">
+                    <div class="image-caption">🗺️ 场地布局：1号/2号垒球场、1号/2号棒球场、停车位、厕所、餐车位置一览</div>
+                </div>
+                <div class="highlight-box">
+                    <strong>🚗 交通提示：</strong>北1门靠近2号垒球场，北门为主入口（靠近停车位）。建议提前30分钟到达，预留停车和热身时间。
+                </div>
+            </section>
+
+            <!-- 比赛基本信息 -->
+            <section>
+                <h2>比赛基本信息</h2>
+                <ul>
+                    <li><strong>主办单位：</strong>北京市棒球运动协会</li>
+                    <li><strong>支持单位：</strong>北京市芦城体育运动技术学校</li>
+                    <li><strong>承办单位：</strong>北京市通州区私立树人学校、北京融奥棒球俱乐部有限公司</li>
+                    <li><strong>协办单位：</strong>北京市通州区棒垒球运动协会、北京胜利九人体育科技有限公司、同启新星(北京)体育文化发展有限公司、金熊奥森体育文化有限公司、融合集团四季山棒垒球培训基地</li>
+                    <li><strong>竞赛时间：</strong>2026年3月14日-5月17日（每周周六、周日）</li>
+                    <li><strong>比赛地点：</strong>北京市芦城体校棒垒球场、北京市通州区私立树人学校棒球场</li>
+                </ul>
+            </section>
+
+            <!-- 参赛资格 -->
+            <section>
+                <h2>参赛资格与报名</h2>
+                <div class="highlight-box">
+                    <strong>出生日期要求：</strong>2015年9月1日当天及以后出生
+                </div>
+
+                <h3>基本条件</h3>
+                <ul>
+                    <li>具有北京市正式学籍的在校学生</li>
+                    <li>经医务部门检查证明身体健康</li>
+                    <li>各参赛单位须为所有运动员、教练员上意外伤害保险</li>
+                    <li>报名时查验运动员二代身份证和学生CMS卡（领队或教练员必须到场，不得代报）</li>
+                    <li>每队可报领队1名，教练员2名，运动员10-18名（至少10名，至多18名，特殊情况请向组委会提出申请）</li>
+                </ul>
+
+                <div class="warning-box">
+                    虚报年龄处罚：如违反年龄规定，组委会发现或被对手举报，则该队本场判负（按弃权比分处理）。第一次予以该队教练员<strong>警告</strong>，如第二次被发现，则<strong>取消该队本次比赛所有场次</strong>并通报批评。
+                </div>
+
+                <h3>多组别参赛规则</h3>
+                <div class="highlight-box">
+                    允许同一个俱乐部或学校报名多个组别的比赛，每名队员在不违反年龄规定下，可参加多组别比赛。
+                </div>
+
+                <h3>参赛门槛</h3>
+                <p>每个组别报名达到<strong>4队（含）以上</strong>方可进行比赛。</p>
+            </section>
+
+            <!-- 赛季人员管理 -->
+            <section>
+                <h2>赛季人员管理规定</h2>
+                <div class="warning-box">
+                    所有参与比赛的球员，赛季内不得更换、递补新球员！<br>
+                    若因特殊原因需要变更球员名单，须在比赛前48小时以书面方式告知组委会及仲裁组，经核实球员身份后方可参赛。
+                </div>
+            </section>
+
+            <!-- 赛前准备 -->
+            <section>
+                <h2>赛前准备与流程</h2>
+                <div class="highlight-box">
+                    <strong>比赛前30分钟</strong>须提交上场队员名单，未列入名单的替补队员<strong>不得参加</strong>本场比赛。
+                </div>
+
+                <h3>身份核查</h3>
+                <ul>
+                    <li>比赛前由组委会成员和该场执法裁判员进行运动员身份核对</li>
+                    <li>各队教练员、领队比赛时须随时携带相关身份证明备查</li>
+                    <li>场上裁判员判罚是最终的判罚，任何人不得改变</li>
+                    <li>判罚一旦作出，运动员、教练员必须服从；如不服从造成影响比赛正常进行，参照国家体育总局竞赛管理条例处罚</li>
+                </ul>
+
+                <h3>特殊情况处理</h3>
+                <ul>
+                    <li>如遇天气或其它特殊情况，组委会有权对比赛时间和办法作出决定</li>
+                </ul>
+
+                <div class="warning-box">
+                    身份申诉时效：仅限<strong>半场比赛开始直至结束前</strong>可举报身份问题，赛后再有质疑视为无效！
+                </div>
+            </section>
+
+            <!-- 竞赛规则 -->
+            <section>
+                <h2>竞赛规则基础</h2>
+                <p>采用<strong>国家体育总局审定的2018版《棒球竞赛规则》</strong></p>
+            </section>
+
+            <!-- 比赛时间 -->
+            <section>
+                <h2>比赛时间与赛制</h2>
+                <div class="key-metrics">
+                    <div class="metric-card">
+                        <span class="metric-value">60分钟</span>
+                        <span class="metric-label">比赛限时</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-value">5局</span>
+                        <span class="metric-label">满局数</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-value">3局</span>
+                        <span class="metric-label">投手限投局数</span>
+                    </div>
+                </div>
+
+                <h3>赛制说明</h3>
+                <ul>
+                    <li><strong>小组赛：</strong>接受平局</li>
+                    <li><strong>决赛阶段：</strong>无平局，若<strong>5局</strong>比赛结束后仍未分出胜负则进行延长局</li>
+                    <li><strong>延长局设置：</strong>延长局开始时，在一、二垒放置跑垒员（按上场名单顺序，当局首棒打者前2名棒次球员）；延长局每局守方教练员可暂停一次</li>
+                </ul>
+            </section>
+
+            <!-- 提前结束 -->
+            <section>
+                <h2>提前结束比赛条件</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>局数/情况</th>
+                            <th>分差要求</th>
+                            <th>时间条件</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>打完3局后</td>
+                            <td>相差<strong style="color:var(--color-accent)">15分</strong>以上</td>
+                            <td>即可结束比赛</td>
+                        </tr>
+                        <tr>
+                            <td>打完4局后</td>
+                            <td>相差<strong style="color:var(--color-accent)">10分</strong>以上</td>
+                            <td>即可结束比赛</td>
+                        </tr>
+                        <tr>
+                            <td>同等局数</td>
+                            <td>任意分差</td>
+                            <td>距离比赛结束<strong>5分钟</strong>可提前结束</td>
+                        </tr>
+                        <tr>
+                            <td>后攻队领先</td>
+                            <td>任意分差</td>
+                            <td>距离比赛结束<strong>7分钟</strong>可提前结束</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- 攻防交换 -->
+            <section>
+                <h2>攻防交换规则</h2>
+                <div class="highlight-box">
+                    <strong>交换条件（满足任一）：</strong>
+                    <ul>
+                        <li>进攻方单局得到 <strong>6分</strong></li>
+                        <li>进攻方累计 <strong>3人出局</strong></li>
+                    </ul>
+                </div>
+                <p>每队攻守一次为一局</p>
+            </section>
+
+            <!-- 投手限制 -->
+            <section>
+                <h2>投手限制（严格规定）</h2>
+                <div class="warning-box">
+                    超局投球违规将导致该场比赛 0:20 告负！
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>限制项目</th>
+                            <th>具体规定</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>局数限制</td>
+                            <td>每名投手每场比赛限投 <strong>3局</strong>（蹬板即为1局）</td>
+                        </tr>
+                        <tr>
+                            <td>延长赛</td>
+                            <td>延长赛中仍限投3局</td>
+                        </tr>
+                        <tr>
+                            <td>更换计算</td>
+                            <td>同一局中更换投手，每名投手各记1局</td>
+                        </tr>
+                        <tr>
+                            <td>变化球</td>
+                            <td><strong>不允许投变化球</strong>，由当场司球裁判裁定</td>
+                        </tr>
+                        <tr>
+                            <td>违规处罚</td>
+                            <td>超局一经发现必须更换投手，局面有效；如教练员拒绝更换，判该队该场比赛 <strong>0:20告负</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- 场地规格 -->
+            <section>
+                <h2>场地规格</h2>
+                <div class="key-metrics">
+                    <div class="metric-card">
+                        <span class="metric-value">21米</span>
+                        <span class="metric-label">垒间距离</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-value">14米</span>
+                        <span class="metric-label">投手距离</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-value">60米</span>
+                        <span class="metric-label">本垒打线</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 教练员指导规则 -->
+            <section>
+                <h2>教练员进场指导规则</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>项目</th>
+                            <th>规定</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>指定打击(DH)</td>
+                            <td><strong>不设指定打击</strong>，场上所有选手必须上场轮击</td>
+                        </tr>
+                        <tr>
+                            <td>暂停次数</td>
+                            <td>守方每场比赛可暂停 <strong>两次</strong>（延长局每局可暂停一次）</td>
+                        </tr>
+                        <tr>
+                            <td>指导范围</td>
+                            <td>暂停只能向<strong>投手、捕手和一名内野防守队员</strong>进行指导，其它队员不得在场</td>
+                        </tr>
+                        <tr>
+                            <td>外场手限制</td>
+                            <td>外场手不得进入内野</td>
+                        </tr>
+                        <tr>
+                            <td>暂停限制</td>
+                            <td>暂停两次后本场比赛（延长局除外）不得再提暂停</td>
+                        </tr>
+                        <tr>
+                            <td>攻方暂停</td>
+                            <td><strong>攻方不可以请求暂停</strong></td>
+                        </tr>
+                        <tr>
+                            <td>更换投手</td>
+                            <td>更换投手<strong>不作为暂停</strong></td>
+                        </tr>
+                        <tr>
+                            <td>击球员准备区</td>
+                            <td>只允许下一棒击球员1人在打击准备圈等待</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- 安全与行为 -->
+            <section>
+                <h2>安全与行为规范</h2>
+                <ul>
+                    <li><strong>甩棒规定：</strong>挥棒后需平稳放棒，第一次警告，第二次判击球员<strong>出局</strong></li>
+                    <li><strong>本垒冲撞：</strong>为避免冲撞，<strong>捕手不允许封垒</strong></li>
+                    <li><strong>捕手护具：</strong>捕手比赛时<strong>必须穿戴护具</strong>（需自带）</li>
+                    <li><strong>跑垒规则：</strong>允许偷垒（盗垒）</li>
+                </ul>
+            </section>
+
+            <!-- 服装与器材 -->
+            <section>
+                <h2>服装与器材</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>项目</th>
+                            <th>要求</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>比赛服装</td>
+                            <td>两套不同颜色、号码清晰（16CM高），<strong>报名单注明颜色和号码</strong></td>
+                        </tr>
+                        <tr>
+                            <td>指导区服装</td>
+                            <td>指导区的教练员或本队队员<strong>必须与同队服装一致</strong>，否则不能进入指导区</td>
+                        </tr>
+                        <tr>
+                            <td>鞋钉</td>
+                            <td><strong>不得穿金属钉鞋</strong>，可穿胶钉鞋</td>
+                        </tr>
+                        <tr>
+                            <td>头盔</td>
+                            <td>击球员和跑垒员<strong>必须戴</strong>本队统一头盔</td>
+                        </tr>
+                        <tr>
+                            <td>禁止物品</td>
+                            <td>服装上<strong>不允许缝系闪亮物和金属纽扣</strong>，<strong>不得戴首饰</strong></td>
+                        </tr>
+                        <tr>
+                            <td>球棒</td>
+                            <td>使用<strong>金属棒</strong>，需<strong>自带</strong></td>
+                        </tr>
+                        <tr>
+                            <td>比赛用球</td>
+                            <td><strong>软式棒球</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- 申诉规则 -->
+            <section>
+                <h2>申诉规则</h2>
+                <ul>
+                    <li><strong>申诉时机：</strong>局面发生后、新局面出现前可进行申诉，申诉结果由<strong>主裁判决</strong></li>
+                    <li><strong>不可申诉：</strong>好坏球判罚</li>
+                    <li><strong>申诉主体：</strong>仅球队<strong>主教练</strong>可与裁判交流，家长无权申诉</li>
+                    <li><strong>申诉程序：</strong>赛后2小时内提交申诉书，领队签字并缴纳<strong style="color:var(--color-accent)">现金人民币3000元</strong>申诉金</li>
+                    <li><strong>结果处理：</strong>胜诉退回，驳回上缴北京棒球运动协会棒球专项基金</li>
+                </ul>
+            </section>
+
+            <!-- 积分与名次 -->
+            <section>
+                <h2>积分与名次</h2>
+                <h3>积分规则</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>结果</th>
+                            <th>积分</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>胜一场</td>
+                            <td><strong>2分</strong></td>
+                        </tr>
+                        <tr>
+                            <td>平一场</td>
+                            <td><strong>1分</strong></td>
+                        </tr>
+                        <tr>
+                            <td>负一场</td>
+                            <td><strong>0分</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>积分相等时排名依据</h3>
+                <ol>
+                    <li>相互间胜负关系（胜者列前）</li>
+                    <li>每阶段所有比赛失分多少（失分少者列前）</li>
+                    <li>每阶段所有比赛得分多少（得分多者列前）</li>
+                    <li>抽签决定名次</li>
+                </ol>
+            </section>
+
+            <!-- 录取名次 -->
+            <section>
+                <h2>录取名次与奖励</h2>
+                <ul>
+                    <li><strong>录取名次：</strong>根据各个组别参赛队数量决定录取名次</li>
+                    <li><strong>最佳教练员奖：</strong>1名（冠军组冠军主教练）</li>
+                    <li><strong>优秀运动员奖：</strong>2名（每支参赛队）</li>
+                </ul>
+            </section>
+
+            <!-- 重要提示 -->
+            <section>
+                <h2>重要提示</h2>
+                <div class="warning-box">
+                    比赛中不得中途弃权，弃权学校将取消下一届参赛资格！
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="contact-footer">
+            <p><strong>北京市棒球运动协会</strong></p>
+            <p>赛事联系人：张建旺 13911062035</p>
+            <p>规程解释权：北京市棒球运动协会 | 2026年2月26日</p>
+        </footer>
+    </div>
+</body>
+</html>
