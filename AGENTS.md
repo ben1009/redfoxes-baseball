@@ -1,13 +1,18 @@
 # AGENTS.md - Red Foxes Baseball Match Review
 
 > This file provides essential context for AI coding agents working on this project.
-> Last updated: 2026-03-30
+> Last updated: 2026-04-02
 
 ---
 
 ## Project Overview
 
 This is a **static website** for reviewing a youth baseball friendship match between Red Foxes (烈光) and Feixue (飞雪) teams. The website presents seven tactical video clips with detailed analysis, rule explanations, and coaching suggestions.
+
+Additionally includes a **U10 Tournament Rules page** (`u10_rules.html`) with:
+- Complete tournament regulations for the 猛虎杯 U10 baseball competition
+- Team schedule and venue information
+- Interactive navigation and image lightbox functionality
 
 - **Live Site**: https://ben1009.github.io/redfoxes-baseball/
 - **Language**: Chinese (Simplified)
@@ -22,7 +27,7 @@ This is a **static website** for reviewing a youth baseball friendship match bet
 |-----------|------------|
 | Markup | HTML5 |
 | Styling | CSS3 (embedded, no preprocessor) |
-| Scripting | Vanilla JavaScript (ES6+, embedded) |
+| Scripting | Vanilla JavaScript (ES6+, embedded or external) |
 | Fonts | Google Fonts (Noto Serif SC) |
 | Video Hosting | Bilibili iframe embedding |
 | Analytics | Google Analytics 4 (G-QJ6EXQH8SW) |
@@ -40,20 +45,22 @@ This is a **static website** for reviewing a youth baseball friendship match bet
 
 ```
 redfoxes-baseball/
-├── index.html          # Single-file application (HTML + CSS + JS)
+├── index.html          # Main page: Single-file application (HTML + CSS + JS)
+├── u10_rules.html      # U10 tournament rules page (HTML + CSS)
+├── u10_rules.js        # U10 page JavaScript (image modal functionality)
 ├── README.md           # Project documentation (Chinese)
 ├── LICENSE             # CC BY-NC-SA 4.0 full text
 ├── AGENTS.md           # This file
-└── img/                # Static image assets (16 PNG files)
-    ├── 01_本垒打_主图.png
-    ├── 02_盗垒成功_主图.png
-    ├── ... (16 total decorative images)
-    └── 16_称霸全国_主图.png
+└── img/                # Static image assets
+    ├── 01_本垒打_主图.png ... 16_称霸全国_主图.png  (decorative images for main page)
+    ├── schedule.png    # U10 tournament schedule
+    └── venue_map.jpg   # Venue map
 ```
 
 ### File Organization Notes
 
-- **Single-file architecture**: All HTML, CSS, and JavaScript are contained in `index.html`
+- **index.html**: Single-file architecture (HTML + CSS + JS all embedded)
+- **u10_rules.html**: External CSS in `<style>`, external JS via `u10_rules.js`
 - No build process or bundling required
 - No package managers (npm, pip, cargo, etc.)
 - No framework dependencies
@@ -63,6 +70,8 @@ redfoxes-baseball/
 ## Code Organization
 
 ### HTML Structure (`index.html`)
+
+Single-file architecture with embedded CSS and JavaScript.
 
 ```html
 <!DOCTYPE html>
@@ -90,16 +99,17 @@ Uses **CSS custom properties (variables)** for theming:
     --color-primary: #8B4513;    /* Saddle brown - baseball theme */
     --color-accent: #DC143C;      /* Crimson red - accent */
     --color-bg-dark: #2d5a27;     /* Dark green - field */
-    --color-bg-darker: #1a3d17;   /* Darker green */
-    --color-text: #555;
-    --color-text-light: #fafafa;
+    --color-bg-medium: #2d5a3d;   /* Medium green */
+    --color-paper: #f5f1e8;       /* Paper background */
+    --color-text: #3e2723;        /* Dark brown text */
+    --color-text-secondary: #5d3a1a;
     --font-serif: 'Noto Serif SC', serif;
     --font-mono: 'Courier New', monospace;
     --font-sans: -apple-system, ...;
 }
 ```
 
-### Key CSS Classes
+### Key CSS Classes (index.html)
 
 | Class | Purpose |
 |-------|---------|
@@ -110,7 +120,52 @@ Uses **CSS custom properties (variables)** for theming:
 | `.mistake-point` | Red-left-border mistake analysis |
 | `.rule-highlight` | Blue-left-border rule explanation |
 
-### JavaScript Components
+### Key CSS Classes (u10_rules.html)
+
+| Class | Purpose |
+|-------|---------|
+| `.page-nav` | Sticky navigation bar |
+| `.nav-link` | Navigation link with emoji |
+| `.image-container` | Image wrapper with border and shadow |
+| `.image-modal` | Full-screen image lightbox overlay |
+| `.modal-content` | Enlarged image in modal |
+| `.highlight-box` | Yellow-left-border info box |
+| `.warning-box` | Red-left-border warning box |
+| `.info-box` | Blue-left-border info box |
+| `.metric-card` | Stats card (e.g., "60 minutes") |
+
+### HTML Structure (`u10_rules.html`)
+
+```html
+<!DOCTYPE html>
+├── <head>
+│   ├── Favicon (SVG data URI with 🦊 emoji, URL-encoded per RFC 3986)
+│   ├── Google Analytics 4 (gtag.js)
+│   └── <style> (CSS embedded with CSS variables)
+├── <body>
+│   ├── <nav class="page-nav"> (Sticky navigation with anchor links)
+│   ├── <div class="container">
+│   │   ├── <header> (Tournament title and team badge)
+│   │   ├── <main> (Tournament rules sections)
+│   │   │   └── 19× <section id="..."> (Rules categories)
+│   │   └── <footer> (Contact information)
+│   ├── <div id="imageModal"> (Image lightbox modal)
+│   └── <script src="u10_rules.js" defer>
+```
+
+### JavaScript Components (`u10_rules.js`)
+
+```javascript
+// Image Modal/Lightbox functionality
+- Modal open/close with click, backdrop, and Escape key
+- Caption display from sibling .image-caption element
+
+// Navigation smooth scroll
+- CSS scroll-behavior: smooth
+- scroll-margin-top for anchor offset compensation
+```
+
+### JavaScript Components (`index.html`)
 
 ```javascript
 // Password verification (SHA-256)
@@ -243,9 +298,22 @@ sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"
 
 Before committing changes:
 
+### index.html
 - [ ] Password overlay displays correctly
 - [ ] Password "1972" unlocks content
 - [ ] All 7 video iframes load without errors
+- [ ] Video autopause feature works when scrolling
+
+### u10_rules.html
+- [ ] Sticky navigation displays and sticks on scroll
+- [ ] Navigation links scroll smoothly to sections
+- [ ] Images (schedule.png, venue_map.jpg) display correctly
+- [ ] Image click opens lightbox/modal
+- [ ] Modal closes with X button, backdrop click, and Escape key
+- [ ] Print styles hide navigation
+- [ ] Responsive navigation works on mobile
+
+### General
 - [ ] Responsive layout works on mobile (320px+)
 - [ ] Images in `img/` folder load correctly
 - [ ] No console errors

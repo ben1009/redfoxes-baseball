@@ -9,6 +9,8 @@
 
 This is a baseball friendship match review webpage featuring seven tactical clips from the game between Red Foxes Youth Baseball Team and Feixue Team. Each clip includes detailed tactical analysis, rule explanations, and improvement suggestions.
 
+Also includes a **U10 Tournament Rules page** ([`u10_rules.html`](./u10_rules.html)) with complete regulations for the 猛虎杯 (Tiger Cup) U10 baseball competition, featuring interactive navigation and image lightbox functionality.
+
 ## 🔗 Live Demo
 
 **https://ben1009.github.io/redfoxes-baseball/**
@@ -18,13 +20,18 @@ This is a baseball friendship match review webpage featuring seven tactical clip
 ```
 redfoxes-baseball/
 ├── index.html      # Main page (password protection, video embedding, tactical analysis)
-├── img/            # Static image assets (16 PNG files for decorative icons)
+├── u10_rules.html  # U10 tournament rules page (schedule, venue map, regulations)
+├── u10_rules.js    # JavaScript for U10 page (image modal functionality)
+├── img/            # Static image assets
+│   ├── *.png       # Decorative icons for main page (16 files)
+│   ├── schedule.png    # U10 tournament schedule
+│   └── venue_map.jpg   # Venue map
 ├── README.md       # Project documentation
 ├── AGENTS.md       # Developer guide for AI coding agents
 └── LICENSE         # CC BY-NC-SA 4.0 License
 ```
 
-## 🎥 Tactical Clips Content
+## 🎥 Tactical Clips Content (index.html)
 
 1. **Clip 1** - Dropped Third Strike Rule Analysis
 2. **Clip 2** - Base Running Training: The Art of Running All Out
@@ -33,6 +40,18 @@ redfoxes-baseball/
 5. **Clip 5** - Throwing and Catching Errors Analysis
 6. **Clip 6** - Experience Issues: Missing Scoring Opportunities
 7. **Clip 7** - Pitcher Details: Watch the Situation When Returning to Mound
+
+## 📅 U10 Tournament Rules (u10_rules.html)
+
+Complete regulations for the 猛虎杯 (Tiger Cup) U10 Baseball Competition:
+
+- **Team**: 烈光少棒（赤狐队）/ Red Foxes (Red Fox Team)
+- **Features**:
+  - 📍 Sticky navigation with quick links to all sections
+  - 📅 Tournament schedule with image lightbox
+  - 🗺️ Venue map with facility locations
+  - 📋 Complete rules: eligibility, game format, pitcher limits, field specs
+  - 🖨️ Print-friendly styles
 
 ## 🔐 Access Instructions
 
