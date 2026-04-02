@@ -304,6 +304,12 @@
             border-radius: var(--border-radius-medium);
             display: block;
             margin: 0 auto;
+            cursor: zoom-in;
+            transition: transform 0.2s;
+        }
+
+        .image-container img:hover {
+            transform: scale(1.02);
         }
 
         .image-caption {
@@ -312,6 +318,74 @@
             font-size: 0.95em;
             font-weight: 500;
             font-style: italic;
+        }
+
+        /* ============================================
+           Image Modal/Lightbox
+           ============================================ */
+        .image-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            animation: fadeIn 0.3s;
+        }
+
+        .image-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: var(--border-radius-medium);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            animation: zoomIn 0.3s;
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.8); }
+            to { transform: scale(1); }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+            z-index: 1001;
+        }
+
+        .modal-close:hover,
+        .modal-close:focus {
+            color: #bbb;
+            text-decoration: none;
+        }
+
+        .modal-caption {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: #f1f1f1;
+            font-size: 1.1em;
+            padding: 10px;
         }
 
         /* ============================================
@@ -390,6 +464,58 @@
         }
 
         /* ============================================
+           Navigation
+           ============================================ */
+        .page-nav {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .nav-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .nav-link {
+            color: var(--color-paper);
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .nav-link:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-1px);
+        }
+
+        .nav-link:active {
+            transform: translateY(0);
+        }
+
+        /* Smooth scroll behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Offset for sticky nav when scrolling to anchor */
+        section[id] {
+            scroll-margin-top: 60px;
+        }
+
+        /* ============================================
            Footer
            ============================================ */
         .contact-footer {
@@ -412,6 +538,20 @@
         @media (max-width: 768px) {
             .container {
                 margin: 20px 10px;
+            }
+
+            .nav-container {
+                padding: 0 10px;
+                gap: 4px;
+            }
+
+            .nav-link {
+                padding: 4px 8px;
+                font-size: 0.8em;
+            }
+
+            section[id] {
+                scroll-margin-top: 50px;
             }
 
             .content {
@@ -464,6 +604,14 @@
             .image-container {
                 break-inside: avoid;
             }
+
+            .page-nav {
+                display: none;
+            }
+
+            section[id] {
+                scroll-margin-top: 0;
+            }
         }
     </style>
     <base target="_blank">
@@ -480,10 +628,26 @@
             </div>
         </header>
 
+        <!-- Navigation -->
+        <nav class="page-nav">
+            <div class="nav-container">
+                <a href="#schedule" class="nav-link" target="_self">📅 赛程</a>
+                <a href="#venue" class="nav-link" target="_self">🗺️ 场地</a>
+                <a href="#basic-info" class="nav-link" target="_self">📋 基本信息</a>
+                <a href="#eligibility" class="nav-link" target="_self">✅ 资格</a>
+                <a href="#game-format" class="nav-link" target="_self">⏱️ 赛制</a>
+                <a href="#pitcher-limits" class="nav-link" target="_self">⚾ 投手</a>
+                <a href="#field-specs" class="nav-link" target="_self">📐 场地</a>
+                <a href="#equipment" class="nav-link" target="_self">🧢 装备</a>
+                <a href="#scoring" class="nav-link" target="_self">🏆 积分</a>
+                <a href="#important" class="nav-link" target="_self">⚠️ 提示</a>
+            </div>
+        </nav>
+
         <!-- Main Content -->
         <main class="content">
             <!-- 烈光少棒赤狐队赛程图片 -->
-            <section>
+            <section id="schedule">
                 <h2>烈光少棒（赤狐队）U10俱乐部组完整赛程</h2>
                 <div class="image-container">
                     <img src="img/schedule.png" alt="烈光少棒赤狐队U10俱乐部组完整赛程表">
@@ -495,7 +659,7 @@
             </section>
 
             <!-- 场地地图图片 -->
-            <section>
+            <section id="venue">
                 <h2>芦城体校棒垒球场场地指引</h2>
                 <div class="image-container">
                     <img src="img/venue_map.jpg" alt="芦城体校棒垒球场场地地图">
@@ -507,7 +671,7 @@
             </section>
 
             <!-- 比赛基本信息 -->
-            <section>
+            <section id="basic-info">
                 <h2>比赛基本信息</h2>
                 <ul>
                     <li><strong>主办单位：</strong>北京市棒球运动协会</li>
@@ -520,7 +684,7 @@
             </section>
 
             <!-- 参赛资格 -->
-            <section>
+            <section id="eligibility">
                 <h2>参赛资格与报名</h2>
                 <div class="highlight-box">
                     <strong>出生日期要求：</strong>2015年9月1日当天及以后出生
@@ -549,7 +713,7 @@
             </section>
 
             <!-- 赛季人员管理 -->
-            <section>
+            <section id="personnel">
                 <h2>赛季人员管理规定</h2>
                 <div class="warning-box">
                     所有参与比赛的球员，赛季内不得更换、递补新球员！<br>
@@ -558,7 +722,7 @@
             </section>
 
             <!-- 赛前准备 -->
-            <section>
+            <section id="preparation">
                 <h2>赛前准备与流程</h2>
                 <div class="highlight-box">
                     <strong>比赛前30分钟</strong>须提交上场队员名单，未列入名单的替补队员<strong>不得参加</strong>本场比赛。
@@ -583,13 +747,13 @@
             </section>
 
             <!-- 竞赛规则 -->
-            <section>
+            <section id="rules-base">
                 <h2>竞赛规则基础</h2>
                 <p>采用<strong>国家体育总局审定的2018版《棒球竞赛规则》</strong></p>
             </section>
 
             <!-- 比赛时间 -->
-            <section>
+            <section id="game-format">
                 <h2>比赛时间与赛制</h2>
                 <div class="key-metrics">
                     <div class="metric-card">
@@ -615,7 +779,7 @@
             </section>
 
             <!-- 提前结束 -->
-            <section>
+            <section id="early-end">
                 <h2>提前结束比赛条件</h2>
                 <table>
                     <thead>
@@ -651,7 +815,7 @@
             </section>
 
             <!-- 攻防交换 -->
-            <section>
+            <section id="switch">
                 <h2>攻防交换规则</h2>
                 <div class="highlight-box">
                     <strong>交换条件（满足任一）：</strong>
@@ -664,7 +828,7 @@
             </section>
 
             <!-- 投手限制 -->
-            <section>
+            <section id="pitcher-limits">
                 <h2>投手限制（严格规定）</h2>
                 <div class="warning-box">
                     超局投球违规将导致该场比赛 0:20 告负！
@@ -703,7 +867,7 @@
             </section>
 
             <!-- 场地规格 -->
-            <section>
+            <section id="field-specs">
                 <h2>场地规格</h2>
                 <div class="key-metrics">
                     <div class="metric-card">
@@ -722,7 +886,7 @@
             </section>
 
             <!-- 教练员指导规则 -->
-            <section>
+            <section id="coach-rules">
                 <h2>教练员进场指导规则</h2>
                 <table>
                     <thead>
@@ -769,7 +933,7 @@
             </section>
 
             <!-- 安全与行为 -->
-            <section>
+            <section id="safety">
                 <h2>安全与行为规范</h2>
                 <ul>
                     <li><strong>甩棒规定：</strong>挥棒后需平稳放棒，第一次警告，第二次判击球员<strong>出局</strong></li>
@@ -780,7 +944,7 @@
             </section>
 
             <!-- 服装与器材 -->
-            <section>
+            <section id="equipment">
                 <h2>服装与器材</h2>
                 <table>
                     <thead>
@@ -823,7 +987,7 @@
             </section>
 
             <!-- 申诉规则 -->
-            <section>
+            <section id="appeal">
                 <h2>申诉规则</h2>
                 <ul>
                     <li><strong>申诉时机：</strong>局面发生后、新局面出现前可进行申诉，申诉结果由<strong>主裁判决</strong></li>
@@ -835,7 +999,7 @@
             </section>
 
             <!-- 积分与名次 -->
-            <section>
+            <section id="scoring">
                 <h2>积分与名次</h2>
                 <h3>积分规则</h3>
                 <table>
@@ -871,7 +1035,7 @@
             </section>
 
             <!-- 录取名次 -->
-            <section>
+            <section id="awards">
                 <h2>录取名次与奖励</h2>
                 <ul>
                     <li><strong>录取名次：</strong>根据各个组别参赛队数量决定录取名次</li>
@@ -881,7 +1045,7 @@
             </section>
 
             <!-- 重要提示 -->
-            <section>
+            <section id="important">
                 <h2>重要提示</h2>
                 <div class="warning-box">
                     比赛中不得中途弃权，弃权学校将取消下一届参赛资格！
@@ -896,5 +1060,54 @@
             <p>规程解释权：北京市棒球运动协会 | 2026年2月26日</p>
         </footer>
     </div>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="image-modal">
+        <span class="modal-close">&times;</span>
+        <img class="modal-content" id="modalImage">
+        <div class="modal-caption" id="modalCaption"></div>
+    </div>
+
+    <script>
+        // Image Modal Functionality
+        (function() {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const modalCaption = document.getElementById('modalCaption');
+            const closeBtn = document.querySelector('.modal-close');
+
+            // Add click event to all images in image-container
+            document.querySelectorAll('.image-container img').forEach(img => {
+                img.addEventListener('click', function() {
+                    modal.classList.add('active');
+                    modalImg.src = this.src;
+                    modalImg.alt = this.alt;
+                    
+                    // Get caption from sibling element
+                    const caption = this.parentElement.querySelector('.image-caption');
+                    modalCaption.textContent = caption ? caption.textContent : this.alt;
+                });
+            });
+
+            // Close modal when clicking close button
+            closeBtn.addEventListener('click', function() {
+                modal.classList.remove('active');
+            });
+
+            // Close modal when clicking outside the image
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+
+            // Close modal with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modal.classList.contains('active')) {
+                    modal.classList.remove('active');
+                }
+            });
+        })();
+    </script>
 </body>
 </html>
