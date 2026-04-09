@@ -77,12 +77,13 @@ describe('Page Structure and Navigation Tests', () => {
             expect(mottoText).toContain('友谊第一');
         });
 
-        test('should have footer with GitHub Pages link', async () => {
+        test('should have footer with copyright', async () => {
             const footer = await page.$('.footer');
             expect(footer).not.toBeNull();
             
-            const githubLink = await page.$('a[href*="github.io"]');
-            expect(githubLink).not.toBeNull();
+            const footerText = await footer.evaluate(el => el.textContent);
+            expect(footerText).toContain('© 2026');
+            expect(footerText).toContain('烈光少棒赤狐队');
         });
     });
 
