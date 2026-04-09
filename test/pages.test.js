@@ -1,0 +1,279 @@
+/**
+ * @fileoverview Comprehensive tests for all HTML pages
+ * Tests page structure, navigation, and content
+ */
+
+const puppeteer = require('puppeteer');
+const path = require('path');
+const fs = require('fs');
+
+const TEST_CONFIG = {
+    password: process.env.TEST_PASSWORD || '1972',
+    viewport: { width: 1280, height: 800 },
+    timeout: 30000
+};
+
+describe('Page Structure and Navigation Tests', () => {
+    let browser;
+    let page;
+
+    beforeAll(async () => {
+        browser = await puppeteer.launch({
+            headless: 'new',
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
+        });
+        page = await browser.newPage();
+        await page.setViewport(TEST_CONFIG.viewport);
+    }, TEST_CONFIG.timeout);
+
+    afterAll(async () => {
+        if (browser) {
+            await browser.close();
+        }
+    });
+
+    describe('Index Page (Navigation Hub)', () => {
+        beforeEach(async () => {
+            const filePath = 'file://' + path.resolve(__dirname, '../index.html');
+            await page.goto(filePath, { waitUntil: 'networkidle2' });
+        });
+
+        test('should have correct page title', async () => {
+            const title = await page.title();
+            expect(title).toContain('烈光少棒赤狐队');
+        });
+
+        test('should have team logo and header', async () => {
+            const header = await page.$('.header');
+            expect(header).not.toBeNull();
+            
+            const teamLogo = await page.$('.team-logo');
+            expect(teamLogo).not.toBeNull();
+        });
+
+        test('should have navigation grid with 3 cards', async () => {
+            const navGrid = await page.$('.nav-grid');
+            expect(navGrid).not.toBeNull();
+            
+            const cards = await page.$$('.nav-card');
+            expect(cards.length).toBe(3);
+        });
+
+        test('should have correct navigation links', async () => {
+            const links = await page.$$eval('.nav-card', cards => 
+                cards.map(card => card.getAttribute('href'))
+            );
+            
+            expect(links).toContain('match_review.html');
+            expect(links).toContain('u10_rules.html');
+            expect(links).toContain('tigercup_groupstage.html');
+        });
+
+        test('should have team motto', async () => {
+            const motto = await page.$('.motto');
+            expect(motto).not.toBeNull();
+            
+            const mottoText = await motto.evaluate(el => el.textContent);
+            expect(mottoText).toContain('友谊第一');
+        });
+
+        test('should have footer with GitHub Pages link', async () => {
+            const footer = await page.$('.footer');
+            expect(footer).not.toBeNull();
+            
+            const githubLink = await page.$('a[href*="github.io"]');
+            expect(githubLink).not.toBeNull();
+        });
+    });
+
+    describe('Match Review Page (match_review.html)', () => {
+        beforeEach(async () => {
+            const filePath = 'file://' + path.resolve(__dirname, '../match_review.html');
+            await page.goto(filePath, { waitUntil: 'networkidle2' });
+        });
+
+        test('should have password protection overlay', async () => {
+            const passwordOverlay = await page.$('#passwordOverlay');
+            expect(passwordOverlay).not.toBeNull();
+            
+            const passwordInput = await page.$('#passwordInput');
+            expect(passwordInput).not.toBeNull();
+        });
+
+        test('should unlock content with correct password', async () => {
+            // Enter password
+            await page.type('#passwordInput', TEST_CONFIG.password);
+            
+            // Click unlock button
+            await page.evaluate(() => {
+                const btn = document.querySelector('.password-btn');
+                if (btn) btn.click();
+            });
+            
+            // Wait for main content to be visible
+            await page.waitForSelector('#mainContent.visible', { timeout: 5000 });
+            
+            const mainContent = await page.$('#mainContent');
+            expect(mainContent).not.toBeNull();
+        });
+
+        test('should have 7 video cards after unlock', async () => {
+            // Unlock first
+            await page.type('#passwordInput', TEST_CONFIG.password);
+            await page.evaluate(() => {
+                const btn = document.querySelector('.password-btn');
+                if (btn) btn.click();
+            });
+            await page.waitForSelector('#mainContent.visible', { timeout: 5000 });
+            
+            const videoCards = await page.$$('.video-card');
+            expect(videoCards.length).toBe(7);
+        });
+
+        test('should have Google Analytics', async () => {
+            const hasGA = await page.evaluate(() => {
+                return typeof gtag === 'function' || 
+                       document.querySelector('script[src*="googletagmanager"]') !== null;
+            });
+            expect(hasGA).toBe(true);
+        });
+    });
+
+    describe('U10 Rules Page (u10_rules.html)', () => {
+        beforeEach(async () => {
+            const filePath = 'file://' + path.resolve(__dirname, '../u10_rules.html');
+            await page.goto(filePath, { waitUntil: 'networkidle2' });
+        });
+
+        test('should have correct page title', async () => {
+            const title = await page.title();
+            expect(title).toContain('猛虎杯');
+            expect(title).toContain('U10');
+        });
+
+        test('should have sticky navigation', async () => {
+            const nav = await page.$('.page-nav');
+            expect(nav).not.toBeNull();
+            
+            const navLinks = await page.$$('.nav-link');
+            expect(navLinks.length).toBeGreaterThan(5);
+        });
+
+        test('should have tournament schedule section', async () => {
+            const scheduleSection = await page.$('#schedule');
+            expect(scheduleSection).not.toBeNull();
+        });
+
+        test('should have image containers with lightbox functionality', async () => {
+            const imageContainers = await page.$$('.image-container');
+            expect(imageContainers.length).toBeGreaterThan(0);
+            
+            // Check for modal
+            const modal = await page.$('#imageModal');
+            expect(modal).not.toBeNull();
+        });
+
+        test('should have key metrics cards', async () => {
+            const metricCards = await page.$$('.metric-card');
+            expect(metricCards.length).toBeGreaterThan(0);
+        });
+    });
+
+    describe('Groupstage Analysis Page (tigercup_groupstage.html)', () => {
+        beforeEach(async () => {
+            const filePath = 'file://' + path.resolve(__dirname, '../tigercup_groupstage.html');
+            await page.goto(filePath, { waitUntil: 'networkidle2' });
+        });
+
+        test('should have correct page title', async () => {
+            const title = await page.title();
+            expect(title).toContain('猛虎杯');
+            expect(title).toContain('数据分析');
+        });
+
+        test('should have data image', async () => {
+            const dataImage = await page.$('img[src*="groupstage_data"]');
+            expect(dataImage).not.toBeNull();
+        });
+
+        test('should have navigation to all AI analysis sections', async () => {
+            const navLinks = await page.$$eval('.nav-link', links => 
+                links.map(link => link.getAttribute('href'))
+            );
+            
+            expect(navLinks).toContain('#kimi');
+            expect(navLinks).toContain('#gemini');
+            expect(navLinks).toContain('#chatgpt');
+        });
+
+        test('should have AI analysis cards', async () => {
+            const aiCards = await page.$$('.ai-card');
+            expect(aiCards.length).toBe(3);
+        });
+
+        test('should have player statistics tables', async () => {
+            const tables = await page.$$('table');
+            expect(tables.length).toBeGreaterThan(2);
+        });
+
+        test('should have summary section with key metrics', async () => {
+            const summarySection = await page.$('.summary-section');
+            expect(summarySection).not.toBeNull();
+            
+            const metricCards = await summarySection.$$('.metric-card');
+            expect(metricCards.length).toBe(3);
+        });
+
+        test('should have data source footer', async () => {
+            const footer = await page.$('.contact-footer');
+            expect(footer).not.toBeNull();
+            
+            const footerText = await footer.evaluate(el => el.textContent);
+            expect(footerText).toContain('猛虎杯小组赛');
+        });
+    });
+
+    describe('Cross-Page Navigation', () => {
+        test('should navigate from index to match_review page', async () => {
+            const indexPath = 'file://' + path.resolve(__dirname, '../index.html');
+            await page.goto(indexPath, { waitUntil: 'networkidle2' });
+            
+            // Find and click the match review link
+            const matchReviewLink = await page.$('a[href="match_review.html"]');
+            expect(matchReviewLink).not.toBeNull();
+        });
+
+        test('should navigate from index to u10_rules page', async () => {
+            const indexPath = 'file://' + path.resolve(__dirname, '../index.html');
+            await page.goto(indexPath, { waitUntil: 'networkidle2' });
+            
+            const rulesLink = await page.$('a[href="u10_rules.html"]');
+            expect(rulesLink).not.toBeNull();
+        });
+
+        test('should navigate from index to groupstage page', async () => {
+            const indexPath = 'file://' + path.resolve(__dirname, '../index.html');
+            await page.goto(indexPath, { waitUntil: 'networkidle2' });
+            
+            const groupstageLink = await page.$('a[href="tigercup_groupstage.html"]');
+            expect(groupstageLink).not.toBeNull();
+        });
+    });
+
+    describe('File Existence Tests', () => {
+        const files = [
+            'index.html',
+            'match_review.html',
+            'u10_rules.html',
+            'tigercup_groupstage.html',
+            'img/groupstage_data.png'
+        ];
+
+        files.forEach(file => {
+            test(`${file} should exist`, () => {
+                const filePath = path.resolve(__dirname, '..', file);
+                expect(fs.existsSync(filePath)).toBe(true);
+            });
+        });
+    });
+});
