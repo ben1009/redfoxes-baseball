@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>烈光 vs 飞雪 友谊赛复盘 | 七个战术片段</title>
-    <base target="_blank">
+    <title>烈光少棒赤狐队 | 首页</title>
     
     <!-- Favicon: Red Fox Emoji -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%A6%8A%3C/text%3E%3C/svg%3E">
@@ -18,645 +17,323 @@
         gtag('config', 'G-QJ6EXQH8SW');
     </script>
     
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&display=swap" rel="stylesheet">
-    
     <style>
         /* ============================================
-           CSS Reset & Base Styles
+           CSS Variables
+           ============================================ */
+        :root {
+            --color-primary: #8b4513;
+            --color-primary-light: #a0522d;
+            --color-accent: #c41e3a;
+            --color-bg-dark: #1e3c2f;
+            --color-bg-medium: #2d5a3d;
+            --color-paper: #f5f1e8;
+            --color-paper-light: #fff8e1;
+            --color-text: #3e2723;
+            --color-text-secondary: #5d3a1a;
+            --shadow-large: 0 20px 60px rgba(0,0,0,0.4);
+            --shadow-medium: 0 4px 6px rgba(0,0,0,0.1);
+            --border-radius-large: 16px;
+            --border-radius-medium: 12px;
+        }
+
+        /* ============================================
+           Reset & Base
            ============================================ */
         *, *::before, *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
-        :root {
-            --color-primary: #8B4513;
-            --color-accent: #DC143C;
-            --color-bg-dark: #2d5a27;
-            --color-bg-darker: #1a3d17;
-            --color-text: #555;
-            --color-text-light: #fafafa;
-            --font-serif: 'Noto Serif SC', serif;
-            --font-mono: 'Courier New', monospace;
-            --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', sans-serif;
-        }
-        
+
         body {
-            font-family: var(--font-sans);
-            background: linear-gradient(135deg, var(--color-bg-dark) 0%, var(--color-bg-darker) 100%);
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, var(--color-bg-dark) 0%, var(--color-bg-medium) 50%, var(--color-bg-dark) 100%);
+            background-attachment: fixed;
             min-height: 100vh;
-            padding: 20px;
-        }
-        
-        /* ============================================
-           Password Overlay
-           ============================================ */
-        #passwordOverlay {
-            position: fixed;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(139, 69, 19, 0.98) 0%, rgba(93, 58, 26, 0.99) 100%);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .password-box {
-            background: white;
-            padding: 50px 40px;
-            border-radius: 20px;
-            border: 4px dashed var(--color-accent);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            text-align: center;
-            max-width: 450px;
-            width: 90%;
-        }
-        
-        .password-box h2 {
-            font-family: var(--font-serif);
-            color: var(--color-primary);
-            margin-bottom: 10px;
-            font-size: 1.8em;
-        }
-        
-        .hint-box {
-            background: #f5f5f5;
-            border-left: 4px solid var(--color-accent);
-            padding: 20px;
-            margin: 20px 0;
-            font-family: var(--font-serif);
-            font-size: 1.1em;
-        }
-        
-        .hint-box .name {
-            color: var(--color-primary);
-            font-weight: 700;
-            font-size: 1.2em;
-        }
-        
-        .password-input {
-            width: 100%;
-            padding: 15px;
-            border: 3px solid var(--color-primary);
-            border-radius: 10px;
-            font-size: 1.3em;
-            text-align: center;
-            letter-spacing: 10px;
-            margin: 20px 0;
-            font-family: var(--font-mono);
-        }
-        
-        .password-btn {
-            background: var(--color-primary);
-            color: white;
-            border: 2px solid var(--color-accent);
-            padding: 14px 50px;
-            border-radius: 25px;
-            font-size: 1.1em;
-            cursor: pointer;
-            font-family: var(--font-serif);
-            transition: background 0.3s ease;
-        }
-        
-        .password-btn:hover {
-            background: var(--color-accent);
-        }
-        
-        .error-msg {
-            color: var(--color-accent);
-            font-size: 0.9em;
-            margin-top: 15px;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        
-        .error-msg.show {
-            opacity: 1;
-        }
-        
-        /* ============================================
-           Main Content
-           ============================================ */
-        #mainContent {
-            display: none;
-        }
-        
-        #mainContent.visible {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        /* Header */
-        header {
-            text-align: center;
-            padding: 40px 20px;
-            background: linear-gradient(180deg, var(--color-primary) 0%, #654321 100%);
-            border-radius: 20px;
-            border: 4px dashed var(--color-accent);
-            margin-bottom: 30px;
-            color: white;
-        }
-        
-        h1 {
-            font-family: var(--font-serif);
-            font-size: 2.4em;
-            margin-bottom: 10px;
-            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
-        }
-        
-        .match-info {
-            font-size: 1.2em;
-            opacity: 0.95;
-            font-family: var(--font-mono);
-        }
-        
-        /* ============================================
-           Video Cards
-           ============================================ */
-        .video-card {
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            border: 6px solid #f0f0f0;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-            margin-bottom: 30px;
             position: relative;
         }
-        
-        .video-card::before {
+
+        body::before {
             content: '';
-            position: absolute;
-            inset: -3px;
-            border: 2px dashed var(--color-accent);
-            border-radius: 18px;
-            pointer-events: none;
-            z-index: 10;
-        }
-        
-        /* Video Header */
-        .video-header {
-            background: var(--color-primary);
-            color: white;
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .video-header img {
-            height: 40px;
-            filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3));
-        }
-        
-        .video-title-text {
-            font-weight: 700;
-            font-size: 1.15em;
-            font-family: var(--font-mono);
-        }
-        
-        /* Video Container */
-        .video-container {
-            position: relative;
-            padding-bottom: 56.25%;
-            background: #000;
-            height: 0;
-            overflow: hidden;
-        }
-        
-        .video-container iframe {
-            position: absolute;
-            inset: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            border: none;
+            background-image: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(255,255,255,0.03) 2px,
+                rgba(255,255,255,0.03) 4px
+            );
+            pointer-events: none;
+            z-index: 1;
         }
-        
-        /* Video Description */
-        .video-desc {
-            padding: 20px;
-            background: var(--color-text-light);
-            color: var(--color-text);
-            border-top: 2px solid #e0e0e0;
-            line-height: 1.8;
-            font-size: 1em;
+
+        /* ============================================
+           Container
+           ============================================ */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 2;
         }
-        
-        .tactic-highlight {
-            color: var(--color-accent);
+
+        /* ============================================
+           Header
+           ============================================ */
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 40px;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-large);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .team-logo {
+            font-size: 4em;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 2.5em;
             font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .header .subtitle {
+            color: var(--color-paper);
+            font-size: 1.2em;
+            font-weight: 500;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .motto {
+            margin-top: 20px;
+            padding: 15px 30px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 30px;
+            display: inline-block;
+            color: white;
             font-size: 1.1em;
-            display: block;
-            margin-bottom: 8px;
-            font-family: var(--font-serif);
+            font-weight: 500;
+            backdrop-filter: blur(5px);
         }
-        
-        .mistake-point {
-            background: #fff5f5;
-            border-left: 3px solid var(--color-accent);
-            padding: 10px 15px;
-            margin: 10px 0;
-            border-radius: 0 5px 5px 0;
+
+        /* ============================================
+           Navigation Grid
+           ============================================ */
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
         }
-        
-        .rule-highlight {
-            background: #f0f8ff;
-            border-left: 3px solid #4169E1;
-            padding: 10px 15px;
-            margin: 10px 0;
-            border-radius: 0 5px 5px 0;
+
+        .nav-card {
+            background: var(--color-paper);
+            border-radius: var(--border-radius-large);
+            padding: 30px;
+            box-shadow: var(--shadow-medium);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            color: var(--color-text);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
         }
-        
+
+        .nav-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--color-accent), var(--color-primary));
+        }
+
+        .nav-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .nav-card-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .nav-card h2 {
+            color: var(--color-primary);
+            font-size: 1.4em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .nav-card p {
+            color: var(--color-text-secondary);
+            font-size: 1em;
+            line-height: 1.6;
+            flex-grow: 1;
+        }
+
+        .nav-card-badge {
+            display: inline-block;
+            background: var(--color-accent);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-top: 15px;
+            align-self: flex-start;
+        }
+
         /* ============================================
            Footer
            ============================================ */
-        footer {
+        .footer {
             text-align: center;
-            margin-top: 50px;
             padding: 30px;
-            color: rgba(255, 255, 255, 0.9);
+            color: rgba(255,255,255,0.7);
+            font-size: 0.95em;
         }
-        
-        footer img {
-            height: 80px;
-            margin: 0 10px;
+
+        .footer a {
+            color: var(--color-paper-accent);
+            text-decoration: none;
         }
-        
-        footer p {
-            margin-top: 15px;
-            font-family: var(--font-serif);
+
+        .footer a:hover {
+            text-decoration: underline;
         }
-        
+
         /* ============================================
            Responsive
            ============================================ */
         @media (max-width: 768px) {
-            h1 {
+            .container {
+                padding: 20px 15px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
                 font-size: 1.8em;
+            }
+
+            .header .subtitle {
+                font-size: 1em;
+            }
+
+            .team-logo {
+                font-size: 3em;
+            }
+
+            .motto {
+                font-size: 0.95em;
+                padding: 12px 20px;
+            }
+
+            .nav-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .nav-card {
+                padding: 25px;
+            }
+        }
+
+        /* ============================================
+           Print
+           ============================================ */
+        @media print {
+            body {
+                background: white;
+            }
+
+            .header {
+                background: var(--color-primary);
             }
         }
     </style>
 </head>
 <body>
-
-    <!-- ============================================
-         Password Protection Overlay
-         ============================================ -->
-    <div id="passwordOverlay">
-        <div class="password-box">
-            <h2>⚾ 烈光 vs 飞雪 友谊赛</h2>
-            <div class="hint-box">
-                <span class="name">张锦新</span> 哪年开始接触从事棒球运动？
-            </div>
-            <input 
-                type="password" 
-                class="password-input" 
-                id="passwordInput" 
-                placeholder="●●●●" 
-                maxlength="4"
-                autocomplete="off"
-            >
-            <br>
-            <button class="password-btn" onclick="checkPassword().catch(console.error)">
-                进入复盘中心
-            </button>
-            <div class="error-msg" id="errorMsg">
-                密码错误，请输入正确年份（4位数字）
-            </div>
-        </div>
-    </div>
-
-    <!-- ============================================
-         Main Content
-         ============================================ -->
-    <div class="container" id="mainContent">
-        
+    <div class="container">
         <!-- Header -->
-        <header>
-            <h1>⚾ 烈光 vs 飞雪 友谊赛</h1>
-            <div class="match-info">2026年3月29日 上午 · 七个战术片段分析</div>
+        <header class="header">
+            <div class="header-content">
+                <div class="team-logo">🦊</div>
+                <h1>烈光少棒赤狐队</h1>
+                <div class="subtitle">Red Foxes Youth Baseball Team</div>
+                <div class="motto">🏆 友谊第一，比赛第二 · 烈光少棒加油</div>
+            </div>
         </header>
 
-        <!-- Video Clips -->
-        <main>
-            
-            <!-- 片段1：三振逃的规则 -->
-            <article class="video-card">
-                <div class="video-header">
-                    <img src="img/04_三振出局_主图.png" alt="三振出局">
-                    <span class="video-title-text">片段一：三振逃的规则解析</span>
-                </div>
-                <div class="video-container">
-                    <iframe 
-                        src="https://player.bilibili.com/player.html?bvid=BV1z4XhBDEd6&page=1&high_quality=1&danmaku=0&autoplay=0" 
-                        scrolling="no" 
-                        frameborder="0" 
-                        allowfullscreen 
-                        sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"
-                    ></iframe>
-                </div>
-                <div class="video-desc">
-                    <span class="tactic-highlight">📋 规则科普：三振逃（Dropped Third Strike）</span>
-                    这个视频有两个注意的细节：
-                    <br><br>
-                    <div class="mistake-point">
-                        <strong>细节一（防守方）：</strong>对方投捕经验不足，捕手漏球后捡球状态随意，等发现偷本垒时已经来不及回传本垒，同时投手没能及时到本垒板补位，造成偷本垒成功。
-                    </div>
-                    <div class="rule-highlight">
-                        <strong>细节二（进攻方）：</strong>我方打者触发了<strong>三振逃</strong>的规则，此规则的确有些偏门——当打者被三振，但捕手没能拿到球时，打者可跑向一垒。这种局面在投打规则下会不时的出现，娃们需要了解这个规则。
-                    </div>
-                </div>
-            </article>
+        <!-- Navigation Grid -->
+        <nav class="nav-grid">
+            <a href="match_review.html" class="nav-card">
+                <div class="nav-card-icon">⚾</div>
+                <h2>友谊赛战术复盘</h2>
+                <p>烈光 vs 飞雪 友谊赛的七个战术片段详细分析，包含视频讲解、问题诊断和改进建议。</p>
+                <span class="nav-card-badge">7个战术片段</span>
+            </a>
 
-            <!-- 片段2：跑垒训练 -->
-            <article class="video-card">
-                <div class="video-header">
-                    <img src="img/09_冲鸭_主图.png" alt="冲鸭">
-                    <span class="video-title-text">片段二：跑垒训练 - 玩命跑的艺术</span>
-                </div>
-                <div class="video-container">
-                    <iframe 
-                        src="https://player.bilibili.com/player.html?bvid=BV1B8XhBmEWG&page=1&high_quality=1&danmaku=0&autoplay=0" 
-                        scrolling="no" 
-                        frameborder="0" 
-                        allowfullscreen 
-                        sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"
-                    ></iframe>
-                </div>
-                <div class="video-desc">
-                    <span class="tactic-highlight">💡 核心要点</span>
-                    娃们跑垒一定要玩命的跑，能跑多快跑多快，棒球就是人和球抢时间的运动。
-                </div>
-            </article>
+            <a href="u10_rules.html" class="nav-card">
+                <div class="nav-card-icon">📋</div>
+                <h2>猛虎杯 U10 竞赛章程</h2>
+                <p>北京市第八届猛虎杯春季棒球比赛 U10 投手投打组完整竞赛规程、赛程安排和场地信息。</p>
+                <span class="nav-card-badge">2026年3-5月</span>
+            </a>
 
-            <!-- 片段3：死杀一垒 -->
-            <article class="video-card">
-                <div class="video-header">
-                    <img src="img/07_接杀_主图.png" alt="接杀">
-                    <span class="video-title-text">片段三：死杀一垒战术解析</span>
-                </div>
-                <div class="video-container">
-                    <iframe 
-                        src="https://player.bilibili.com/player.html?bvid=BV1B8XhBmEup&page=1&high_quality=1&danmaku=0&autoplay=0" 
-                        scrolling="no" 
-                        frameborder="0" 
-                        allowfullscreen 
-                        sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"
-                    ></iframe>
-                </div>
-                <div class="video-desc">
-                    <span class="tactic-highlight">⚾ 战术重点：二出局死杀一垒</span>
-                    此时对方已经二出，教练有一句话，<strong>二出时死杀一垒</strong>。之前可能有疑惑，为啥不杀本垒？本垒要得分啊！原因如下：
-                    <br><br>
-                    杀一垒时，本垒得分无效。三垒队员一般是离垒状态，距离本垒较近，腿快的队员很快就能到达本垒，而一垒队员距离一垒较远，所以必须死杀一垒。当然场面情况复杂多变，就近杀也是常见情况。
-                </div>
-            </article>
-
-            <!-- 片段4：精神不集中 -->
-            <article class="video-card">
-                <div class="video-header">
-                    <img src="img/15_稳住_主图.png" alt="稳住">
-                    <span class="video-title-text">片段四：精神集中度与防守意识</span>
-                </div>
-                <div class="video-container">
-                    <iframe 
-                        src="https://player.bilibili.com/player.html?bvid=BV1B8XhBmEmW&page=1&high_quality=1&danmaku=0&autoplay=0" 
-                        scrolling="no" 
-                        frameborder="0" 
-                        allowfullscreen 
-                        sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"
-                    ></iframe>
-                </div>
-                <div class="video-desc">
-                    <span class="tactic-highlight">⚠️ 失误复盘：精神集中与局面感</span>
-                    这个视频暴露我家两个失误点：
-                    <div class="mistake-point">
-                        <strong>失误一：</strong>懒得跑导致防守区域过小，多跑两步就能接杀。
-                    </div>
-                    <div class="mistake-point">
-                        <strong>失误二：</strong>精神不集中。在精神集中情况下，球飞出时就可以预判一垒队员往二垒跑，此时接球不用犹豫直接传二垒，杀掉二垒后极有可能再传杀一垒形成双杀。
-                    </div>
-                    <strong>💎 经验总结：</strong>吃我家的堑长其他娃的智。在U10娃奔跑速度下，双杀的成功率还是比较高的，希望娃们一定要有防守双杀的欲望和局面感。
-                </div>
-            </article>
-
-            <!-- 片段5：接传球失误 -->
-            <article class="video-card">
-                <div class="video-header">
-                    <img src="img/11_弱爆了_主图.png" alt="弱爆了">
-                    <span class="video-title-text">片段五：接传球失误分析</span>
-                </div>
-                <div class="video-container">
-                    <iframe 
-                        src="https://player.bilibili.com/player.html?bvid=BV1E8XhBUEHy&page=1&high_quality=1&danmaku=0&autoplay=0" 
-                        scrolling="no" 
-                        frameborder="0" 
-                        allowfullscreen 
-                        sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"
-                    ></iframe>
-                </div>
-                <div class="video-desc">
-                    <span class="tactic-highlight">❌ 常见失误：慌忙中的接传球</span>
-                    这个视频是防守队员慌忙中传球，造成接传球失误，对方一垒队员跑到本垒得分，打击队员跑到二垒。
-                    <br><br>
-                    <div class="mistake-point">
-                        <strong>问题本质：</strong>比赛经验不足，紧张导致技术动作变形，传球目标不明确。
-                    </div>
-                    <strong>💡 改进建议：</strong>这种失误是比赛经验不足的队员很容易出现的情况。需要在日常训练中模拟比赛压力，强化基本功，养成"先看再传"的好习惯，避免盲目传球。
-                </div>
-            </article>
-
-            <!-- 片段6：经验问题 -->
-            <article class="video-card">
-                <div class="video-header">
-                    <img src="img/12_绝绝子_主图.png" alt="绝绝子">
-                    <span class="video-title-text">片段六：经验问题 - 错失得分良机</span>
-                </div>
-                <div class="video-container">
-                    <iframe 
-                        src="https://player.bilibili.com/player.html?bvid=BV1B8XhBmEbo&page=1&high_quality=1&danmaku=0&autoplay=0" 
-                        scrolling="no" 
-                        frameborder="0" 
-                        allowfullscreen 
-                        sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"
-                    ></iframe>
-                </div>
-                <div class="video-desc">
-                    <span class="tactic-highlight">🎯 经验积累：捕捉瞬间得分机会</span>
-                    三垒垒上队员没能抓住捕手漏球的机会得分，这个是经验问题。
-                    <br><br>
-                    <div class="mistake-point">
-                        <strong>问题分析：</strong>捕手漏球是绝佳的得分机会，但三垒队员未能及时反应启动，错失轻松得分良机。
-                    </div>
-                    <strong>💡 教练要求：</strong>娃们需要<strong>精神集中</strong>，时刻准备跑垒，抓住这种意外的得分机会。棒球比赛瞬息万变，漏接、暴投都是得分良机，垒上队员必须保持高度警觉，随时准备冲垒。
-                </div>
-            </article>
-
-            <!-- 片段7：投手低头回投手板 -->
-            <article class="video-card">
-                <div class="video-header">
-                    <img src="img/06_投出好球_主图.png" alt="投出好球">
-                    <span class="video-title-text">片段七：投手细节 - 回板看局面</span>
-                </div>
-                <div class="video-container">
-                    <iframe 
-                        src="https://player.bilibili.com/player.html?bvid=BV1z4XhBSE9T&page=1&high_quality=1&danmaku=0&autoplay=0" 
-                        scrolling="no" 
-                        frameborder="0" 
-                        allowfullscreen 
-                        sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"
-                    ></iframe>
-                </div>
-                <div class="video-desc">
-                    <span class="tactic-highlight">⚾ 投手细节：时刻关注垒上局面</span>
-                    投手低头回投手板，没看局面，造成三垒偷本垒成功。
-                    <br><br>
-                    <div class="mistake-point">
-                        <strong>问题分析：</strong>投手在完成投球动作后，低头走回投手板的过程中没有观察垒上跑者动向，给三垒队员创造了偷垒机会，轻松得分。
-                    </div>
-                    <strong>💡 教练提醒：</strong>我们投手小家伙们需要注意这个细节——<strong>回投手板时抬头看局面</strong>。投手是防守核心，必须时刻关注垒上跑者的动静，防止偷垒。每一次回板都要保持警觉，养成"边走边看"的好习惯。
-                </div>
-            </article>
-
-        </main>
+            <a href="tigercup_groupstage.html" class="nav-card">
+                <div class="nav-card-icon">📊</div>
+                <h2>小组赛数据分析</h2>
+                <p>猛虎杯小组赛球员表现数据深度分析，多AI联合评估，进攻与防守全面复盘。</p>
+                <span class="nav-card-badge">攻强守弱</span>
+            </a>
+        </nav>
 
         <!-- Footer -->
-        <footer>
-            <img src="img/08_加油打气_主图.png" alt="加油打气">
-            <img src="img/13_OK啦_主图.png" alt="OK啦">
-            <img src="img/10_MVP在此_主图.png" alt="MVP在此">
-            <p>友谊第一，比赛第二 · 烈光少棒加油</p>
+        <footer class="footer">
+            <p>© 2026 烈光少棒赤狐队 | <a href="https://ben1009.github.io/redfoxes-baseball/" target="_blank">GitHub Pages</a></p>
+            <p>Made with ❤️ for young baseball players</p>
         </footer>
-
     </div>
-
-    <!-- ============================================
-         JavaScript
-         ============================================ -->
-    <script>
-        // ============================================
-        // Password Verification (SHA-256 hashed)
-        // ============================================
-        const PASSWORD_HASH = '0a95adbf8581859ae0cc477127abeaf4ad89916405c41855af8fbc482e1634e8';
-        
-        /**
-         * Calculate SHA-256 hash of a string
-         * @param {string} message - Input message
-         * @returns {Promise<string>} Hex-encoded hash
-         */
-        async function sha256(message) {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(message);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        }
-        
-        /**
-         * Check password and show main content if correct
-         */
-        async function checkPassword() {
-            const input = document.getElementById('passwordInput').value;
-            const errorMsg = document.getElementById('errorMsg');
-            const inputHash = await sha256(input);
-            
-            if (inputHash === PASSWORD_HASH) {
-                document.getElementById('passwordOverlay').style.display = 'none';
-                document.getElementById('mainContent').classList.add('visible');
-                sessionStorage.setItem('baseball_auth', 'true');
-            } else {
-                errorMsg.classList.add('show');
-                document.getElementById('passwordInput').value = '';
-                setTimeout(() => errorMsg.classList.remove('show'), 3000);
-            }
-        }
-        
-        // ============================================
-        // Event Listeners
-        // ============================================
-        document.getElementById('passwordInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                checkPassword().catch(console.error);
-            }
-        });
-        
-        // Check if user is already authenticated
-        window.addEventListener('load', () => {
-            if (sessionStorage.getItem('baseball_auth') === 'true') {
-                document.getElementById('passwordOverlay').style.display = 'none';
-                document.getElementById('mainContent').classList.add('visible');
-            }
-        });
-        
-        // ============================================
-        // Auto-pause Videos When Out of Viewport
-        // ============================================
-        
-        /**
-         * Create a Bilibili iframe element with standard attributes
-         * @param {string} src - Video URL
-         * @returns {HTMLIFrameElement}
-         */
-        function createVideoIframe(src) {
-            const iframe = document.createElement('iframe');
-            iframe.src = src;
-            iframe.setAttribute('scrolling', 'no');
-            iframe.setAttribute('frameborder', '0');
-            iframe.setAttribute('allowfullscreen', '');
-            iframe.setAttribute('sandbox', 'allow-top-navigation allow-same-origin allow-forms allow-scripts');
-            return iframe;
-        }
-        
-        /**
-         * Initialize Intersection Observer to pause videos when scrolled out of view.
-         * 
-         * Since Bilibili iframe cannot be controlled via postMessage (CORS), we use
-         * a lazy-loading approach: remove the iframe when out of view and restore
-         * when back in view. This actually stops playback but resets video position.
-         */
-        function initVideoAutopause() {
-            const videoContainers = document.querySelectorAll('.video-container');
-            
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    const container = entry.target;
-                    const iframe = container.querySelector('iframe');
-                    
-                    if (!entry.isIntersecting && iframe) {
-                        // Video out of view - store src and remove iframe
-                        container.dataset.src = iframe.src;
-                        iframe.remove();
-                    } else if (entry.isIntersecting && !iframe && container.dataset.src) {
-                        // Video back in view - restore iframe
-                        container.appendChild(createVideoIframe(container.dataset.src));
-                    }
-                });
-            }, {
-                threshold: 0.1,
-                rootMargin: '50px' // Load slightly before visible
-            });
-            
-            videoContainers.forEach(container => observer.observe(container));
-        }
-        
-        // Initialize video autopause after page loads
-        window.addEventListener('load', () => {
-            setTimeout(initVideoAutopause, 1000);
-        });
-    </script>
-
 </body>
 </html>

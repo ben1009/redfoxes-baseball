@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>猛虎杯小组赛数据分析 | 烈光少棒赤狐队</title>
+    
+    <!-- Favicon: Red Fox Emoji -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%A6%8A%3C/text%3E%3C/svg%3E">
+    
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QJ6EXQH8SW"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-QJ6EXQH8SW');
+    </script>
+    
+    <style>
+        /* ============================================
+           CSS Variables
+           ============================================ */
+        :root {
+            /* Colors */
+            --color-primary: #8b4513;
+            --color-primary-light: #a0522d;
+            --color-accent: #c41e3a;
+            --color-bg-dark: #1e3c2f;
+            --color-bg-medium: #2d5a3d;
+            --color-paper: #f5f1e8;
+            --color-paper-light: #fff8e1;
+            --color-paper-accent: #ffecb3;
+            --color-text: #3e2723;
+            --color-text-secondary: #5d3a1a;
+            --color-warning-bg: #ffebee;
+            --color-info-bg: #e3f2fd;
+            --color-info-border: #1976d2;
+            --color-team-badge: #ff6f00;
+            --color-kimi: #00a8e8;
+            --color-gemini: #4285f4;
+            --color-chatgpt: #10a37f;
+            
+            /* Shadows */
+            --shadow-large: 0 20px 60px rgba(0,0,0,0.4);
+            --shadow-medium: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-small: 0 2px 8px rgba(0,0,0,0.1);
+            --shadow-image: 0 4px 12px rgba(0,0,0,0.15);
+            
+            /* Border Radius */
+            --border-radius-large: 12px;
+            --border-radius-medium: 8px;
+            --border-radius-small: 20px;
+        }
+
+        /* ============================================
+           Reset & Base
+           ============================================ */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, var(--color-bg-dark) 0%, var(--color-bg-medium) 50%, var(--color-bg-dark) 100%);
+            background-attachment: fixed;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(255,255,255,0.03) 2px,
+                rgba(255,255,255,0.03) 4px
+            );
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* ============================================
+           Layout
+           ============================================ */
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: var(--color-paper);
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-large), inset 0 0 100px rgba(139, 69, 19, 0.1);
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            bottom: 15px;
+            border: 3px dashed var(--color-accent);
+            border-radius: var(--border-radius-medium);
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        .content {
+            padding: 40px 50px;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%239C92AC' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+
+        section {
+            margin-bottom: 35px;
+            page-break-inside: avoid;
+        }
+
+        section[id] {
+            scroll-margin-top: 60px;
+        }
+
+        /* ============================================
+           Header
+           ============================================ */
+        header {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 50%, var(--color-primary) 100%);
+            color: #fff;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            border-bottom: 4px solid var(--color-accent);
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 20px;
+            background: var(--color-accent);
+            border-radius: 50%;
+            opacity: 0.3;
+        }
+
+        h1 {
+            font-size: 2.2em;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.3em;
+            color: var(--color-paper);
+            font-weight: 500;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .badge-container {
+            margin-top: 15px;
+        }
+
+        .tournament-badge, .team-badge {
+            display: inline-block;
+            color: white;
+            font-weight: bold;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .tournament-badge {
+            background: var(--color-accent);
+            padding: 8px 20px;
+            border-radius: var(--border-radius-small);
+            font-size: 0.9em;
+        }
+
+        .team-badge {
+            background: var(--color-team-badge);
+            padding: 6px 16px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            margin-left: 10px;
+        }
+
+        /* ============================================
+           Typography
+           ============================================ */
+        h2 {
+            color: var(--color-primary);
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--color-accent);
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+        }
+
+        h2::before {
+            content: '◆';
+            color: var(--color-accent);
+            margin-right: 10px;
+            font-size: 0.8em;
+        }
+
+        h3 {
+            color: var(--color-text-secondary);
+            font-size: 1.2em;
+            margin: 20px 0 12px;
+            font-weight: 600;
+        }
+
+        h4 {
+            color: var(--color-primary);
+            font-size: 1.1em;
+            margin: 15px 0 10px;
+            font-weight: 600;
+        }
+
+        p, li {
+            line-height: 1.8;
+            color: var(--color-text);
+            font-size: 1.05em;
+            margin-bottom: 10px;
+        }
+
+        ul, ol {
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        li::marker {
+            color: var(--color-accent);
+        }
+
+        /* ============================================
+           Navigation
+           ============================================ */
+        .page-nav {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .nav-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .nav-link {
+            color: var(--color-paper);
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+            transition: background 0.2s, transform 0.2s;
+            white-space: nowrap;
+        }
+
+        .nav-link:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-1px);
+        }
+
+        .nav-link:active {
+            transform: translateY(0);
+        }
+
+        /* ============================================
+           Components
+           ============================================ */
+        
+        /* AI Cards */
+        .ai-card {
+            background: white;
+            border-radius: var(--border-radius-large);
+            margin: 25px 0;
+            overflow: hidden;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .ai-card-header {
+            padding: 15px 25px;
+            color: white;
+            font-weight: 700;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ai-card-header.kimi {
+            background: linear-gradient(135deg, var(--color-kimi) 0%, #0077b6 100%);
+        }
+
+        .ai-card-header.gemini {
+            background: linear-gradient(135deg, var(--color-gemini) 0%, #3367d6 100%);
+        }
+
+        .ai-card-header.chatgpt {
+            background: linear-gradient(135deg, var(--color-chatgpt) 0%, #0d8c6d 100%);
+        }
+
+        .ai-card-content {
+            padding: 25px;
+        }
+
+        /* Info Boxes */
+        .highlight-box, .warning-box, .info-box {
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: var(--border-radius-medium);
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, var(--color-paper-light) 0%, var(--color-paper-accent) 100%);
+            border-left: 5px solid var(--color-accent);
+            border-radius: 0 var(--border-radius-medium) var(--border-radius-medium) 0;
+            box-shadow: var(--shadow-small);
+        }
+
+        .highlight-box strong {
+            color: var(--color-accent);
+            font-size: 1.1em;
+        }
+
+        .highlight-box ul {
+            margin-top: 10px;
+            margin-bottom: 0;
+        }
+
+        .warning-box {
+            background: var(--color-warning-bg);
+            border: 2px solid var(--color-accent);
+            color: var(--color-accent);
+            font-weight: 500;
+        }
+
+        .warning-box::before {
+            content: '⚠️ ';
+            font-size: 1.2em;
+        }
+
+        .info-box {
+            background: var(--color-info-bg);
+            border-left: 5px solid var(--color-info-border);
+            border-radius: 0 var(--border-radius-medium) var(--border-radius-medium) 0;
+        }
+
+        /* Image Container */
+        .image-container {
+            background: white;
+            border: 3px solid var(--color-primary);
+            border-radius: var(--border-radius-large);
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: var(--shadow-image);
+            text-align: center;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--border-radius-medium);
+            display: block;
+            margin: 0 auto;
+            cursor: zoom-in;
+            transition: transform 0.2s;
+        }
+
+        .image-container img:hover {
+            transform: scale(1.02);
+        }
+
+        .image-caption {
+            margin-top: 15px;
+            color: var(--color-text-secondary);
+            font-size: 0.95em;
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        /* Modal */
+        .image-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            animation: fadeIn 0.3s;
+        }
+
+        .image-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: var(--border-radius-medium);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            animation: zoomIn 0.3s;
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.8); }
+            to { transform: scale(1); }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+            z-index: 1001;
+            background: none;
+            border: none;
+            padding: 0;
+            font-family: inherit;
+            line-height: 1;
+        }
+
+        .modal-close:hover,
+        .modal-close:focus {
+            color: #bbb;
+        }
+
+        .modal-caption {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: #f1f1f1;
+            font-size: 1.1em;
+            padding: 10px;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: var(--border-radius-medium);
+            overflow: hidden;
+            box-shadow: var(--shadow-small);
+            font-size: 0.95em;
+        }
+
+        th {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e0e0e0;
+            color: var(--color-text);
+        }
+
+        tr:nth-child(even) {
+            background: #faf7f2;
+        }
+
+        tr:hover {
+            background: var(--color-paper);
+        }
+
+        /* Metric Cards */
+        .key-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .metric-card {
+            background: white;
+            border: 2px solid var(--color-accent);
+            border-radius: var(--border-radius-medium);
+            padding: 20px;
+            text-align: center;
+            box-shadow: var(--shadow-medium);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .metric-value {
+            font-size: 2em;
+            color: var(--color-accent);
+            font-weight: 700;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            color: var(--color-text-secondary);
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+
+        /* Summary Section */
+        .summary-section {
+            background: linear-gradient(135deg, var(--color-paper-light) 0%, var(--color-paper-accent) 100%);
+            border-radius: var(--border-radius-large);
+            padding: 30px;
+            margin: 30px 0;
+            border: 3px solid var(--color-accent);
+        }
+
+        .summary-title {
+            color: var(--color-accent);
+            font-size: 1.4em;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Footer */
+        .contact-footer {
+            background: var(--color-text);
+            color: var(--color-paper);
+            padding: 30px;
+            text-align: center;
+            margin-top: 40px;
+            border-radius: 0 0 var(--border-radius-large) var(--border-radius-large);
+        }
+
+        .contact-footer p {
+            color: var(--color-paper);
+            margin: 5px 0;
+        }
+
+        /* ============================================
+           Responsive
+           ============================================ */
+        @media (max-width: 768px) {
+            .container {
+                margin: 20px 10px;
+            }
+
+            .content {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 1.6em;
+            }
+
+            .nav-container {
+                padding: 0 10px;
+                gap: 4px;
+            }
+
+            .nav-link {
+                padding: 4px 8px;
+                font-size: 0.8em;
+            }
+
+            section[id] {
+                scroll-margin-top: 50px;
+            }
+
+            .key-metrics {
+                grid-template-columns: 1fr;
+            }
+
+            .image-container {
+                padding: 10px;
+            }
+
+            table {
+                font-size: 0.85em;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+
+            .team-badge {
+                margin-left: 0;
+                margin-top: 10px;
+            }
+
+            .ai-card-content {
+                padding: 15px;
+            }
+        }
+
+        /* ============================================
+           Print
+           ============================================ */
+        @media print {
+            body {
+                background: white;
+            }
+
+            .container {
+                box-shadow: none;
+                margin: 0;
+            }
+
+            .container::before,
+            .page-nav {
+                display: none;
+            }
+
+            .image-container,
+            .ai-card {
+                break-inside: avoid;
+            }
+
+            section[id] {
+                scroll-margin-top: 0;
+            }
+        }
+    </style>
+    <base target="_blank">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="page-nav">
+        <div class="nav-container">
+            <a href="#data" class="nav-link" target="_self">📊 数据表</a>
+            <a href="#summary" class="nav-link" target="_self">📝 总结</a>
+            <a href="#kimi" class="nav-link" target="_self">🤖 Kimi</a>
+            <a href="#gemini" class="nav-link" target="_self">🌟 Gemini</a>
+            <a href="#chatgpt" class="nav-link" target="_self">💬 ChatGPT</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>棒球数据分析：攻强守弱</h1>
+            <div class="subtitle">烈光少棒（赤狐队）· 猛虎杯小组赛赛后复盘</div>
+            <div class="badge-container">
+                <span class="tournament-badge">📊 多AI联合分析</span>
+                <span class="team-badge">🏆 烈光少棒（赤狐队）</span>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="content">
+            <!-- 原始数据表 -->
+            <section id="data">
+                <h2>比赛数据表</h2>
+                <div class="image-container">
+                    <img src="img/groupstage_data.png" alt="烈光少棒（赤狐队）比赛数据表">
+                    <div class="image-caption">烈光少棒（赤狐队）· 进攻与防守详细数据记录</div>
+                </div>
+                <div class="info-box">
+                    <strong>💡 数据说明：</strong>本表记录了13名球员（闫勋捷、瞿裕桐、尹钰桢、Max、付昌泽、孙嘉泽、刘景天、田雨稷、程思乐、刘梵山、小白、张景奕、陈诗恩）的进攻和防守表现。
+                </div>
+            </section>
+
+            <!-- 总结 -->
+            <section id="summary">
+                <h2>三AI共识总结</h2>
+                <div class="summary-section">
+                    <div class="summary-title">🎯 核心结论：攻强守弱</div>
+                    <div class="key-metrics">
+                        <div class="metric-card">
+                            <span class="metric-value">✅</span>
+                            <span class="metric-label">进攻火力强劲</span>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-value">⚠️</span>
+                            <span class="metric-label">防守失误偏多</span>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-value">🎯</span>
+                            <span class="metric-label">需针对性训练</span>
+                        </div>
+                    </div>
+                    <div class="highlight-box">
+                        <strong>三位AI的共同观点：</strong>
+                        <ul>
+                            <li><strong>进攻端：</strong>闫勋捷、Max、付昌泽是球队进攻核心，打击效率高，盗垒侵略性强</li>
+                            <li><strong>防守端：</strong>投手控球不稳（暴投、保送过多），捕手漏球问题突出，内野传球失误多</li>
+                            <li><strong>改进方向：</strong>优先加强投捕基本功、滑垒技术、场上专注力训练</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Kimi 分析 -->
+            <section id="kimi">
+                <div class="ai-card">
+                    <div class="ai-card-header kimi">🤖 Kimi 分析</div>
+                    <div class="ai-card-content">
+                        <h3>📊 整体数据概览</h3>
+                        <p><strong>参与球员：</strong>13名球员（闫勋捷、瞿裕桐、尹钰桢、Max、付昌泽、孙嘉泽、刘景天、田雨稷、程思乐、刘梵山、小白、张景奕、陈诗恩）</p>
+
+                        <h3>🏏 进攻数据分析</h3>
+                        <h4>核心打击数据排名</h4>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>排名</th>
+                                    <th>球员</th>
+                                    <th>打席数</th>
+                                    <th>打数</th>
+                                    <th>安打数</th>
+                                    <th>打击率</th>
+                                    <th>得点</th>
+                                    <th>打点</th>
+                                    <th>盗垒</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>1</td><td>闫勋捷</td><td>8</td><td>6</td><td>4</td><td>.667</td><td>4</td><td>4</td><td>8</td></tr>
+                                <tr><td>2</td><td>Max</td><td>6</td><td>5</td><td>3</td><td>.600</td><td>3</td><td>3</td><td>5</td></tr>
+                                <tr><td>3</td><td>付昌泽</td><td>6</td><td>4</td><td>4</td><td>1.000</td><td>1</td><td>3</td><td>2</td></tr>
+                                <tr><td>4</td><td>田雨稷</td><td>5</td><td>4</td><td>1</td><td>.250</td><td>-</td><td>1</td><td>2</td></tr>
+                                <tr><td>5</td><td>瞿裕桐</td><td>6</td><td>3</td><td>1</td><td>.333</td><td>1</td><td>1</td><td>2</td></tr>
+                            </tbody>
+                        </table>
+
+                        <div class="highlight-box">
+                            <strong>进攻亮点：</strong>
+                            <ul>
+                                <li><strong>闫勋捷：</strong>全队MVP表现，8次盗垒（全队最高），2支二垒安打，得点打点数均为4</li>
+                                <li><strong>Max：</strong>2支二垒安打，贡献5分打点，进攻效率高</li>
+                                <li><strong>付昌泽：</strong>4支安打全部为有效安打（3支一垒+1支二垒），但得点能力待提升</li>
+                                <li><strong>孙嘉泽：</strong>虽只有2支安打，但包含1支二垒安打</li>
+                            </ul>
+                        </div>
+
+                        <div class="warning-box">
+                            进攻问题：刘景天、张景奕、刘梵山、陈诗恩安打挂零，需要加强打击训练；尹钰桢2打席无安打，但贡献2次盗垒；全队残垒较多，关键时刻得分效率有提升空间
+                        </div>
+
+                        <h3>🧤 防守数据分析</h3>
+                        <h4>投手表现</h4>
+                        <table>
+                            <thead>
+                                <tr><th>球员</th><th>局数</th><th>关键数据</th><th>问题</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>闫勋捷</td><td>首棒+平野</td><td>7个好球，K掉3人</td><td>坏球率高，保送3人后换下，暴投/捕逸3颗失3分</td></tr>
+                                <tr><td>刘景天</td><td>首棒</td><td>-</td><td>好球率低，连续暴投3次，投球中身1次，牵制传垒失误2次</td></tr>
+                            </tbody>
+                        </table>
+                        <p><strong>投手总结：</strong>控球不稳是主要问题，暴投、保送过多导致失分</p>
+
+                        <h4>捕手表现（孙嘉泽）</h4>
+                        <ul>
+                            <li>✅ 连续接好球，首次投捕配合及格</li>
+                            <li>❌ <strong>漏球严重：</strong>打平野漏球无法统计，打首棒中外漏球1次</li>
+                            <li>❌ 手套掉球1次（三垒），打奥熊时掉球1次、漏球3次</li>
+                            <li>❌ 传一垒传冒1次</li>
+                        </ul>
+                        <p><strong>评价：</strong>接球基本功需加强，漏球问题突出</p>
+
+                        <h4>内野防守</h4>
+                        <table>
+                            <thead>
+                                <tr><th>球员</th><th>位置</th><th>表现</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>付昌泽</td><td>游击</td><td>传杀一垒掉手套球1次，回传投手失误导致盗一分</td></tr>
+                                <tr><td>程思乐</td><td>游击</td><td>失误被二垒偷回本垒</td></tr>
+                                <tr><td>田雨稷</td><td>内场</td><td>回投手丘低头不看三垒3次（注意力问题）</td></tr>
+                            </tbody>
+                        </table>
+                        <p><strong>内野问题：</strong>传球失误多，专注力不足</p>
+
+                        <h4>外野防守</h4>
+                        <table>
+                            <thead>
+                                <tr><th>球员</th><th>位置</th><th>表现</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>瞿裕桐</td><td>右外</td><td>接杀1次 ✅</td></tr>
+                                <tr><td>张景奕</td><td>左外</td><td>接球失误2次 ❌</td></tr>
+                                <tr><td>孙嘉泽</td><td>中外</td><td>漏球1次 ❌</td></tr>
+                            </tbody>
+                        </table>
+
+                        <h4>跑垒/牵制问题</h4>
+                        <ul>
+                            <li><strong>付昌泽：</strong>一垒盗二垒、二垒盗三垒均因速度慢+无滑垒被触杀（2次）</li>
+                            <li><strong>闫勋捷：</strong>三垒盗本垒被触杀（建议：开局一二垒无人时可等漏球争分）</li>
+                            <li><strong>刘景天：</strong>投手牵制三垒传冒跑回本垒1分，牵制二垒传冒跑到三垒</li>
+                        </ul>
+
+                        <h3>📈 综合评价与建议</h3>
+                        <div class="highlight-box">
+                            <strong>🌟 表现优秀：</strong>
+                            <ul>
+                                <li>闫勋捷 - 进攻核心，但投球控球需改进</li>
+                                <li>Max - 攻守均衡，三垒传杀一垒成功</li>
+                            </ul>
+                        </div>
+
+                        <h4>⚠️ 需要重点改进</h4>
+                        <table>
+                            <thead>
+                                <tr><th>问题类别</th><th>具体表现</th><th>建议</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>投手控球</td><td>暴投、保送、中身球过多</td><td>加强控球训练，建立好球带信心</td></tr>
+                                <tr><td>捕手接球</td><td>孙嘉泽漏球、掉球频繁</td><td>专项接球训练，手套基本功</td></tr>
+                                <tr><td>盗垒技巧</td><td>付昌泽2次被触杀，无滑垒</td><td>学习滑垒技术，判断起跑时机</td></tr>
+                                <tr><td>传球准确性</td><td>内野传一垒多次失误</td><td>传接球基本功，压力下的稳定性</td></tr>
+                                <tr><td>专注力</td><td>田雨稷不看垒包</td><td>培养场上观察习惯</td></tr>
+                            </tbody>
+                        </table>
+
+                        <h4>💡 战术建议</h4>
+                        <ol>
+                            <li><strong>闫勋捷：</strong>适合担任中心打者，但投球建议作为后援而非先发</li>
+                            <li><strong>付昌泽：</strong>打击手感好但跑垒激进，需加强跑垒判断</li>
+                            <li><strong>孙嘉泽：</strong>捕手位置潜力有，但必须解决漏球问题才能胜任</li>
+                            <li><strong>刘景天：</strong>投球动作需调整，目前不适合高压局面投球</li>
+                        </ol>
+
+                        <div class="info-box">
+                            这是一份非常详细的棒球比赛记录！从数据看，球队进攻火力不错，但<strong>防守失误和投手控球</strong>是主要失分原因。需要针对性训练减少保送、漏球和传球失误。
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Gemini 分析 -->
+            <section id="gemini">
+                <div class="ai-card">
+                    <div class="ai-card-header gemini">🌟 Gemini 分析</div>
+                    <div class="ai-card-content">
+                        <p>这是一份非常详细的棒球/垒球比赛球员数据统计表，不仅记录了标准的进攻数据，还包含了非常具体的防守表现和赛场细节记录。从防守备注中对失误的详细描述、投手的保送率以及大量的盗垒数据来看，这大概率是一支青少年棒球队或业余球队的比赛/训练复盘记录。</p>
+
+                        <h3>一、进攻端表现分析：火力充足，跑垒极具侵略性</h3>
+                        <p>总体来看，球队的前段棒次（或主力球员）进攻能力很强，上垒率高，且非常依赖盗垒来推进垒包。</p>
+
+                        <h4>绝对核心（MVP级别表现）：</h4>
+                        <ul>
+                            <li><strong>闫勋捷：</strong>进攻端的大腿。8次打席、6个打数，贡献了全队最高的4分得分、4分打点以及夸张的8次盗垒。他击出了2支一垒安打和2支二垒安打（总垒打数6），具备出色的击球准度和长打能力，是球队最重要的得分引擎。</li>
+                            <li><strong>Max：</strong>效率极高的打者。6次打席5打数，贡献3分得分和3分打点，击出1支一垒安打和2支二垒安打。他的5次盗垒也证明了他极具破坏力的跑垒速度。</li>
+                            <li><strong>付昌泽：</strong>出色的"安打机器"。6次打席4个打数，击出了全队最多的3支一垒安打和1支二垒安打，贡献3分打点。他的击球非常稳定，能有效地串联进攻。</li>
+                        </ul>
+
+                        <h4>跑垒战术：</h4>
+                        <ul>
+                            <li>全队盗垒数极高（闫勋捷8次，Max 5次，刘景天4次）。这说明球队战术非常激进，或者对手的捕手阻杀能力、投手看管跑者的能力较弱。</li>
+                            <li><strong>跑垒隐患：</strong>备注中提到付昌泽"一垒/二垒盗垒速度慢，没有滑垒，被触杀"，以及闫勋捷"盗本垒被触杀太可惜"。这说明虽然盗垒多，但跑垒技巧（尤其是滑垒）和时机判断还有很大的提升空间，送出了不必要的出局数。</li>
+                        </ul>
+
+                        <h3>二、防守端表现分析：暴露出较多基本功和意识问题</h3>
+                        <p>相比于亮眼的进攻，防守端的记录充满了教练/记录员的"无奈"，主要集中在基本功失误和赛场经验不足上。</p>
+
+                        <h4>投手群表现：控制力是最大痛点</h4>
+                        <ul>
+                            <li><strong>闫勋捷：</strong>表现两极分化。开局投球"坏球率高，保送3人后被换下"；但后续上场时展现了统治力，"连续7个好球，K了3个人"。需要提高投球稳定性和心态。</li>
+                            <li><strong>刘景天：</strong>作为投手失误较多。"牵制三垒传冒"、"牵制二垒传冒"直接导致丢分和跑者进垒，且"好球率低，连续暴投3次，投球中身一次"。牵制技术和控球需要重点加练。</li>
+                        </ul>
+
+                        <h4>守备与传球基本功：</h4>
+                        <ul>
+                            <li><strong>接球失误频发：</strong>孙嘉泽在三垒"掉球1次、漏球3次"，刘景天在二垒"漏接、面脸了两次球"，张景奕在左外野"接球失误2次"。内野手对地滚球的处理和外野手判断落点还不够扎实。</li>
+                            <li><strong>传球精度：</strong>存在"捕手传一垒传冒了"、"游击传杀一垒掉手套"等情况，传球的准度和接球者的配合需要加强。</li>
+                            <li><strong>捕手防守：</strong>提到"捕手漏接没法统计"、"暴投或捕逸共3颗"。捕手在挡球（Blocking）这项技术上还需要多下功夫，这直接关系到垒上有人时会不会白白送分。</li>
+                        </ul>
+
+                        <h4>赛场意识（棒球智商）：</h4>
+                        <ul>
+                            <li>田雨稷"内场球回投手丘低头不看三垒3次"，这是一个典型的经验不足的表现。拿到球后没有观察场上局势（尤其是最危险的三垒跑者），只顾着回传投手。</li>
+                        </ul>
+
+                        <h3>三、总结与训练建议</h3>
+                        <p>这支球队<strong>"攻强守弱"</strong>的特点非常明显。进攻端有闫勋捷、Max、付昌泽这样能打能跑的尖子球员，足以给对手造成巨大压力。但防守端的非受迫性失误（Errors）过多。</p>
+
+                        <div class="highlight-box">
+                            <strong>接下来的训练重点建议：</strong>
+                            <ol>
+                                <li><strong>投捕基本功：</strong>投手的控球训练（减少保送和暴投）以及牵制动作的规范；捕手的挡球和接球训练，减少捕逸。</li>
+                                <li><strong>内野守备与传球：</strong>强化内野手接地滚球的基本动作，以及接球后传向一垒的稳定性和准度。</li>
+                                <li><strong>情景模拟训练（Cut-off & 赛场意识）：</strong>训练球员拿到球后"先看哪里再传哪里"，比如内野手拿到球要习惯性看一眼前位跑者（如三垒）。</li>
+                                <li><strong>滑垒专项训练：</strong>鉴于球队极度依赖盗垒，必须教会球员正确的滑垒姿势，这不仅能提高盗垒成功率，更能保护球员避免受伤。</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ChatGPT 分析 -->
+            <section id="chatgpt">
+                <div class="ai-card">
+                    <div class="ai-card-header chatgpt">💬 ChatGPT 分析</div>
+                    <div class="ai-card-content">
+                        <p>可以，这张表我按比赛复盘表来给你拆。</p>
+
+                        <div class="warning-box">
+                            先说结论：这场你们进攻很猛，靠上垒+盗垒把压力打满了；但防守和投捕环节丢分偏多，尤其是坏球、漏接、传球失误、对跑者的观察不够。看起来是典型的 "能得很多分，但也送了不少分" 的比赛。
+                        </div>
+
+                        <h3>一、进攻端：很有杀伤力</h3>
+                        <p>从表里最明显的特点有两个：</p>
+
+                        <h4>1）前几棒输出很强</h4>
+                        <p>核心几个人的数据非常亮眼：</p>
+                        <ul>
+                            <li><strong>闫勋捷：</strong>8打席、6打数、4得点、2一垒安打、2二垒安打、4打点、8盗垒、2保送 —— 这一行基本就是进攻发动机+终结点。既能上垒，也能推进，还能靠盗垒持续施压。</li>
+                            <li><strong>Max：</strong>6打席、5打数、3得点、1一垒安打、2二垒安打、3打点、5盗垒 —— 长打价值很高，是第二个强点。</li>
+                            <li><strong>付昌泽：</strong>6打席、4打数、1得点、3一垒安打、1二垒安打、3打点、1保送 —— 这属于非常高效的中轴输出，纯看击球质量也很好。</li>
+                        </ul>
+                        <p>这三个人基本把进攻主干撑起来了。</p>
+
+                        <h4>2）盗垒侵略性非常强</h4>
+                        <p>表里盗垒数很夸张，说明你们不是等安打串联，而是上垒后立刻给对面持续压力。这类打法在青少棒很有效，因为对方一旦投捕或内场处理球不稳，就会连续掉分。</p>
+
+                        <h3>二、进攻端的问题：aggressive 是对的，但有些分可以更聪明地拿</h3>
+                        <p>表右侧也写得很清楚，有几种"可惜球"：</p>
+                        <ul>
+                            <li><strong>盗本垒时机偏急：</strong>比如"三垒盗本垒被触杀太可惜，一二垒没人，可以等漏球拿分"。这个判断很对。青少棒拿分很多时候不是硬抢，而是等投捕失误自然送分。</li>
+                            <li><strong>跑垒细节不够：</strong>付昌泽那两条很典型："一垒盗二垒速度慢、没滑垒，被触杀"、"二垒盗三垒速度慢、没滑垒，被触杀"。说明不是不能跑，是起跑、节奏、滑垒动作没做完整。</li>
+                            <li><strong>部分打者三振偏多：</strong>比如瞿裕桐3K、刘景天4K。这会让前面辛苦制造的机会断掉。你们这队整体很适合"打出去+跑起来"，所以两好球后的缩棒、碰球、自保能力很关键。</li>
+                        </ul>
+
+                        <h3>三、防守端：丢分主要不是被打爆，而是自己送机会</h3>
+                        <p>右边防守复盘最核心的问题，不是"对面特别会打"，而是这些：</p>
+
+                        <h4>1）投手坏球率高 / 暴投捕逸多</h4>
+                        <p>这是最大丢分源。表里提到：</p>
+                        <ul>
+                            <li>闫勋捷投球时坏球率高，保送3人后被换下</li>
+                            <li>另一位投手一度连续7个好球、K了3人，但同时有暴投或捕逸3颗，失3分</li>
+                            <li>刘景天第一次上丘时也有好球率低、连续暴投3次、投球中身一次</li>
+                        </ul>
+                        <p>这说明问题不是没人能投，而是稳定性差。一旦进入青少棒比赛节奏，四坏+暴投+捕逸比被打安打更伤。</p>
+
+                        <h4>2）接球与传球失误偏多</h4>
+                        <p>表里能看到的失误点不少：</p>
+                        <ul>
+                            <li>捕手传一垒传冒</li>
+                            <li>三垒掉球、漏球</li>
+                            <li>二垒漏接</li>
+                            <li>游击失误</li>
+                            <li>左外接球失误2次</li>
+                            <li>中外漏球1次</li>
+                            <li>右外有一次接杀，算亮点</li>
+                        </ul>
+                        <p>这说明不是某一个位置单独崩，而是全队"第一下接稳、第二下传准"都还不稳定。</p>
+
+                        <h4>3）对跑者和局面的观察不够</h4>
+                        <p>这类失分很伤：</p>
+                        <ul>
+                            <li>"内场球回投手丘低头不看三垒3次"</li>
+                            <li>牵制二垒时传冒，结果跑者继续推进甚至回本垒</li>
+                            <li>有球打到二垒处理慢，打者安全上垒</li>
+                        </ul>
+                        <p>这类不是技术绝对做不到，而是抬头、先看跑者、先想出局数和下一垒包的比赛意识问题。</p>
+
+                        <h3>四、个人点评</h3>
+                        <p>按这张表里能看清的内容，我会这么看：</p>
+
+                        <h4>进攻最佳</h4>
+                        <ul>
+                            <li><strong>闫勋捷：</strong>全场最有存在感，既有安打、长打、打点，也有超强盗垒威胁。</li>
+                            <li><strong>Max：</strong>长打价值突出，二垒安打很关键。</li>
+                            <li><strong>付昌泽：</strong>纯进攻效率非常高，但跑垒细节还能再抠。</li>
+                        </ul>
+
+                        <h4>防守亮点</h4>
+                        <ul>
+                            <li><strong>瞿裕桐：</strong>右外接杀一次，这种球很提气。</li>
+                            <li><strong>Max：</strong>三垒传一垒成功一次，说明有处理球能力。</li>
+                            <li><strong>孙嘉泽：</strong>捕手"连续接好球"，第一次投捕配合"及格"，这其实是好信号。</li>
+                        </ul>
+
+                        <h4>需要重点提升的点</h4>
+                        <ul>
+                            <li><strong>投手组：</strong>先把"进好球带、减少四坏和暴投"放在第一位。</li>
+                            <li><strong>捕手/内场：</strong>接稳再传，不要急着做高难度。</li>
+                            <li><strong>跑垒组：</strong>盗垒要配套滑垒；三垒有人时先学会"看漏球、看传球、看防守站位"。</li>
+                            <li><strong>高三振打者：</strong>两好球后的保命能力要练。</li>
+                        </ul>
+
+                        <h3>五、如果我是教练，我下次训练只抓这 4 件事</h3>
+                        <div class="highlight-box">
+                            <ol>
+                                <li><strong>投手：</strong>先练 60% 以上好球率 —— 不用追求多快，先能连续进好球。</li>
+                                <li><strong>捕手+投手：</strong>专项练挡球、接球后找球 —— 把暴投/捕逸失分压下来，比赛内容会立刻好很多。</li>
+                                <li><strong>内场：</strong>接球—抬头—传球 的固定流程 —— 尤其二垒、三垒、游击，先别乱忙。</li>
+                                <li><strong>跑垒：</strong>滑垒和盗本垒时机
+                                    <ul>
+                                        <li>盗二盗三必须带滑垒</li>
+                                        <li>三垒跑者优先等漏球、传球失误、内场注意力不集中</li>
+                                    </ul>
+                                </li>
+                            </ol>
+                        </div>
+
+                        <div class="info-box">
+                            <strong>一句话总结：</strong>你们这队进攻很有冲击力，已经有"会拿分"的样子；现在最该补的不是打击，而是防守基本功和投捕稳定性。只要把送分减少，比赛质量会马上上一个台阶。
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="contact-footer">
+            <p><strong>烈光少棒赤狐队</strong></p>
+            <p>友谊第一，比赛第二 · 烈光少棒加油</p>
+            <p>数据分析日期：2026年4月 | 数据来源：猛虎杯小组赛</p>
+        </footer>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="image-modal">
+        <button class="modal-close" aria-label="Close modal">&times;</button>
+        <img class="modal-content" id="modalImage">
+        <div class="modal-caption" id="modalCaption"></div>
+    </div>
+
+    <script>
+        /* ============================================
+           Image Modal Functionality
+           ============================================ */
+        (function() {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const modalCaption = document.getElementById('modalCaption');
+            const closeBtn = document.querySelector('.modal-close');
+
+            // Open modal on image click
+            document.querySelectorAll('.image-container img').forEach(img => {
+                img.addEventListener('click', function() {
+                    modal.classList.add('active');
+                    modalImg.src = this.src;
+                    const caption = this.closest('.image-container').querySelector('.image-caption');
+                    modalCaption.textContent = caption ? caption.textContent : '';
+                });
+            });
+
+            // Close modal functions
+            const closeModal = () => modal.classList.remove('active');
+            
+            closeBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+        })();
+    </script>
+</body>
+</html>
