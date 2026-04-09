@@ -34,7 +34,7 @@ describe('Video Autopause Feature', () => {
 
     async function loginToPage() {
         // Load the page
-        const filePath = 'file://' + path.resolve(__dirname, '../index.html');
+        const filePath = 'file://' + path.resolve(__dirname, '../match_review.html');
         await page.goto(filePath, { waitUntil: 'networkidle2' });
         
         // Check if already logged in (main content visible)
