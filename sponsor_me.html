@@ -226,7 +226,7 @@
 
         .stats {
             display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 12px;
             margin-top: 26px;
         }
@@ -380,6 +380,7 @@
             background: rgba(255, 255, 255, 0.08);
             object-fit: cover;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.28);
+            cursor: zoom-in;
         }
 
         .offer-card h2 {
@@ -411,6 +412,54 @@
         .skewer .price-tag {
             color: #fff7e8;
             background: linear-gradient(135deg, #c14f00, #ff8a00);
+        }
+
+        .logistics .price-tag {
+            color: #0d3b45;
+            background: linear-gradient(135deg, #c8f1ff, #eefcff);
+        }
+
+        .offer-card.logistics {
+            grid-column: 1 / -1;
+        }
+
+        .image-modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: rgba(0, 0, 0, 0.82);
+            backdrop-filter: blur(8px);
+            z-index: 10;
+        }
+
+        .image-modal.open {
+            display: flex;
+        }
+
+        .image-modal img {
+            display: block;
+            max-width: min(92vw, 980px);
+            max-height: 88vh;
+            border-radius: 24px;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+            background: #111111;
+        }
+
+        .image-modal-close {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            width: 44px;
+            height: 44px;
+            border: 0;
+            border-radius: 50%;
+            background: rgba(255, 247, 232, 0.14);
+            color: var(--ink);
+            font-size: 1.5rem;
+            cursor: pointer;
         }
 
         .timeline {
@@ -609,6 +658,10 @@
                         <strong>羊肉串能量</strong>
                         <span>比赛日补给，也要有一点烟火气</span>
                     </div>
+                    <div class="stat">
+                        <strong>记录后勤补给</strong>
+                        <span>给记数据、拍视频的家长也补上一份场边能量</span>
+                    </div>
                 </div>
             </article>
 
@@ -625,7 +678,7 @@
 
         <section class="offers" aria-label="赞助灵感">
             <article class="offer-card baseball">
-                <img src="./img/350.png" alt="训练用棒球">
+                <img src="./img/350.png" alt="训练用棒球" data-zoomable>
                 <div>
                     <h2>一颗球计划</h2>
                     <p>
@@ -637,7 +690,7 @@
             </article>
 
             <article class="offer-card skewer">
-                <img src="./img/lamb_skewers.png" alt="羊肉串补给">
+                <img src="./img/lamb_skewers.png" alt="羊肉串补给" data-zoomable>
                 <div>
                     <h2>加餐暴击包</h2>
                     <p>
@@ -645,6 +698,18 @@
                         也可以是一顿热乎乎的加餐，让训练结束后的笑声更响一点，让回家的脚步也轻快一点。
                     </p>
                     <div class="price-tag">快乐档位：¥5 也算一串火力支援</div>
+                </div>
+            </article>
+
+            <article class="offer-card logistics">
+                <img src="./img/nongfu-spring-water-380ml.jpg" alt="矿泉水补给" data-zoomable>
+                <div>
+                    <h2>记录后勤补给包</h2>
+                    <p>
+                        一场比赛能被完整留下来，不只靠场上的奔跑，也靠场边认真盯着比分、镜头和每个回合的家长。
+                        这一瓶水，是给记录比赛数据、拍视频家长的一点小补给，也是在谢谢他们把孩子们的每一次挥棒和每一局变化都认真留住。
+                    </p>
+                    <div class="price-tag">守护档位：¥1.5 也是一瓶水的心意</div>
                 </div>
             </article>
         </section>
@@ -684,5 +749,45 @@
             <a href="./index.html">返回首页</a>
         </footer>
     </main>
+
+    <div class="image-modal" id="imageModal" aria-hidden="true">
+        <button class="image-modal-close" id="imageModalClose" type="button" aria-label="关闭放大图片">×</button>
+        <img id="imageModalImg" src="" alt="">
+    </div>
+
+    <script>
+        const imageModal = document.getElementById('imageModal');
+        const imageModalImg = document.getElementById('imageModalImg');
+        const imageModalClose = document.getElementById('imageModalClose');
+
+        function closeImageModal() {
+            imageModal.classList.remove('open');
+            imageModal.setAttribute('aria-hidden', 'true');
+            imageModalImg.src = '';
+            imageModalImg.alt = '';
+        }
+
+        document.querySelectorAll('[data-zoomable]').forEach((img) => {
+            img.addEventListener('click', () => {
+                imageModalImg.src = img.src;
+                imageModalImg.alt = img.alt;
+                imageModal.classList.add('open');
+                imageModal.setAttribute('aria-hidden', 'false');
+            });
+        });
+
+        imageModalClose.addEventListener('click', closeImageModal);
+        imageModal.addEventListener('click', (event) => {
+            if (event.target === imageModal) {
+                closeImageModal();
+            }
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && imageModal.classList.contains('open')) {
+                closeImageModal();
+            }
+        });
+    </script>
 </body>
 </html>
