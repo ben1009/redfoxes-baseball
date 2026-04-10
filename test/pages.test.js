@@ -287,14 +287,79 @@ describe('Page Structure and Navigation Tests', () => {
 
         test('should render support offer cards', async () => withBrowser(async () => {
             const offerCards = await page.$$('.offer-card');
-            expect(offerCards.length).toBe(2);
+            expect(offerCards.length).toBe(3);
 
             const offerTitles = await page.$$eval('.offer-card h2', nodes =>
                 nodes.map(node => node.textContent.trim())
             );
             expect(offerTitles).toEqual(
-                expect.arrayContaining(['一颗球计划', '加餐暴击包'])
+                expect.arrayContaining(['一颗球计划', '加餐暴击包', '记录后勤补给包'])
             );
+        }));
+
+        test('should provide a zoom modal for sponsor item images', async () => withBrowser(async () => {
+            const zoomableImages = await page.$$('[data-zoomable]');
+            expect(zoomableImages.length).toBe(3);
+
+            const modal = await page.$('#imageModal');
+            expect(modal).not.toBeNull();
+
+            const zoomableAccessibility = await page.$$eval('[data-zoomable]', (images) =>
+                images.map((img) => ({
+                    tabindex: img.getAttribute('tabindex'),
+                    role: img.getAttribute('role'),
+                }))
+            );
+            zoomableAccessibility.forEach((img) => {
+                expect(img.tabindex).toBe('0');
+                expect(img.role).toBe('button');
+            });
+        }));
+
+        test('should open and close the sponsor image zoom modal', async () => withBrowser(async () => {
+            const firstZoomableImage = await page.$('[data-zoomable]');
+            expect(firstZoomableImage).not.toBeNull();
+
+            const expectedSrc = await firstZoomableImage.evaluate((img) => img.src);
+            await firstZoomableImage.click();
+
+            await page.waitForSelector('#imageModal.open');
+
+            const modalImageSrc = await page.$eval('#imageModalImg', (img) => img.src);
+            expect(modalImageSrc).toBe(expectedSrc);
+
+            await page.click('#imageModalClose');
+
+            const modalIsOpen = await page.$eval('#imageModal', (modal) =>
+                modal.classList.contains('open')
+            );
+            expect(modalIsOpen).toBe(false);
+        }));
+
+        test('should support keyboard zoom access and restore focus after closing', async () => withBrowser(async () => {
+            await page.focus('[data-zoomable]');
+            await page.keyboard.press('Enter');
+
+            await page.waitForSelector('#imageModal.open');
+
+            const activeElementId = await page.evaluate(() => document.activeElement.id);
+            expect(activeElementId).toBe('imageModalClose');
+
+            const bodyOverflow = await page.evaluate(() => document.body.style.overflow);
+            expect(bodyOverflow).toBe('hidden');
+
+            await page.keyboard.press('Escape');
+
+            const modalIsOpen = await page.$eval('#imageModal', (modal) =>
+                modal.classList.contains('open')
+            );
+            expect(modalIsOpen).toBe(false);
+
+            const focusedZoomableSrc = await page.evaluate(() => document.activeElement.getAttribute('src'));
+            expect(focusedZoomableSrc).toBe('./img/350.png');
+
+            const restoredBodyOverflow = await page.evaluate(() => document.body.style.overflow);
+            expect(restoredBodyOverflow).toBe('');
         }));
 
         test('should render all 16 floating background stickers', async () => withBrowser(async () => {
