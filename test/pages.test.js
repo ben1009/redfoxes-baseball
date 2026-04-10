@@ -303,6 +303,17 @@ describe('Page Structure and Navigation Tests', () => {
 
             const modal = await page.$('#imageModal');
             expect(modal).not.toBeNull();
+
+            const zoomableAccessibility = await page.$$eval('[data-zoomable]', (images) =>
+                images.map((img) => ({
+                    tabindex: img.getAttribute('tabindex'),
+                    role: img.getAttribute('role'),
+                }))
+            );
+            zoomableAccessibility.forEach((img) => {
+                expect(img.tabindex).toBe('0');
+                expect(img.role).toBe('button');
+            });
         }));
 
         test('should open and close the sponsor image zoom modal', async () => withBrowser(async () => {
@@ -323,6 +334,32 @@ describe('Page Structure and Navigation Tests', () => {
                 modal.classList.contains('open')
             );
             expect(modalIsOpen).toBe(false);
+        }));
+
+        test('should support keyboard zoom access and restore focus after closing', async () => withBrowser(async () => {
+            await page.focus('[data-zoomable]');
+            await page.keyboard.press('Enter');
+
+            await page.waitForSelector('#imageModal.open');
+
+            const activeElementId = await page.evaluate(() => document.activeElement.id);
+            expect(activeElementId).toBe('imageModalClose');
+
+            const bodyOverflow = await page.evaluate(() => document.body.style.overflow);
+            expect(bodyOverflow).toBe('hidden');
+
+            await page.keyboard.press('Escape');
+
+            const modalIsOpen = await page.$eval('#imageModal', (modal) =>
+                modal.classList.contains('open')
+            );
+            expect(modalIsOpen).toBe(false);
+
+            const focusedZoomableSrc = await page.evaluate(() => document.activeElement.getAttribute('src'));
+            expect(focusedZoomableSrc).toBe('./img/350.png');
+
+            const restoredBodyOverflow = await page.evaluate(() => document.body.style.overflow);
+            expect(restoredBodyOverflow).toBe('');
         }));
 
         test('should render all 16 floating background stickers', async () => withBrowser(async () => {

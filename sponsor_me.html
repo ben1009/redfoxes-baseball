@@ -678,7 +678,7 @@
 
         <section class="offers" aria-label="赞助灵感">
             <article class="offer-card baseball">
-                <img src="./img/350.png" alt="训练用棒球" data-zoomable>
+                <img src="./img/350.png" alt="训练用棒球" data-zoomable tabindex="0" role="button">
                 <div>
                     <h2>一颗球计划</h2>
                     <p>
@@ -690,7 +690,7 @@
             </article>
 
             <article class="offer-card skewer">
-                <img src="./img/lamb_skewers.png" alt="羊肉串补给" data-zoomable>
+                <img src="./img/lamb_skewers.png" alt="羊肉串补给" data-zoomable tabindex="0" role="button">
                 <div>
                     <h2>加餐暴击包</h2>
                     <p>
@@ -702,7 +702,7 @@
             </article>
 
             <article class="offer-card logistics">
-                <img src="./img/nongfu_spring_water_380ml.jpg" alt="矿泉水补给" data-zoomable>
+                <img src="./img/nongfu_spring_water_380ml.jpg" alt="矿泉水补给" data-zoomable tabindex="0" role="button">
                 <div>
                     <h2>记录后勤补给包</h2>
                     <p>
@@ -759,20 +759,38 @@
         const imageModal = document.getElementById('imageModal');
         const imageModalImg = document.getElementById('imageModalImg');
         const imageModalClose = document.getElementById('imageModalClose');
+        let lastFocusedZoomable = null;
+
+        function openImageModal(img) {
+            lastFocusedZoomable = img;
+            imageModalImg.src = img.src;
+            imageModalImg.alt = img.alt;
+            imageModal.classList.add('open');
+            imageModal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+            imageModalClose.focus();
+        }
 
         function closeImageModal() {
             imageModal.classList.remove('open');
             imageModal.setAttribute('aria-hidden', 'true');
             imageModalImg.src = '';
             imageModalImg.alt = '';
+            document.body.style.overflow = '';
+            if (lastFocusedZoomable) {
+                lastFocusedZoomable.focus();
+            }
         }
 
         document.querySelectorAll('[data-zoomable]').forEach((img) => {
             img.addEventListener('click', () => {
-                imageModalImg.src = img.src;
-                imageModalImg.alt = img.alt;
-                imageModal.classList.add('open');
-                imageModal.setAttribute('aria-hidden', 'false');
+                openImageModal(img);
+            });
+            img.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    openImageModal(img);
+                }
             });
         });
 
