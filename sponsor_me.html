@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>赞助赤狐 | Sponsor Me</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%A6%8A%3C/text%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QJ6EXQH8SW"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-QJ6EXQH8SW');
+    </script>
+
+    <style>
+        :root {
+            --bg: #111111;
+            --bg-alt: #201109;
+            --ink: #fff7e8;
+            --muted: rgba(255, 247, 232, 0.72);
+            --fox: #ff6a00;
+            --card: rgba(255, 247, 232, 0.08);
+            --line: rgba(255, 247, 232, 0.16);
+            --shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+            --radius: 28px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', 'Segoe UI', sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at top, rgba(255, 211, 77, 0.18), transparent 28%),
+                radial-gradient(circle at 20% 10%, rgba(255, 106, 0, 0.22), transparent 18%),
+                linear-gradient(180deg, #171717 0%, var(--bg) 42%, var(--bg-alt) 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 26px 26px;
+            mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.8), transparent 85%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .stadium-lights {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.7;
+        }
+
+        .stadium-lights::before,
+        .stadium-lights::after {
+            content: "";
+            position: absolute;
+            top: -8rem;
+            width: 34rem;
+            height: 26rem;
+            filter: blur(10px);
+            background: radial-gradient(circle, rgba(255, 244, 181, 0.55) 0%, rgba(255, 211, 77, 0.18) 38%, transparent 72%);
+        }
+
+        .stadium-lights::before {
+            left: -8rem;
+            transform: rotate(-18deg);
+        }
+
+        .stadium-lights::after {
+            right: -8rem;
+            transform: rotate(18deg);
+        }
+
+        .page {
+            position: relative;
+            z-index: 1;
+            width: min(1180px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 28px 0 48px;
+        }
+
+        .floating-stickers {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .floating-sticker {
+            position: absolute;
+            display: block;
+            top: var(--top, auto);
+            right: var(--right, auto);
+            bottom: var(--bottom, auto);
+            left: var(--left, auto);
+            width: var(--width, 80px);
+            transform: rotate(var(--rotation, 0deg));
+            opacity: var(--opacity, 0.9);
+            filter: drop-shadow(0 16px 20px rgba(0, 0, 0, 0.18));
+        }
+
+        .floating-sticker img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--ink);
+            text-decoration: none;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+        }
+
+        .brand-mark {
+            display: inline-grid;
+            place-items: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--fox), #b63f00);
+            box-shadow: 0 0 30px rgba(255, 106, 0, 0.3);
+            font-size: 1.3rem;
+        }
+
+        .topbar-note {
+            color: var(--muted);
+            font-size: 0.92rem;
+            text-align: right;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1.2fr 0.9fr;
+            gap: 24px;
+            align-items: stretch;
+            margin-bottom: 28px;
+        }
+
+        .hero-copy,
+        .hero-qr,
+        .offer-card,
+        .footer-note {
+            border: 1px solid var(--line);
+            background: var(--card);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .hero-copy {
+            padding: 34px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-copy::after {
+            content: "SUPPORT";
+            position: absolute;
+            right: -18px;
+            top: 26px;
+            font-family: 'Rubik Mono One', sans-serif;
+            font-size: clamp(3rem, 11vw, 7rem);
+            color: rgba(255, 255, 255, 0.04);
+            line-height: 0.9;
+            pointer-events: none;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 999px;
+            background: rgba(255, 211, 77, 0.12);
+            border: 1px solid rgba(255, 211, 77, 0.3);
+            color: #ffe28a;
+            font-size: 0.9rem;
+            margin-bottom: 18px;
+        }
+
+        h1 {
+            font-family: 'Rubik Mono One', 'Noto Sans SC', sans-serif;
+            font-size: clamp(2.4rem, 7vw, 5.6rem);
+            line-height: 0.95;
+            letter-spacing: 0.02em;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .hero-copy p {
+            max-width: 42rem;
+            font-size: 1.05rem;
+            line-height: 1.9;
+            color: var(--muted);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 26px;
+        }
+
+        .stat {
+            padding: 14px 16px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .stat strong {
+            display: block;
+            font-size: 1.25rem;
+            margin-bottom: 4px;
+            color: #fff0b0;
+        }
+
+        .stat span {
+            font-size: 0.88rem;
+            color: var(--muted);
+        }
+
+        .hero-qr {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 18px;
+        }
+
+        .qr-frame {
+            position: relative;
+            border-radius: 22px;
+            overflow: hidden;
+            background: linear-gradient(160deg, #2474ec, #0050c8);
+            padding: 16px;
+        }
+
+        .qr-frame img {
+            display: block;
+            width: 100%;
+            border-radius: 18px;
+        }
+
+        .qr-caption strong {
+            display: block;
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+        }
+
+        .qr-caption p {
+            color: var(--muted);
+            line-height: 1.8;
+        }
+
+        .offers {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .sticker-rally {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+
+        .sticker-card {
+            border: 1px solid var(--line);
+            background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border-radius: 24px;
+            padding: 18px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .sticker-card::before {
+            content: "";
+            position: absolute;
+            inset: auto -30px -50px auto;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 211, 77, 0.16), transparent 70%);
+        }
+
+        .sticker-card img {
+            width: min(200px, 100%);
+            height: auto;
+            margin-bottom: 12px;
+            filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.18));
+            position: relative;
+            z-index: 1;
+        }
+
+        .sticker-card h2 {
+            font-size: 1.18rem;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sticker-card p {
+            color: var(--muted);
+            line-height: 1.75;
+            font-size: 0.95rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sticker-highlight {
+            display: inline;
+            color: #fff7e8;
+            background: linear-gradient(120deg, rgba(255, 211, 77, 0.24), rgba(255, 106, 0, 0.22));
+            border-radius: 10px;
+            box-shadow: 0 0 0 1px rgba(255, 211, 77, 0.16);
+            padding: 0.08em 0.35em;
+        }
+
+        .offer-card {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 24px;
+            padding: 22px;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .offer-card::before {
+            content: "";
+            position: absolute;
+            inset: auto -40px -60px auto;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.12), transparent 70%);
+        }
+
+        .offer-card img {
+            width: 100%;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.08);
+            object-fit: cover;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.28);
+        }
+
+        .offer-card h2 {
+            font-size: 1.65rem;
+            margin-bottom: 10px;
+        }
+
+        .offer-card p {
+            color: var(--muted);
+            line-height: 1.85;
+            margin-bottom: 16px;
+        }
+
+        .price-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border-radius: 999px;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+        }
+
+        .baseball .price-tag {
+            color: #3d1700;
+            background: linear-gradient(135deg, #ffd6c2, #fff7e8);
+        }
+
+        .skewer .price-tag {
+            color: #fff7e8;
+            background: linear-gradient(135deg, #c14f00, #ff8a00);
+        }
+
+        .timeline {
+            border-radius: var(--radius);
+            border: 1px solid var(--line);
+            background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+            padding: 26px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+        }
+
+        .timeline h2 {
+            font-size: 1.5rem;
+            margin-bottom: 14px;
+        }
+
+        .timeline li {
+            color: var(--muted);
+            line-height: 1.9;
+        }
+
+        .timeline ol {
+            list-style: none;
+            display: grid;
+            gap: 14px;
+        }
+
+        .timeline li {
+            padding: 14px 16px;
+            border-radius: 18px;
+            background: rgba(0, 0, 0, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .timeline strong {
+            display: inline-block;
+            min-width: 5.5em;
+            color: #ffe28a;
+        }
+
+        .footer-note {
+            padding: 22px 24px;
+            display: flex;
+            justify-content: space-between;
+            gap: 18px;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-note p {
+            color: var(--muted);
+            line-height: 1.8;
+        }
+
+        .footer-note a {
+            color: var(--ink);
+            text-decoration: none;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 980px) {
+            .hero,
+            .offers,
+            .sticker-rally {
+                grid-template-columns: 1fr;
+            }
+
+            .offer-card {
+                grid-template-columns: 1fr;
+            }
+
+            .offer-card img {
+                max-width: 320px;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .page {
+                width: min(100% - 24px, 1180px);
+                padding-top: 20px;
+            }
+
+            .floating-stickers {
+                display: none;
+            }
+
+            .topbar,
+            .footer-note {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .hero-copy,
+            .hero-qr,
+            .offer-card,
+            .timeline,
+            .footer-note {
+                border-radius: 22px;
+            }
+
+            .hero-copy {
+                padding: 26px 22px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stadium-lights" aria-hidden="true"></div>
+    <div class="floating-stickers" aria-hidden="true">
+        <div class="floating-sticker" style="--top: 7rem; --left: 0.8rem; --width: 82px; --rotation: -12deg;">
+            <img src="./img/01_homerun.png" alt="">
+        </div>
+        <div class="floating-sticker" style="--top: 18rem; --right: 1rem; --width: 90px; --rotation: 9deg;">
+            <img src="./img/02_steal.png" alt="">
+        </div>
+        <div class="floating-sticker" style="--bottom: 4rem; --left: 3.5rem; --width: 84px; --rotation: -10deg; --opacity: 0.82;">
+            <img src="./img/03_grandslam.png" alt="">
+        </div>
+        <div class="floating-sticker" style="--top: 6rem; --right: 8.5rem; --width: 76px; --rotation: -8deg; --opacity: 0.76;">
+            <img src="./img/04_strikeout.png" alt="">
+        </div>
+        <div class="floating-sticker" style="--top: 32rem; --left: 1rem; --width: 76px; --rotation: 7deg; --opacity: 0.74;">
+            <img src="./img/05_hit.png" alt="">
+        </div>
+        <div class="floating-sticker" style="--bottom: 17rem; --right: 4rem; --width: 86px; --rotation: 11deg; --opacity: 0.8;">
+            <img src="./img/06_goodpitch.png" alt="">
+        </div>
+        <div class="floating-sticker" style="--bottom: 1rem; --right: 12rem; --width: 78px; --rotation: -6deg; --opacity: 0.72;">
+            <img src="./img/07_catch.png" alt="">
+        </div>
+        <div class="floating-sticker" style="--top: 19rem; --left: 2rem; --width: 80px; --rotation: 10deg; --opacity: 0.74;">
+            <img src="./img/08_cheerleading.png" alt="">
+        </div>
+        <div class="floating-sticker" style="--top: 30rem; --right: 2rem; --width: 78px; --rotation: -9deg; --opacity: 0.76;">
+            <img src="./img/09_goforit.png" alt="">
+        </div>
+        <div class="floating-sticker" style="--top: 44rem; --right: 8rem; --width: 74px; --rotation: 8deg; --opacity: 0.7;">
+            <img src="./img/10_mvp.png" alt="">
+        </div>
+        <div class="floating-sticker" style="--top: 48rem; --left: 2rem; --width: 80px; --rotation: -7deg; --opacity: 0.72;">
+            <img src="./img/11_weak.png" alt="">
+        </div>
+        <div class="floating-sticker" style="--bottom: 30rem; --left: 3rem; --width: 72px; --rotation: 9deg; --opacity: 0.7;">
+            <img src="./img/12_awesome.png" alt="">
+        </div>
+        <div class="floating-sticker" style="--bottom: 29rem; --right: 1.5rem; --width: 74px; --rotation: -11deg; --opacity: 0.74;">
+            <img src="./img/13_okay.png" alt="">
+        </div>
+        <div class="floating-sticker" style="--bottom: 16rem; --left: 1rem; --width: 80px; --rotation: 6deg; --opacity: 0.7;">
+            <img src="./img/14_gotthis.png" alt="">
+        </div>
+        <div class="floating-sticker" style="--bottom: 6rem; --right: 0.8rem; --width: 78px; --rotation: -8deg; --opacity: 0.74;">
+            <img src="./img/15_steady.png" alt="">
+        </div>
+        <div class="floating-sticker" style="--bottom: 0.8rem; --left: 15rem; --width: 82px; --rotation: 8deg; --opacity: 0.68;">
+            <img src="./img/16_champion.png" alt="">
+        </div>
+    </div>
+
+    <main class="page">
+        <div class="topbar">
+            <a class="brand" href="./index.html">
+                <span class="brand-mark">🦊</span>
+                <span>烈光少棒赤狐队</span>
+            </a>
+            <p class="topbar-note">Sponsor Me / 一次扫码，给小球员一点燃料</p>
+        </div>
+
+        <section class="hero">
+            <article class="hero-copy">
+                <div class="eyebrow">主场灯光已打开 · 欢迎赞助赤狐</div>
+                <h1>SPONSOR<br>THE FOXES</h1>
+                <p>
+                    这不是一页冷冰冰的“打赏”页面，这是一张赤狐补给单。
+                    你的每一份支持，都会变成训练球、比赛日补给、赛后那句还带着汗的“再来一场”。
+                    如果你喜欢少年棒球的认真、喜欢孩子们全力奔跑的样子，或者只是想给这支队伍偷偷续一格能量，
+                    那就从这里助攻。
+                </p>
+
+                <div class="stats">
+                    <div class="stat">
+                        <strong>1 次扫码</strong>
+                        <span>换来一份训练场上的实打实支持</span>
+                    </div>
+                    <div class="stat">
+                        <strong>350 规格球</strong>
+                        <span>练投、练打、练守备，消耗都是真实的</span>
+                    </div>
+                    <div class="stat">
+                        <strong>羊肉串能量</strong>
+                        <span>比赛日补给，也要有一点烟火气</span>
+                    </div>
+                </div>
+            </article>
+
+            <aside class="hero-qr">
+                <div class="qr-frame">
+                    <img src="./img/sponsor_me.PNG" alt="支付宝赞助二维码">
+                </div>
+                <div class="qr-caption">
+                    <strong>扫码进入赤狐补给站</strong>
+                    <p>推荐使用支付宝。金额随意，心意拉满。扫完这一张码，你就已经在给赤狐队送出一个场外助攻。</p>
+                </div>
+            </aside>
+        </section>
+
+        <section class="offers" aria-label="赞助灵感">
+            <article class="offer-card baseball">
+                <img src="./img/350.png" alt="训练用棒球">
+                <div>
+                    <h2>一颗球计划</h2>
+                    <p>
+                        棒球不是抽象概念，它会磨损、会飞丢、会被反复击打。你赞助的不是一个数字，
+                        而是下一次投手热身、下一次外野接杀、下一次内野双杀练习真正落地的起点。
+                    </p>
+                    <div class="price-tag">灵感档位：¥29 起</div>
+                </div>
+            </article>
+
+            <article class="offer-card skewer">
+                <img src="./img/lamb_skewers.png" alt="羊肉串补给">
+                <div>
+                    <h2>加餐暴击包</h2>
+                    <p>
+                        小球员也有比赛后的庆功胃口。补给不只是一瓶水，
+                        也可以是一顿热乎乎的加餐，让训练结束后的笑声更响一点，让回家的脚步也轻快一点。
+                    </p>
+                    <div class="price-tag">快乐档位：¥5 也算一串火力支援</div>
+                </div>
+            </article>
+        </section>
+
+        <section class="sticker-rally" aria-label="赤狐应援贴纸">
+            <article class="sticker-card">
+                <img src="./img/16_champion.png" alt="称霸全国贴纸">
+                <h2>称霸全国模式</h2>
+                <p>这是理想值，也是士气值。每一次支持，都是帮孩子们把“想赢”练成“能赢”。</p>
+            </article>
+
+            <article class="sticker-card">
+                <img src="./img/12_awesome.png" alt="绝绝子贴纸">
+                <h2>绝绝子认可</h2>
+                <p><span class="sticker-highlight">如果这页让你觉得“可以，整得挺好”，那这张贴纸就是最直接的表情包回应。</span></p>
+            </article>
+
+            <article class="sticker-card">
+                <img src="./img/14_gotthis.png" alt="交给我贴纸">
+                <h2>交给我助攻</h2>
+                <p>场上他们负责拼，场外这一份补给和支持，就交给愿意出手的你。</p>
+            </article>
+        </section>
+
+        <section class="timeline">
+            <h2>赞助之后会发生什么</h2>
+            <ol>
+                <li><strong>第 1 步</strong> 打开支付宝，扫右侧二维码。</li>
+                <li><strong>第 2 步</strong> 按你的节奏支持，金额不限。</li>
+                <li><strong>第 3 步</strong> 你的心意会流向训练器材、比赛补给和球队日常。</li>
+                <li><strong>第 4 步</strong> 赤狐继续上场，继续跑，继续把比赛打得热气腾腾。</li>
+            </ol>
+        </section>
+
+        <footer class="footer-note">
+            <p>烈光少棒赤狐队 · 友谊第一，比赛第二。感谢每一位给孩子们加油的人。</p>
+            <a href="./index.html">返回首页</a>
+        </footer>
+    </main>
+</body>
+</html>
