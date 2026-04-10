@@ -309,12 +309,12 @@ describe('Page Structure and Navigation Tests', () => {
             const firstZoomableImage = await page.$('[data-zoomable]');
             expect(firstZoomableImage).not.toBeNull();
 
-            const expectedSrc = await firstZoomableImage.evaluate((img) => img.getAttribute('src'));
+            const expectedSrc = await firstZoomableImage.evaluate((img) => img.src);
             await firstZoomableImage.click();
 
             await page.waitForSelector('#imageModal.open');
 
-            const modalImageSrc = await page.$eval('#imageModalImg', (img) => img.getAttribute('src'));
+            const modalImageSrc = await page.$eval('#imageModalImg', (img) => img.src);
             expect(modalImageSrc).toBe(expectedSrc);
 
             await page.click('#imageModalClose');
