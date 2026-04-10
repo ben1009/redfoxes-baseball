@@ -304,8 +304,8 @@ describe('Page Structure and Navigation Tests', () => {
             const stickerSources = await page.$$eval('.floating-sticker img', nodes =>
                 nodes.map(node => node.getAttribute('src'))
             );
-            expect(stickerSources).toContain('./img/01_本垒打_主图.png');
-            expect(stickerSources).toContain('./img/16_称霸全国_主图.png');
+            expect(stickerSources).toContain('./img/01_homerun.png');
+            expect(stickerSources).toContain('./img/16_champion.png');
         }));
 
         test('should include sticker rally and timeline sections', async () => withBrowser(async () => {
