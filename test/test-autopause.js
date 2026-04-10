@@ -18,6 +18,7 @@ async function runTest() {
     
     const browser = await puppeteer.launch({
         headless: 'new',
+        pipe: true,
         args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
     
