@@ -18,6 +18,7 @@ const PAGE_PATHS = {
     matchReview: 'file://' + path.resolve(__dirname, '../match_review.html'),
     rules: 'file://' + path.resolve(__dirname, '../u10_rules.html'),
     groupstage: 'file://' + path.resolve(__dirname, '../tigercup_groupstage.html'),
+    finalstage: 'file://' + path.resolve(__dirname, '../tigercup_finalstage.html'),
     sponsor: 'file://' + path.resolve(__dirname, '../sponsor_me.html')
 };
 
@@ -75,12 +76,12 @@ describe('Page Structure and Navigation Tests', () => {
             expect(teamLogo).not.toBeNull();
         }));
 
-        test('should have navigation grid with 4 cards', async () => withBrowser(async () => {
+        test('should have navigation grid with 5 cards', async () => withBrowser(async () => {
             const navGrid = await page.$('.nav-grid');
             expect(navGrid).not.toBeNull();
             
             const cards = await page.$$('.nav-card');
-            expect(cards.length).toBe(4);
+            expect(cards.length).toBe(5);
         }));
 
         test('should have correct navigation links', async () => withBrowser(async () => {
@@ -91,6 +92,7 @@ describe('Page Structure and Navigation Tests', () => {
             expect(links).toContain('match_review.html');
             expect(links).toContain('u10_rules.html');
             expect(links).toContain('tigercup_groupstage.html');
+            expect(links).toContain('tigercup_finalstage.html');
             expect(links).toContain('sponsor_me.html');
         }));
 
@@ -260,6 +262,92 @@ describe('Page Structure and Navigation Tests', () => {
             const footerText = await footer.evaluate(el => el.textContent);
             expect(footerText).toContain('猛虎杯小组赛');
         }));
+
+        test('should have link back to index and finalstage', async () => withBrowser(async () => {
+            const navLinks = await page.$$eval('.nav-link', links => 
+                links.map(link => link.getAttribute('href'))
+            );
+            
+            expect(navLinks).toContain('index.html');
+            expect(navLinks).toContain('tigercup_finalstage.html');
+        }));
+    });
+
+    describe('Finalstage Analysis Page (tigercup_finalstage.html)', () => {
+        beforeEach(async () => {
+            if (!browserLaunchError) {
+                await page.goto(PAGE_PATHS.finalstage, { waitUntil: 'networkidle2' });
+            }
+        });
+
+        test('should have correct page title', async () => withBrowser(async () => {
+            const title = await page.title();
+            expect(title).toContain('猛虎杯');
+            expect(title).toContain('决赛');
+            expect(title).toContain('数据分析');
+        }));
+
+        test('should have finalstage data image', async () => withBrowser(async () => {
+            const dataImage = await page.$('img[src*="finalstage_data"]');
+            expect(dataImage).not.toBeNull();
+        }));
+
+        test('should have final ranking image', async () => withBrowser(async () => {
+            const rankingImage = await page.$('img[src*="tigercup_final_ranking"]');
+            expect(rankingImage).not.toBeNull();
+        }));
+
+        test('should have match score records', async () => withBrowser(async () => {
+            const pageContent = await page.evaluate(() => document.body.textContent);
+            expect(pageContent).toContain('北京励豹棒球俱乐部');
+            expect(pageContent).toContain('飞雪陨劫');
+            expect(pageContent).toContain('北京同心棒垒球俱乐部');
+        }));
+
+        test('should have navigation to all AI analysis sections', async () => withBrowser(async () => {
+            const navLinks = await page.$$eval('.nav-link', links => 
+                links.map(link => link.getAttribute('href'))
+            );
+            
+            expect(navLinks).toContain('#gemini');
+            expect(navLinks).toContain('#chatgpt');
+            expect(navLinks).toContain('#kimi');
+        }));
+
+        test('should have AI analysis cards', async () => withBrowser(async () => {
+            const aiCards = await page.$$('.ai-card');
+            expect(aiCards.length).toBe(3);
+        }));
+
+        test('should have player statistics tables', async () => withBrowser(async () => {
+            const tables = await page.$$('table');
+            expect(tables.length).toBeGreaterThan(2);
+        }));
+
+        test('should have summary section with key metrics', async () => withBrowser(async () => {
+            const summarySection = await page.$('.summary-section');
+            expect(summarySection).not.toBeNull();
+            
+            const metricCards = await summarySection.$$('.metric-card');
+            expect(metricCards.length).toBe(3);
+        }));
+
+        test('should have data source footer', async () => withBrowser(async () => {
+            const footer = await page.$('.contact-footer');
+            expect(footer).not.toBeNull();
+            
+            const footerText = await footer.evaluate(el => el.textContent);
+            expect(footerText).toContain('猛虎杯决赛');
+        }));
+
+        test('should have link back to index and groupstage', async () => withBrowser(async () => {
+            const navLinks = await page.$$eval('.nav-link', links => 
+                links.map(link => link.getAttribute('href'))
+            );
+            
+            expect(navLinks).toContain('index.html');
+            expect(navLinks).toContain('tigercup_groupstage.html');
+        }));
     });
 
     describe('Sponsor Page (sponsor_me.html)', () => {
@@ -405,6 +493,13 @@ describe('Page Structure and Navigation Tests', () => {
             expect(groupstageLink).not.toBeNull();
         }));
 
+        test('should navigate from index to finalstage page', async () => withBrowser(async () => {
+            await page.goto(PAGE_PATHS.index, { waitUntil: 'networkidle2' });
+
+            const finalstageLink = await page.$('a[href="tigercup_finalstage.html"]');
+            expect(finalstageLink).not.toBeNull();
+        }));
+
         test('should navigate from index to sponsor page', async () => withBrowser(async () => {
             await page.goto(PAGE_PATHS.index, { waitUntil: 'networkidle2' });
 
@@ -420,8 +515,11 @@ describe('File Existence Tests', () => {
         'match_review.html',
         'u10_rules.html',
         'tigercup_groupstage.html',
+        'tigercup_finalstage.html',
         'sponsor_me.html',
-        'img/groupstage_data.png'
+        'img/groupstage_data.png',
+        'img/finalstage_data.png',
+        'img/tigercup_final_ranking.jpg'
     ];
 
     files.forEach(file => {
