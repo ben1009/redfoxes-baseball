@@ -1,7 +1,7 @@
 # AGENTS.md - Red Foxes Baseball Team Website
 
 > This file provides essential context for AI coding agents working on this project.
-> Last updated: 2026-04-09
+> Last updated: 2026-04-13
 
 ---
 
@@ -13,6 +13,7 @@ This is a **static website** for **烈光少棒赤狐队 (Red Foxes Youth Baseba
 2. **Match Review** (`match_review.html`) - Seven tactical video clips with analysis
 3. **U10 Tournament Rules** (`u10_rules.html`) - Complete competition regulations  
 4. **Groupstage Analysis** (`tigercup_groupstage.html`) - Multi-AI performance analysis
+5. **Finalstage Analysis** (`tigercup_finalstage.html`) - Multi-AI final match analysis
 
 - **Live Site**: https://ben1009.github.io/redfoxes-baseball/
 - **Language**: Chinese (Simplified)
@@ -44,6 +45,7 @@ redfoxes-baseball/
 ├── match_review.html          # Match review page (7 tactical clips, password protected)
 ├── u10_rules.html             # U10 tournament rules page
 ├── tigercup_groupstage.html   # Groupstage performance analysis
+├── tigercup_finalstage.html   # Finalstage performance analysis
 ├── u10_rules.js               # U10 page JavaScript (image modal)
 ├── README.md                  # Project documentation
 ├── AGENTS.md                  # This file
@@ -52,7 +54,9 @@ redfoxes-baseball/
     ├── 01_本垒打_主图.png ... 16_称霸全国_主图.png
     ├── schedule.jpg           # U10 tournament schedule
     ├── venue_map.jpg          # Venue map
-    └── groupstage_data.png    # Groupstage match statistics
+    ├── groupstage_data.png    # Groupstage match statistics
+    ├── finalstage_data.png    # Finalstage match statistics
+    └── tigercup_final_ranking.jpg  # Final tournament ranking
 ```
 
 ### File Organization Notes
@@ -61,6 +65,7 @@ redfoxes-baseball/
 - **match_review.html**: Single-file architecture (HTML + CSS + JS), password protected
 - **u10_rules.html**: External CSS in style tag, external JS via u10_rules.js
 - **tigercup_groupstage.html**: Multi-AI analysis page with tables
+- **tigercup_finalstage.html**: Multi-AI final analysis page with tables, match scores, and ranking image
 - No build process or bundling required
 - No framework dependencies
 
@@ -126,10 +131,11 @@ u10_rules.html:
 - .image-modal - Full-screen image lightbox
 - .metric-card - Stats card
 
-tigercup_groupstage.html:
+tigercup_groupstage.html / tigercup_finalstage.html:
 - .ai-card - Container for AI analysis
 - .ai-card-header.kimi/gemini/chatgpt - Brand colors
 - .summary-section - Key metrics summary
+- .page-nav - Sticky navigation with cross-page links
 
 ### JavaScript Components
 
@@ -195,7 +201,7 @@ Tests include:
 
 ### index.html (Navigation Hub)
 - Header displays team logo and motto
-- 3 navigation cards are present and clickable
+- 5 navigation cards are present and clickable
 - All links navigate to correct pages
 - Responsive layout works on mobile
 
@@ -215,7 +221,14 @@ Tests include:
 - Data image displays correctly
 - All 3 AI analysis cards are present
 - Tables render correctly on mobile
-- Navigation links work
+- Navigation links work (including cross-page links to index and finalstage)
+
+### tigercup_finalstage.html
+- Data image and final ranking image display correctly
+- Match score records are present
+- All 3 AI analysis cards are present
+- Tables render correctly on mobile
+- Navigation links work (including cross-page links to index and groupstage)
 
 ### General
 - Responsive layout works on mobile (320px+)

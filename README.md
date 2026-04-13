@@ -11,7 +11,7 @@ This is the official website for **烈光少棒赤狐队 (Red Foxes Youth Baseba
 
 - **Match Reviews** - Tactical analysis videos from friendship matches
 - **Tournament Information** - Rules and schedules for competitions
-- **Performance Analysis** - Data-driven player performance insights
+- **Performance Analysis** - Data-driven player performance insights (groupstage + finalstage)
 
 ## 🔗 Live Demo
 
@@ -25,12 +25,15 @@ redfoxes-baseball/
 ├── match_review.html          # Match review page (7 tactical clips with password protection)
 ├── u10_rules.html             # U10 tournament rules page
 ├── tigercup_groupstage.html   # Groupstage performance analysis with multi-AI insights
+├── tigercup_finalstage.html   # Finalstage performance analysis with multi-AI insights
 ├── u10_rules.js               # JavaScript for U10 page (image modal functionality)
 ├── img/                       # Static image assets
 │   ├── *.png                  # Decorative icons for pages
 │   ├── schedule.jpg           # U10 tournament schedule
 │   ├── venue_map.jpg          # Venue map
-│   └── groupstage_data.png    # Groupstage match statistics
+│   ├── groupstage_data.png    # Groupstage match statistics
+│   ├── finalstage_data.png    # Finalstage match statistics
+│   └── tigercup_final_ranking.jpg  # Final tournament ranking
 ├── README.md                  # Project documentation
 ├── AGENTS.md                  # Developer guide for AI coding agents
 └── LICENSE                    # CC BY-NC-SA 4.0 License
@@ -85,6 +88,27 @@ Complete regulations for the 猛虎杯 (Tiger Cup) U10 Baseball Competition:
   - Player statistics tables
   - Key metrics summary
   - Responsive tables and navigation
+  - Cross-page links to finalstage analysis and index
+
+## 🏆 Finalstage Analysis (tigercup_finalstage.html)
+
+**猛虎杯决赛数据分析** - Multi-AI Final Match Analysis
+
+- **Data Source**: 猛虎杯决赛 match statistics
+- **Analysis by**: Kimi, Gemini, ChatGPT
+- **Content**:
+  - Player batting statistics and attack index rankings
+  - Major defensive errors and player grading
+  - Groupstage vs finalstage comparison
+  - Match score records (vs 北京励豹, 飞雪陨劫, 北京同心)
+  - Final tournament ranking image
+  - "核心被针对，深度制胜" theme
+- **Features**:
+  - AI analysis cards with distinct branding
+  - Player statistics tables and grading tables
+  - Key metrics summary
+  - Responsive tables and navigation
+  - Cross-page links to groupstage analysis and index
 
 ## 🔐 Access Instructions
 
