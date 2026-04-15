@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025年秋季PONY小马棒球联赛 | U10组（Bronco-10）竞赛规则</title>
+
+    <!-- Favicon: Red Fox Emoji -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%A6%8A%3C/text%3E%3C/svg%3E">
+
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QJ6EXQH8SW"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-QJ6EXQH8SW');
+    </script>
+    <style>
+        /* ============================================
+           CSS Variables & Reset
+           ============================================ */
+        :root {
+            --color-primary: #8b4513;
+            --color-primary-light: #a0522d;
+            --color-accent: #c41e3a;
+            --color-bg-dark: #1e3c2f;
+            --color-bg-medium: #2d5a3d;
+            --color-paper: #f5f1e8;
+            --color-paper-light: #fff8e1;
+            --color-paper-accent: #ffecb3;
+            --color-text: #3e2723;
+            --color-text-secondary: #5d3a1a;
+            --color-warning-bg: #ffebee;
+            --color-info-bg: #e3f2fd;
+            --color-info-border: #1976d2;
+            --color-team-badge: #ff6f00;
+            --shadow-large: 0 20px 60px rgba(0,0,0,0.4);
+            --shadow-medium: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-small: 0 2px 8px rgba(0,0,0,0.1);
+            --shadow-image: 0 4px 12px rgba(0,0,0,0.15);
+            --border-radius-large: 12px;
+            --border-radius-medium: 8px;
+            --border-radius-small: 20px;
+        }
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* ============================================
+           Base Styles
+           ============================================ */
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, var(--color-bg-dark) 0%, var(--color-bg-medium) 50%, var(--color-bg-dark) 100%);
+            background-attachment: fixed;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(255,255,255,0.03) 2px,
+                rgba(255,255,255,0.03) 4px
+            );
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* ============================================
+           Layout Container
+           ============================================ */
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: var(--color-paper);
+            border-radius: var(--border-radius-large);
+            box-shadow: var(--shadow-large), inset 0 0 100px rgba(139, 69, 19, 0.1);
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            bottom: 15px;
+            border: 3px dashed var(--color-accent);
+            border-radius: var(--border-radius-medium);
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        /* ============================================
+           Header
+           ============================================ */
+        header {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 50%, var(--color-primary) 100%);
+            color: #fff;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            border-bottom: 4px solid var(--color-accent);
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 20px;
+            background: var(--color-accent);
+            border-radius: 50%;
+            opacity: 0.3;
+        }
+
+        h1 {
+            font-size: 2.2em;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.3em;
+            color: var(--color-paper);
+            font-weight: 500;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .badge-container {
+            margin-top: 15px;
+        }
+
+        .tournament-badge {
+            display: inline-block;
+            background: var(--color-accent);
+            color: white;
+            padding: 8px 20px;
+            border-radius: var(--border-radius-small);
+            font-size: 0.9em;
+            font-weight: bold;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .team-badge {
+            display: inline-block;
+            background: var(--color-team-badge);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            margin-left: 10px;
+            font-weight: bold;
+        }
+
+        /* ============================================
+           Main Content
+           ============================================ */
+        .content {
+            padding: 40px 50px;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%239C92AC' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+
+        section {
+            margin-bottom: 35px;
+            page-break-inside: avoid;
+        }
+
+        /* ============================================
+           Typography
+           ============================================ */
+        h2 {
+            color: var(--color-primary);
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--color-accent);
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+        }
+
+        h2::before {
+            content: '◆';
+            color: var(--color-accent);
+            margin-right: 10px;
+            font-size: 0.8em;
+        }
+
+        h3 {
+            color: var(--color-text-secondary);
+            font-size: 1.2em;
+            margin: 20px 0 12px 0;
+            font-weight: 600;
+        }
+
+        p, li {
+            line-height: 1.8;
+            color: var(--color-text);
+            font-size: 1.05em;
+            margin-bottom: 10px;
+        }
+
+        ul, ol {
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            position: relative;
+        }
+
+        li::marker {
+            color: var(--color-accent);
+        }
+
+        /* ============================================
+           Components - Highlight Box
+           ============================================ */
+        .highlight-box {
+            background: linear-gradient(135deg, var(--color-paper-light) 0%, var(--color-paper-accent) 100%);
+            border-left: 5px solid var(--color-accent);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--border-radius-medium) var(--border-radius-medium) 0;
+            box-shadow: var(--shadow-small);
+        }
+
+        .highlight-box strong {
+            color: var(--color-accent);
+            font-size: 1.1em;
+        }
+
+        .highlight-box ul {
+            margin-top: 10px;
+            margin-bottom: 0;
+        }
+
+        /* ============================================
+           Components - Warning Box
+           ============================================ */
+        .warning-box {
+            background: var(--color-warning-bg);
+            border: 2px solid var(--color-accent);
+            border-radius: var(--border-radius-medium);
+            padding: 20px;
+            margin: 20px 0;
+            color: var(--color-accent);
+            font-weight: 500;
+        }
+
+        .warning-box::before {
+            content: '⚠️ ';
+            font-size: 1.2em;
+        }
+
+        /* ============================================
+           Components - Info Box
+           ============================================ */
+        .info-box {
+            background: var(--color-info-bg);
+            border-left: 5px solid var(--color-info-border);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 var(--border-radius-medium) var(--border-radius-medium) 0;
+        }
+
+        /* ============================================
+           Components - Image Container
+           ============================================ */
+        .image-container {
+            background: white;
+            border: 3px solid var(--color-primary);
+            border-radius: var(--border-radius-large);
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: var(--shadow-image);
+            text-align: center;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--border-radius-medium);
+            display: block;
+            margin: 0 auto;
+            cursor: zoom-in;
+            transition: transform 0.2s;
+        }
+
+        .image-container img:hover {
+            transform: scale(1.02);
+        }
+
+        .image-caption {
+            margin-top: 15px;
+            color: var(--color-text-secondary);
+            font-size: 0.95em;
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        /* ============================================
+           Image Modal/Lightbox
+           ============================================ */
+        .image-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            animation: fadeIn 0.3s;
+        }
+
+        .image-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: var(--border-radius-medium);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            animation: zoomIn 0.3s;
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.8); }
+            to { transform: scale(1); }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+            z-index: 1001;
+            background: none;
+            border: none;
+            padding: 0;
+            font-family: inherit;
+            line-height: 1;
+        }
+
+        .modal-close:hover,
+        .modal-close:focus {
+            color: #bbb;
+            text-decoration: none;
+        }
+
+        .modal-caption {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: #f1f1f1;
+            font-size: 1.1em;
+            padding: 10px;
+        }
+
+        /* ============================================
+           Components - Tables
+           ============================================ */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: var(--border-radius-medium);
+            overflow: hidden;
+            box-shadow: var(--shadow-small);
+        }
+
+        th {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+            color: white;
+            padding: 14px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.05em;
+        }
+
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #e0e0e0;
+            color: var(--color-text);
+        }
+
+        tr:nth-child(even) {
+            background: #faf7f2;
+        }
+
+        tr:hover {
+            background: var(--color-paper);
+        }
+
+        /* ============================================
+           Components - Metric Cards
+           ============================================ */
+        .key-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .metric-card {
+            background: white;
+            border: 2px solid var(--color-accent);
+            border-radius: var(--border-radius-medium);
+            padding: 20px;
+            text-align: center;
+            box-shadow: var(--shadow-medium);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .metric-value {
+            font-size: 2em;
+            color: var(--color-accent);
+            font-weight: 700;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            color: var(--color-text-secondary);
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+
+        /* ============================================
+           Navigation
+           ============================================ */
+        .page-nav {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .nav-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .nav-link {
+            color: var(--color-paper);
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+            transition: background 0.2s, transform 0.2s;
+            white-space: nowrap;
+        }
+
+        .nav-link:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-1px);
+        }
+
+        .nav-link:active {
+            transform: translateY(0);
+        }
+
+        /* Smooth scroll behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Offset for sticky nav when scrolling to anchor */
+        section[id] {
+            scroll-margin-top: 60px;
+        }
+
+        /* ============================================
+           Footer
+           ============================================ */
+        .contact-footer {
+            background: var(--color-text);
+            color: var(--color-paper);
+            padding: 30px;
+            text-align: center;
+            margin-top: 40px;
+            border-radius: 0 0 var(--border-radius-large) var(--border-radius-large);
+        }
+
+        .contact-footer p {
+            color: var(--color-paper);
+            margin: 5px 0;
+        }
+
+        /* ============================================
+           Responsive Design
+           ============================================ */
+        @media (max-width: 768px) {
+            .container {
+                margin: 20px 10px;
+            }
+
+            .nav-container {
+                padding: 0 10px;
+                gap: 4px;
+            }
+
+            .nav-link {
+                padding: 4px 8px;
+                font-size: 0.8em;
+            }
+
+            section[id] {
+                scroll-margin-top: 50px;
+            }
+
+            .content {
+                padding: 25px;
+            }
+
+            h1 {
+                font-size: 1.6em;
+            }
+
+            .key-metrics {
+                grid-template-columns: 1fr;
+            }
+
+            .image-container {
+                padding: 10px;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+
+            .team-badge {
+                margin-left: 0;
+                margin-top: 10px;
+            }
+        }
+
+        /* ============================================
+           Print Styles
+           ============================================ */
+        @media print {
+            body {
+                background: white;
+            }
+
+            .container {
+                box-shadow: none;
+                margin: 0;
+            }
+
+            .container::before {
+                display: none;
+            }
+
+            .image-container {
+                break-inside: avoid;
+            }
+
+            .page-nav {
+                display: none;
+            }
+
+            section[id] {
+                scroll-margin-top: 0;
+            }
+        }
+    </style>
+    <base target="_blank">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="page-nav">
+        <div class="nav-container">
+            <a href="#field-specs" class="nav-link" target="_self">🏟️ 场地</a>
+            <a href="#game-format" class="nav-link" target="_self">⏱️ 赛制</a>
+            <a href="#pitcher-limits" class="nav-link" target="_self">⚾ 投手</a>
+            <a href="#coach-rules" class="nav-link" target="_self">👨‍🏫 教练</a>
+            <a href="#base-running" class="nav-link" target="_self">🏃 跑垒</a>
+            <a href="#preparation" class="nav-link" target="_self">📋 流程</a>
+            <a href="#weather" class="nav-link" target="_self">🌧️ 天气</a>
+            <a href="#scoring" class="nav-link" target="_self">🏆 积分</a>
+            <a href="#appeal" class="nav-link" target="_self">⚖️ 申诉</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>2025年秋季PONY小马棒球联赛</h1>
+            <div class="subtitle">天津君奥棒球联赛暨PONY小马棒球联赛合作联盟赛</div>
+            <div class="badge-container">
+                <span class="tournament-badge">U10组 · Bronco-10 竞赛规则</span>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="content">
+            <!-- 场地与器材规格 -->
+            <section id="field-specs">
+                <h2>场地与器材规格</h2>
+
+                <h3>U10组场地参数</h3>
+                <div class="key-metrics">
+                    <div class="metric-card">
+                        <span class="metric-value">18.29米</span>
+                        <span class="metric-label">垒间距</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-value">14.02米</span>
+                        <span class="metric-label">投球距离</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-value">6局/90分钟</span>
+                        <span class="metric-label">比赛时限</span>
+                    </div>
+                </div>
+
+                <h3>用球与球棒</h3>
+                <ul>
+                    <li>使用<strong>软式BR350球</strong></li>
+                    <li>使用<strong>软式金属棒</strong></li>
+                    <li><strong style="color: var(--color-accent);">禁止使用：</strong>碳纤维棒、包胶弹力棒、两段式球棒</li>
+                </ul>
+            </section>
+
+            <!-- 比赛时间 -->
+            <section id="game-format">
+                <h2>比赛时间与赛制</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>项目</th>
+                            <th>具体规定</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>比赛时长</strong></td>
+                            <td>每场6局或限时90分钟</td>
+                        </tr>
+                        <tr>
+                            <td><strong>提前结束条件</strong></td>
+                            <td>三局相差15分 / 四局相差10分</td>
+                        </tr>
+                        <tr>
+                            <td><strong>时间截止</strong></td>
+                            <td>一局结束后剩余不足10分钟，不再新开一局</td>
+                        </tr>
+                        <tr>
+                            <td><strong>后攻队领先</strong></td>
+                            <td>半局结束领先时可结束比赛</td>
+                        </tr>
+                        <tr>
+                            <td><strong>小组赛</strong></td>
+                            <td>接受平局</td>
+                        </tr>
+                        <tr>
+                            <td><strong>淘汰赛平局</strong></td>
+                            <td>进行延长局，第7局起一、二垒放跑垒员</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="highlight-box">
+                    <strong>延长局规则</strong>
+                    <p style="margin-top: 8px;">自第7局或正常时间结束后的下一局起，一、二垒放跑垒员（应轮击击球员的前两名击球员），直至比赛分出胜负。</p>
+                </div>
+            </section>
+
+            <!-- 投手规则 -->
+            <section id="pitcher-limits">
+                <h2>投手限制（严格执行）</h2>
+
+                <div class="warning-box">
+                    超局投球违规将导致该场比赛 <strong>0:20告负</strong>！
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>限制项目</th>
+                            <th>具体规定</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>单场限制</strong></td>
+                            <td>同一名投手一场比赛不能投球超过 <strong style="color:var(--color-accent)">2局</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>3天累计</strong></td>
+                            <td>同一名投手3天之内累计投球局数不能超过 <strong style="color:var(--color-accent)">10局</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>局数计算</strong></td>
+                            <td>登板即为一局</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>投手安全规定</h3>
+                <ul>
+                    <li>比赛进行过程中，裁判可进行<strong>无故中身3次</strong>，取消投手该场比赛资格</li>
+                    <li>裁判有权力判定<strong>故意中身</strong>，并驱逐相关队员离场</li>
+                </ul>
+            </section>
+
+            <!-- 教练指导 -->
+            <section id="coach-rules">
+                <h2>教练员进场指导规则</h2>
+
+                <div class="key-metrics">
+                    <div class="metric-card">
+                        <span class="metric-value">3次</span>
+                        <span class="metric-label">每场比赛可进场指导投手</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-value">更换投手</span>
+                        <span class="metric-label">同局指导两次需更换投手</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-value">1次</span>
+                        <span class="metric-label">延长局每三局可指导</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-value">间接指导</span>
+                        <span class="metric-label">教练员与队员交谈后，该队员与投手交谈，视同指导一次</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 跑垒规则 -->
+            <section id="base-running">
+                <h2>盗垒与跑垒规则</h2>
+
+                <ul>
+                    <li>跑垒员<strong>可盗垒</strong></li>
+                    <li>在球未到达或通过本垒板之前<strong>不可离垒</strong></li>
+                    <li>一旦投手持球踏上投手板投球，而球未到达或通过本垒板，跑垒员离垒即被<strong>宣告出局</strong>，该球为死球</li>
+                </ul>
+
+                <div class="highlight-box">
+                    <strong>DH规则</strong>
+                    <p style="margin-top: 8px;">U10组<strong>不执行DH（指定打击）规则</strong>。</p>
+                </div>
+            </section>
+
+            <!-- 比赛流程 -->
+            <section id="preparation">
+                <h2>比赛流程与纪律</h2>
+
+                <h3>赛前准备</h3>
+                <ul>
+                    <li>比赛开始<strong>30分钟前</strong>上交该场比赛的上场队员名单</li>
+                    <li>未列入上场名单的队员，<strong>不能参加</strong>本场比赛</li>
+                    <li>比赛开始<strong>15分钟后</strong>，如某一队到场队员人数不足9人，按 <strong>0:10判负</strong></li>
+                    <li>如双方均未按时到齐9人到场，则<strong>双方无成绩，不积分</strong></li>
+                    <li>如球队只有9人到场，受伤后至少8人可继续，受伤者后续棒次以出局计</li>
+                </ul>
+
+                <h3>攻守交换</h3>
+                <ul>
+                    <li>裁判员宣布交换攻守后，双方队员要<strong>迅速</strong>跑上跑下交换攻守</li>
+                </ul>
+
+                <h3>裁判权威</h3>
+                <ul>
+                    <li>各队教练员、运动员要<strong>尊重裁判</strong></li>
+                    <li>裁判员的判罚是比赛场上的<strong>最终判罚</strong></li>
+                    <li>任何人不能有<strong>谩骂、侮辱</strong>的行为，或<strong>拖延比赛</strong>的行为</li>
+                    <li>一旦违反，将按国家体育总局相关条例予以处罚</li>
+                </ul>
+            </section>
+
+            <!-- 天气与中断 -->
+            <section id="weather">
+                <h2>天气与比赛中断</h2>
+
+                <ul>
+                    <li>如遇不可抗力因素（如天气）中断比赛，依据<strong>主审裁判意见</strong>可提前结束比赛</li>
+                    <li>比赛结果在双方<strong>打满3局</strong>（三局下半时后攻队领先也视为打满3局）或<strong>时间超过1小时</strong>的情况下比分有效</li>
+                    <li>如不满3局且时间未满一小时，<strong>比赛无效，择期再赛</strong></li>
+                </ul>
+            </section>
+
+            <!-- 积分规则 -->
+            <section id="scoring">
+                <h2>积分与排名</h2>
+
+                <h3>积分规则</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>比赛结果</th>
+                            <th>积分</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>胜一场</td>
+                            <td><strong>3分</strong></td>
+                        </tr>
+                        <tr>
+                            <td>平一场</td>
+                            <td><strong>1分</strong></td>
+                        </tr>
+                        <tr>
+                            <td>负一场</td>
+                            <td><strong>0分</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>排名依据（积分相等时）</h3>
+                <ol>
+                    <li>相互间的<strong>胜负</strong>决定名次，胜者在前</li>
+                    <li>相互间的比赛<strong>失分少</strong>者在前</li>
+                    <li>相互间比赛<strong>得分多</strong>者名次在前</li>
+                    <li>全部比赛<strong>失分少</strong>者在前</li>
+                    <li>全部比赛<strong>得分多</strong>者在前</li>
+                    <li>以上方式如仍相等，则由<strong>裁判抛硬币</strong>决定名次</li>
+                </ol>
+            </section>
+
+            <!-- 申诉规则 -->
+            <section id="appeal">
+                <h2>申诉与资格</h2>
+
+                <div class="warning-box">
+                    本场比赛如有资格申诉，需检举人举证由组委会经仲裁委员会进行仲裁；如违反有关资格规定，违规方被判定本场比赛结果为 <strong>0:20负</strong>；比赛结束后超过 <strong>1小时</strong>，不再接受本场上诉。
+                </div>
+
+                <ul>
+                    <li>比赛中向临场裁判的质询必须由<strong>主教练</strong>提出，其他人员提出的不予接受</li>
+                    <li>凡向技术委员会提出申诉的队伍，必须在<strong>赛后1小时内</strong>提出申诉书</li>
+                    <li>需领队签字并上缴申诉金现金人民币 <strong>3000元</strong>，否则不予受理</li>
+                    <li>凡胜诉申诉费退回；若驳回，申诉费上缴组委会</li>
+                </ul>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="contact-footer">
+            <p><strong>2025年秋季PONY小马棒球联赛 · 天津赛区</strong></p>
+            <p>U10组（Bronco-10）竞赛规则</p>
+            <p>天津君奥体育文化发展有限公司</p>
+            <p>本规程解释权归天津君奥体育文化发展有限公司所有</p>
+        </footer>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="image-modal">
+        <button class="modal-close" aria-label="Close modal">&times;</button>
+        <img class="modal-content" id="modalImage">
+        <div class="modal-caption" id="modalCaption"></div>
+    </div>
+
+    <script src="u10_rules.js" defer></script>
+</body>
+</html>
