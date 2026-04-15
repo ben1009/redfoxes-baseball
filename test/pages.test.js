@@ -17,6 +17,7 @@ const PAGE_PATHS = {
     index: 'file://' + path.resolve(__dirname, '../index.html'),
     matchReview: 'file://' + path.resolve(__dirname, '../match_review.html'),
     rules: 'file://' + path.resolve(__dirname, '../u10_rules.html'),
+    ponyRules: 'file://' + path.resolve(__dirname, '../pony_u10_rules.html'),
     groupstage: 'file://' + path.resolve(__dirname, '../tigercup_groupstage.html'),
     finalstage: 'file://' + path.resolve(__dirname, '../tigercup_finalstage.html'),
     sponsor: 'file://' + path.resolve(__dirname, '../sponsor_me.html')
@@ -81,7 +82,7 @@ describe('Page Structure and Navigation Tests', () => {
             expect(navGrid).not.toBeNull();
             
             const cards = await page.$$('.nav-card');
-            expect(cards.length).toBe(5);
+            expect(cards.length).toBe(6);
         }));
 
         test('should have correct navigation links', async () => withBrowser(async () => {
@@ -91,6 +92,7 @@ describe('Page Structure and Navigation Tests', () => {
             
             expect(links).toContain('match_review.html');
             expect(links).toContain('u10_rules.html');
+            expect(links).toContain('pony_u10_rules.html');
             expect(links).toContain('tigercup_groupstage.html');
             expect(links).toContain('tigercup_finalstage.html');
             expect(links).toContain('sponsor_me.html');
@@ -206,6 +208,115 @@ describe('Page Structure and Navigation Tests', () => {
         test('should have key metrics cards', async () => withBrowser(async () => {
             const metricCards = await page.$$('.metric-card');
             expect(metricCards.length).toBeGreaterThan(0);
+        }));
+    });
+
+    describe('PONY U10 Rules Page (pony_u10_rules.html)', () => {
+        beforeEach(async () => {
+            if (!browserLaunchError) {
+                await page.goto(PAGE_PATHS.ponyRules, { waitUntil: 'networkidle2' });
+            }
+        });
+
+        test('should have correct page title', async () => withBrowser(async () => {
+            const title = await page.title();
+            expect(title).toContain('PONY小马棒球联赛');
+            expect(title).toContain('U10');
+            expect(title).toContain('Bronco-10');
+        }));
+
+        test('should have sticky navigation', async () => withBrowser(async () => {
+            const nav = await page.$('.page-nav');
+            expect(nav).not.toBeNull();
+            
+            const navLinks = await page.$$('.nav-link');
+            expect(navLinks.length).toBeGreaterThan(5);
+        }));
+
+        test('should link to external rules_style.css', async () => withBrowser(async () => {
+            const hasStylesheet = await page.evaluate(() => {
+                return document.querySelector('link[rel="stylesheet"][href="rules_style.css"]') !== null;
+            });
+            expect(hasStylesheet).toBe(true);
+        }));
+
+        test('should have field specifications section', async () => withBrowser(async () => {
+            const fieldSection = await page.$('#field-specs');
+            expect(fieldSection).not.toBeNull();
+            
+            const fieldMetrics = await fieldSection.$$('.metric-card');
+            expect(fieldMetrics.length).toBeGreaterThan(0);
+        }));
+
+        test('should have game format section with tables', async () => withBrowser(async () => {
+            const gameSection = await page.$('#game-format');
+            expect(gameSection).not.toBeNull();
+            
+            const tables = await gameSection.$$('table');
+            expect(tables.length).toBeGreaterThan(0);
+        }));
+
+        test('should have pitcher limits section', async () => withBrowser(async () => {
+            const pitcherSection = await page.$('#pitcher-limits');
+            expect(pitcherSection).not.toBeNull();
+            
+            const sectionText = await pitcherSection.evaluate(el => el.textContent);
+            expect(sectionText).toContain('2局');
+            expect(sectionText).toContain('10局');
+        }));
+
+        test('should have coach rules section', async () => withBrowser(async () => {
+            const coachSection = await page.$('#coach-rules');
+            expect(coachSection).not.toBeNull();
+            
+            const metricCards = await coachSection.$$('.metric-card');
+            expect(metricCards.length).toBeGreaterThan(0);
+        }));
+
+        test('should have base running rules section', async () => withBrowser(async () => {
+            const runningSection = await page.$('#base-running');
+            expect(runningSection).not.toBeNull();
+            
+            const sectionText = await runningSection.evaluate(el => el.textContent);
+            expect(sectionText).toContain('盗垒');
+        }));
+
+        test('should have scoring section', async () => withBrowser(async () => {
+            const scoringSection = await page.$('#scoring');
+            expect(scoringSection).not.toBeNull();
+            
+            const tables = await scoringSection.$$('table');
+            expect(tables.length).toBeGreaterThan(0);
+        }));
+
+        test('should have highlight and warning boxes', async () => withBrowser(async () => {
+            const highlightBoxes = await page.$$('.highlight-box');
+            expect(highlightBoxes.length).toBeGreaterThan(0);
+            
+            const warningBoxes = await page.$$('.warning-box');
+            expect(warningBoxes.length).toBeGreaterThan(0);
+        }));
+
+        test('should have contact footer', async () => withBrowser(async () => {
+            const footer = await page.$('.contact-footer');
+            expect(footer).not.toBeNull();
+            
+            const footerText = await footer.evaluate(el => el.textContent);
+            expect(footerText).toContain('天津君奥体育文化发展有限公司');
+        }));
+
+        test('should have Google Analytics', async () => withBrowser(async () => {
+            const hasGA = await page.evaluate(() => {
+                return typeof gtag === 'function' || 
+                       document.querySelector('script[src*="googletagmanager"]') !== null;
+            });
+            expect(hasGA).toBe(true);
+        }));
+
+        test('should use correct baseball terminology', async () => withBrowser(async () => {
+            const pageContent = await page.evaluate(() => document.body.textContent);
+            expect(pageContent).toContain('触身球');
+            expect(pageContent).not.toContain('中身');
         }));
     });
 
@@ -486,6 +597,13 @@ describe('Page Structure and Navigation Tests', () => {
             expect(rulesLink).not.toBeNull();
         }));
 
+        test('should navigate from index to pony_u10_rules page', async () => withBrowser(async () => {
+            await page.goto(PAGE_PATHS.index, { waitUntil: 'networkidle2' });
+            
+            const ponyRulesLink = await page.$('a[href="pony_u10_rules.html"]');
+            expect(ponyRulesLink).not.toBeNull();
+        }));
+
         test('should navigate from index to groupstage page', async () => withBrowser(async () => {
             await page.goto(PAGE_PATHS.index, { waitUntil: 'networkidle2' });
             
@@ -514,9 +632,11 @@ describe('File Existence Tests', () => {
         'index.html',
         'match_review.html',
         'u10_rules.html',
+        'pony_u10_rules.html',
         'tigercup_groupstage.html',
         'tigercup_finalstage.html',
         'sponsor_me.html',
+        'rules_style.css',
         'img/groupstage_data.png',
         'img/finalstage_data.png',
         'img/tigercup_final_ranking.jpg'
