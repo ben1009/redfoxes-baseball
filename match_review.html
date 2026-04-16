@@ -159,6 +159,27 @@
             max-width: 1400px;
             margin: 0 auto;
         }
+
+        .home-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            margin-top: 18px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 2px solid rgba(255, 255, 255, 0.28);
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            backdrop-filter: blur(4px);
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+
+        .home-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
         
         /* Header */
         header {
@@ -343,11 +364,11 @@
          Main Content
          ============================================ -->
     <div class="container" id="mainContent">
-        
         <!-- Header -->
         <header>
             <h1>⚾ 烈光 vs 飞雪 友谊赛</h1>
             <div class="match-info">2026年3月29日 上午 · 七个战术片段分析</div>
+            <a href="index.html" class="home-link" target="_self">🏠 返回首页</a>
         </header>
 
         <!-- Video Clips -->

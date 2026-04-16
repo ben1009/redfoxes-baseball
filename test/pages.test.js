@@ -161,6 +161,47 @@ describe('Page Structure and Navigation Tests', () => {
             expect(videoCards.length).toBe(7);
         }));
 
+        test('should show centered home link in header below match info after unlock', async () => withBrowser(async () => {
+            await page.type('#passwordInput', TEST_CONFIG.password);
+            await page.evaluate(() => {
+                const btn = document.querySelector('.password-btn');
+                if (btn) btn.click();
+            });
+            await page.waitForSelector('#mainContent.visible', { timeout: 5000 });
+
+            const headerLayout = await page.evaluate(() => {
+                const header = document.querySelector('#mainContent header');
+                const matchInfo = header?.querySelector('.match-info');
+                const homeLink = header?.querySelector('.home-link');
+
+                if (!header || !matchInfo || !homeLink) {
+                    return null;
+                }
+
+                const headerStyle = window.getComputedStyle(header);
+                const homeLinkStyle = window.getComputedStyle(homeLink);
+
+                return {
+                    href: homeLink.getAttribute('href'),
+                    target: homeLink.getAttribute('target'),
+                    text: homeLink.textContent.trim(),
+                    isInHeader: homeLink.parentElement === header,
+                    followsMatchInfo: matchInfo.nextElementSibling === homeLink,
+                    headerAlign: headerStyle.textAlign,
+                    homeLinkDisplay: homeLinkStyle.display
+                };
+            });
+
+            expect(headerLayout).not.toBeNull();
+            expect(headerLayout.href).toBe('index.html');
+            expect(headerLayout.target).toBe('_self');
+            expect(headerLayout.text).toContain('返回首页');
+            expect(headerLayout.isInHeader).toBe(true);
+            expect(headerLayout.followsMatchInfo).toBe(true);
+            expect(headerLayout.headerAlign).toBe('center');
+            expect(headerLayout.homeLinkDisplay).toBe('inline-flex');
+        }));
+
         test('should have Google Analytics', async () => withBrowser(async () => {
             const hasGA = await page.evaluate(() => {
                 return typeof gtag === 'function' || 
@@ -647,5 +688,70 @@ describe('File Existence Tests', () => {
             const filePath = path.resolve(__dirname, '..', file);
             expect(fs.existsSync(filePath)).toBe(true);
         });
+    });
+});
+
+describe('Back To Index Link Coverage', () => {
+    const pageExpectations = [
+        {
+            file: 'match_review.html',
+            requiredSnippets: [
+                '<div class="match-info">2026年3月29日 上午 · 七个战术片段分析</div>',
+                '<a href="index.html" class="home-link" target="_self">🏠 返回首页</a>'
+            ]
+        },
+        {
+            file: 'u10_rules.html',
+            requiredSnippets: [
+                '<a href="index.html" class="nav-link" target="_self">🏠 首页</a>'
+            ]
+        },
+        {
+            file: 'pony_u10_rules.html',
+            requiredSnippets: [
+                '<a href="index.html" class="nav-link" target="_self">🏠 首页</a>'
+            ]
+        },
+        {
+            file: 'tigercup_groupstage.html',
+            requiredSnippets: [
+                '<a href="index.html" class="nav-link" target="_self">🏠 首页</a>'
+            ]
+        },
+        {
+            file: 'tigercup_finalstage.html',
+            requiredSnippets: [
+                '<a href="index.html" class="nav-link" target="_self">🏠 首页</a>'
+            ]
+        },
+        {
+            file: 'sponsor_me.html',
+            requiredSnippets: [
+                '<a class="brand" href="./index.html">',
+                '<a href="./index.html">返回首页</a>'
+            ]
+        }
+    ];
+
+    pageExpectations.forEach(({ file, requiredSnippets }) => {
+        test(`${file} should contain a link back to index`, () => {
+            const filePath = path.resolve(__dirname, '..', file);
+            const html = fs.readFileSync(filePath, 'utf8');
+
+            requiredSnippets.forEach((snippet) => {
+                expect(html).toContain(snippet);
+            });
+        });
+    });
+
+    test('match_review.html should place the home link immediately after match info', () => {
+        const filePath = path.resolve(__dirname, '..', 'match_review.html');
+        const html = fs.readFileSync(filePath, 'utf8');
+        const matchInfoIndex = html.indexOf('<div class="match-info">2026年3月29日 上午 · 七个战术片段分析</div>');
+        const homeLinkIndex = html.indexOf('<a href="index.html" class="home-link" target="_self">🏠 返回首页</a>');
+
+        expect(matchInfoIndex).toBeGreaterThan(-1);
+        expect(homeLinkIndex).toBeGreaterThan(matchInfoIndex);
+        expect(html.slice(matchInfoIndex, homeLinkIndex)).not.toContain('<a ');
     });
 });
