@@ -505,7 +505,7 @@ describe('Page Structure and Navigation Tests', () => {
     describe('Sponsor Page (sponsor_me.html)', () => {
         beforeEach(async () => {
             if (!browserLaunchError) {
-                await page.goto(PAGE_PATHS.sponsor, { waitUntil: 'networkidle2' });
+                await page.goto(PAGE_PATHS.sponsor, { waitUntil: 'domcontentloaded' });
             }
         });
 
