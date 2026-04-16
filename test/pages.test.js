@@ -620,6 +620,18 @@ describe('Page Structure and Navigation Tests', () => {
             const timelineItems = await page.$$('.timeline li');
             expect(timelineItems.length).toBe(4);
         }));
+
+        test('should not include floating baseball assets', async () => withBrowser(async () => {
+            const hasBaseballFloatCss = await page.evaluate(() => {
+                return document.querySelector('link[rel="stylesheet"][href="baseball_floats.css"]') !== null;
+            });
+            const hasBaseballFloatJs = await page.evaluate(() => {
+                return document.querySelector('script[src="baseball_floats.js"]') !== null;
+            });
+
+            expect(hasBaseballFloatCss).toBe(false);
+            expect(hasBaseballFloatJs).toBe(false);
+        }));
     });
 
     describe('Cross-Page Navigation', () => {
@@ -677,6 +689,8 @@ describe('File Existence Tests', () => {
         'tigercup_groupstage.html',
         'tigercup_finalstage.html',
         'sponsor_me.html',
+        'baseball_floats.css',
+        'baseball_floats.js',
         'rules_style.css',
         'img/groupstage_data.png',
         'img/finalstage_data.png',
@@ -742,5 +756,94 @@ describe('Back To Index Link Coverage', () => {
                 expect(html).toContain(snippet);
             });
         });
+    });
+});
+
+describe('Floating Baseball Assets', () => {
+    const pagesWithFloatingBaseballs = [
+        'index.html',
+        'match_review.html',
+        'u10_rules.html',
+        'pony_u10_rules.html',
+        'tigercup_groupstage.html',
+        'tigercup_finalstage.html'
+    ];
+
+    pagesWithFloatingBaseballs.forEach((file) => {
+        test(`${file} should include floating baseball css and js`, () => {
+            const filePath = path.resolve(__dirname, '..', file);
+            const html = fs.readFileSync(filePath, 'utf8');
+
+            expect(html).toContain('href="baseball_floats.css"');
+            expect(html).toContain('src="baseball_floats.js"');
+        });
+    });
+});
+
+describe('Baseball Theme Motion Coverage', () => {
+    test('index.html should include stadium-style animation hooks', () => {
+        const html = fs.readFileSync(path.resolve(__dirname, '..', 'index.html'), 'utf8');
+
+        expect(html).toContain('@keyframes stadiumRise');
+        expect(html).toContain('@keyframes lightSweep');
+        expect(html).toContain('@keyframes cardReveal');
+        expect(html).toContain('animation: scoreboardDrop 0.9s ease-out;');
+        expect(html).toContain('@media (prefers-reduced-motion: reduce)');
+    });
+
+    test('rules_style.css should include shared baseball motion system', () => {
+        const css = fs.readFileSync(path.resolve(__dirname, '..', 'rules_style.css'), 'utf8');
+
+        expect(css).toContain('@keyframes pageEnter');
+        expect(css).toContain('@keyframes headerFlash');
+        expect(css).toContain('@keyframes sectionReveal');
+        expect(css).toContain('animation: badgePulse 2.8s ease-in-out infinite;');
+        expect(css).toContain('@media (prefers-reduced-motion: reduce)');
+    });
+
+    test('match_review.html should include animated review-page effects', () => {
+        const html = fs.readFileSync(path.resolve(__dirname, '..', 'match_review.html'), 'utf8');
+
+        expect(html).toContain('@keyframes pageFadeIn');
+        expect(html).toContain('@keyframes marqueeSweep');
+        expect(html).toContain('@keyframes cardLiftIn');
+        expect(html).toContain('animation: badgeBob 3s ease-in-out infinite;');
+        expect(html).toContain('.video-card:nth-of-type(7) { animation-delay: 0.46s; }');
+        expect(html).toContain('@media (prefers-reduced-motion: reduce)');
+    });
+
+    test('analysis pages should include report reveal animations', () => {
+        const groupstageHtml = fs.readFileSync(path.resolve(__dirname, '..', 'tigercup_groupstage.html'), 'utf8');
+        const finalstageHtml = fs.readFileSync(path.resolve(__dirname, '..', 'tigercup_finalstage.html'), 'utf8');
+
+        [groupstageHtml, finalstageHtml].forEach((html) => {
+            expect(html).toContain('@keyframes reportEnter');
+            expect(html).toContain('@keyframes scoreboardFlash');
+            expect(html).toContain('@keyframes aiReveal');
+            expect(html).toContain('@keyframes highlightSweep');
+            expect(html).toContain('.ai-card:nth-of-type(3) { animation-delay: 0.4s; }');
+            expect(html).toContain('@media (prefers-reduced-motion: reduce)');
+        });
+    });
+});
+
+describe('Floating Baseball Behavior Coverage', () => {
+    test('baseball_floats.css should keep floating baseballs passive and icon-based', () => {
+        const css = fs.readFileSync(path.resolve(__dirname, '..', 'baseball_floats.css'), 'utf8');
+
+        expect(css).toContain('pointer-events: none;');
+        expect(css).toContain('font-size: calc(var(--ball-size, 46px) - 4px);');
+        expect(css).not.toContain('.floating-baseball.is-hit');
+        expect(css).not.toContain('@keyframes baseball-hit');
+    });
+
+    test('baseball_floats.js should create seven passive baseball icons without click handlers', () => {
+        const js = fs.readFileSync(path.resolve(__dirname, '..', 'baseball_floats.js'), 'utf8');
+
+        expect(js).toContain('const BALL_COUNT = 7;');
+        expect(js).toContain("element.textContent = '⚾';");
+        expect(js).toContain('requestAnimationFrame(animate);');
+        expect(js).not.toContain("addEventListener('click'");
+        expect(js).not.toContain('classList.add(\'is-hit\')');
     });
 });
