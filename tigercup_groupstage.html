@@ -18,6 +18,8 @@
     </script>
     <link rel="stylesheet" href="baseball_floats.css">
     <script src="baseball_floats.js" defer></script>
+    <script src="scroll_reveal.js" defer></script>
+    <script src="count_up.js" defer></script>
     
     <style>
         /* ============================================
@@ -394,6 +396,29 @@
             background: linear-gradient(135deg, var(--color-chatgpt) 0%, #0d8c6d 100%);
         }
 
+        .ai-card {
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+
+        .ai-card:hover {
+            transform: translateY(-6px);
+        }
+
+        .ai-card:has(.ai-card-header.kimi):hover {
+            box-shadow: 0 20px 40px rgba(0, 168, 232, 0.22);
+            border-color: rgba(0, 168, 232, 0.45);
+        }
+
+        .ai-card:has(.ai-card-header.gemini):hover {
+            box-shadow: 0 20px 40px rgba(66, 133, 244, 0.22);
+            border-color: rgba(66, 133, 244, 0.45);
+        }
+
+        .ai-card:has(.ai-card-header.chatgpt):hover {
+            box-shadow: 0 20px 40px rgba(16, 163, 127, 0.22);
+            border-color: rgba(16, 163, 127, 0.45);
+        }
+
         .ai-card-content {
             padding: 25px;
         }
@@ -612,10 +637,61 @@
             box-shadow: 0 18px 28px rgba(0,0,0,0.12);
         }
 
+        [data-reveal] {
+            animation: none !important;
+            opacity: 0;
+            transform: translateY(18px);
+            transition: opacity 0.6s cubic-bezier(0.22, 0.61, 0.36, 1),
+                        transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+
+        [data-reveal].is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        tbody[data-reveal] tr {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        tbody[data-reveal].is-visible tr {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        tbody[data-reveal].is-visible tr:nth-child(1)  { transition-delay: 0.04s; }
+        tbody[data-reveal].is-visible tr:nth-child(2)  { transition-delay: 0.08s; }
+        tbody[data-reveal].is-visible tr:nth-child(3)  { transition-delay: 0.12s; }
+        tbody[data-reveal].is-visible tr:nth-child(4)  { transition-delay: 0.16s; }
+        tbody[data-reveal].is-visible tr:nth-child(5)  { transition-delay: 0.20s; }
+        tbody[data-reveal].is-visible tr:nth-child(6)  { transition-delay: 0.24s; }
+        tbody[data-reveal].is-visible tr:nth-child(7)  { transition-delay: 0.28s; }
+        tbody[data-reveal].is-visible tr:nth-child(8)  { transition-delay: 0.32s; }
+        tbody[data-reveal].is-visible tr:nth-child(9)  { transition-delay: 0.36s; }
+        tbody[data-reveal].is-visible tr:nth-child(10) { transition-delay: 0.40s; }
+        tbody[data-reveal].is-visible tr:nth-child(11) { transition-delay: 0.44s; }
+        tbody[data-reveal].is-visible tr:nth-child(12) { transition-delay: 0.48s; }
+        tbody[data-reveal].is-visible tr:nth-child(13) { transition-delay: 0.52s; }
+        tbody[data-reveal].is-visible tr:nth-child(14) { transition-delay: 0.56s; }
+        tbody[data-reveal].is-visible tr:nth-child(15) { transition-delay: 0.60s; }
+
+        tbody tr:hover td {
+            transform: translateX(4px);
+            transition: transform 0.2s ease;
+        }
+
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
                 animation: none !important;
                 transition: none !important;
+            }
+
+            [data-reveal],
+            tbody[data-reveal] tr {
+                opacity: 1 !important;
+                transform: none !important;
             }
         }
 
@@ -779,7 +855,7 @@
         <!-- Main Content -->
         <main class="content">
             <!-- 原始数据表 -->
-            <section id="data">
+            <section id="data" data-reveal>
                 <h2>比赛数据表</h2>
                 <div class="image-container">
                     <img src="img/groupstage_data.png" alt="烈光少棒（赤狐队）比赛数据表">
@@ -791,20 +867,20 @@
             </section>
 
             <!-- 总结 -->
-            <section id="summary">
+            <section id="summary" data-reveal>
                 <h2>三AI共识总结</h2>
                 <div class="summary-section">
                     <div class="summary-title">🎯 核心结论：攻强守弱</div>
                     <div class="key-metrics">
-                        <div class="metric-card">
+                        <div class="metric-card" data-reveal>
                             <span class="metric-value">✅</span>
                             <span class="metric-label">进攻火力强劲</span>
                         </div>
-                        <div class="metric-card">
+                        <div class="metric-card" data-reveal>
                             <span class="metric-value">⚠️</span>
                             <span class="metric-label">防守失误偏多</span>
                         </div>
-                        <div class="metric-card">
+                        <div class="metric-card" data-reveal>
                             <span class="metric-value">🎯</span>
                             <span class="metric-label">需针对性训练</span>
                         </div>
@@ -821,8 +897,8 @@
             </section>
 
             <!-- Kimi 分析 -->
-            <section id="kimi">
-                <div class="ai-card">
+            <section id="kimi" data-reveal>
+                <div class="ai-card" data-reveal>
                     <div class="ai-card-header kimi">🤖 Kimi 分析</div>
                     <div class="ai-card-content">
                         <h3>📊 整体数据概览</h3>
@@ -844,7 +920,7 @@
                                     <th>盗垒</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody data-reveal>
                                 <tr><td>1</td><td>闫勋捷</td><td>8</td><td>6</td><td>4</td><td>.667</td><td>4</td><td>4</td><td>8</td></tr>
                                 <tr><td>2</td><td>Max</td><td>6</td><td>5</td><td>3</td><td>.600</td><td>3</td><td>3</td><td>5</td></tr>
                                 <tr><td>3</td><td>付昌泽</td><td>6</td><td>4</td><td>4</td><td>1.000</td><td>1</td><td>3</td><td>2</td></tr>
@@ -873,7 +949,7 @@
                             <thead>
                                 <tr><th>球员</th><th>局数</th><th>关键数据</th><th>问题</th></tr>
                             </thead>
-                            <tbody>
+                            <tbody data-reveal>
                                 <tr><td>闫勋捷</td><td>首棒+平野</td><td>7个好球，K掉3人</td><td>坏球率高，保送3人后换下，暴投/捕逸3颗失3分</td></tr>
                                 <tr><td>刘景天</td><td>首棒</td><td>-</td><td>好球率低，连续暴投3次，投球中身1次，牵制传垒失误2次</td></tr>
                             </tbody>
@@ -894,7 +970,7 @@
                             <thead>
                                 <tr><th>球员</th><th>位置</th><th>表现</th></tr>
                             </thead>
-                            <tbody>
+                            <tbody data-reveal>
                                 <tr><td>付昌泽</td><td>游击</td><td>传杀一垒掉手套球1次，回传投手失误导致盗一分</td></tr>
                                 <tr><td>程思乐</td><td>游击</td><td>失误被二垒偷回本垒</td></tr>
                                 <tr><td>田雨稷</td><td>内场</td><td>回投手丘低头不看三垒3次（注意力问题）</td></tr>
@@ -907,7 +983,7 @@
                             <thead>
                                 <tr><th>球员</th><th>位置</th><th>表现</th></tr>
                             </thead>
-                            <tbody>
+                            <tbody data-reveal>
                                 <tr><td>瞿裕桐</td><td>右外</td><td>接杀1次 ✅</td></tr>
                                 <tr><td>张景奕</td><td>左外</td><td>接球失误2次 ❌</td></tr>
                                 <tr><td>孙嘉泽</td><td>中外</td><td>漏球1次 ❌</td></tr>
@@ -935,7 +1011,7 @@
                             <thead>
                                 <tr><th>问题类别</th><th>具体表现</th><th>建议</th></tr>
                             </thead>
-                            <tbody>
+                            <tbody data-reveal>
                                 <tr><td>投手控球</td><td>暴投、保送、中身球过多</td><td>加强控球训练，建立好球带信心</td></tr>
                                 <tr><td>捕手接球</td><td>孙嘉泽漏球、掉球频繁</td><td>专项接球训练，手套基本功</td></tr>
                                 <tr><td>盗垒技巧</td><td>付昌泽2次被触杀，无滑垒</td><td>学习滑垒技术，判断起跑时机</td></tr>
@@ -960,8 +1036,8 @@
             </section>
 
             <!-- Gemini 分析 -->
-            <section id="gemini">
-                <div class="ai-card">
+            <section id="gemini" data-reveal>
+                <div class="ai-card" data-reveal>
                     <div class="ai-card-header gemini">🌟 Gemini 分析</div>
                     <div class="ai-card-content">
                         <p>这是一份非常详细的棒球/垒球比赛球员数据统计表，不仅记录了标准的进攻数据，还包含了非常具体的防守表现和赛场细节记录。从防守备注中对失误的详细描述、投手的保送率以及大量的盗垒数据来看，这大概率是一支青少年棒球队或业余球队的比赛/训练复盘记录。</p>
@@ -1020,8 +1096,8 @@
             </section>
 
             <!-- ChatGPT 分析 -->
-            <section id="chatgpt">
-                <div class="ai-card">
+            <section id="chatgpt" data-reveal>
+                <div class="ai-card" data-reveal>
                     <div class="ai-card-header chatgpt">💬 ChatGPT 分析</div>
                     <div class="ai-card-content">
                         <p>可以，这张表我按比赛复盘表来给你拆。</p>

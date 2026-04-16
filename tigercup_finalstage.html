@@ -18,6 +18,8 @@
     </script>
     <link rel="stylesheet" href="baseball_floats.css">
     <script src="baseball_floats.js" defer></script>
+    <script src="scroll_reveal.js" defer></script>
+    <script src="count_up.js" defer></script>
     
     <style>
         /* ============================================
@@ -394,6 +396,29 @@
             background: linear-gradient(135deg, var(--color-chatgpt) 0%, #0d8c6d 100%);
         }
 
+        .ai-card {
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+
+        .ai-card:hover {
+            transform: translateY(-6px);
+        }
+
+        .ai-card:has(.ai-card-header.kimi):hover {
+            box-shadow: 0 20px 40px rgba(0, 168, 232, 0.22);
+            border-color: rgba(0, 168, 232, 0.45);
+        }
+
+        .ai-card:has(.ai-card-header.gemini):hover {
+            box-shadow: 0 20px 40px rgba(66, 133, 244, 0.22);
+            border-color: rgba(66, 133, 244, 0.45);
+        }
+
+        .ai-card:has(.ai-card-header.chatgpt):hover {
+            box-shadow: 0 20px 40px rgba(16, 163, 127, 0.22);
+            border-color: rgba(16, 163, 127, 0.45);
+        }
+
         .ai-card-content {
             padding: 25px;
         }
@@ -612,10 +637,61 @@
             box-shadow: 0 18px 28px rgba(0,0,0,0.12);
         }
 
+        [data-reveal] {
+            animation: none !important;
+            opacity: 0;
+            transform: translateY(18px);
+            transition: opacity 0.6s cubic-bezier(0.22, 0.61, 0.36, 1),
+                        transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+
+        [data-reveal].is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        tbody[data-reveal] tr {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        tbody[data-reveal].is-visible tr {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        tbody[data-reveal].is-visible tr:nth-child(1)  { transition-delay: 0.04s; }
+        tbody[data-reveal].is-visible tr:nth-child(2)  { transition-delay: 0.08s; }
+        tbody[data-reveal].is-visible tr:nth-child(3)  { transition-delay: 0.12s; }
+        tbody[data-reveal].is-visible tr:nth-child(4)  { transition-delay: 0.16s; }
+        tbody[data-reveal].is-visible tr:nth-child(5)  { transition-delay: 0.20s; }
+        tbody[data-reveal].is-visible tr:nth-child(6)  { transition-delay: 0.24s; }
+        tbody[data-reveal].is-visible tr:nth-child(7)  { transition-delay: 0.28s; }
+        tbody[data-reveal].is-visible tr:nth-child(8)  { transition-delay: 0.32s; }
+        tbody[data-reveal].is-visible tr:nth-child(9)  { transition-delay: 0.36s; }
+        tbody[data-reveal].is-visible tr:nth-child(10) { transition-delay: 0.40s; }
+        tbody[data-reveal].is-visible tr:nth-child(11) { transition-delay: 0.44s; }
+        tbody[data-reveal].is-visible tr:nth-child(12) { transition-delay: 0.48s; }
+        tbody[data-reveal].is-visible tr:nth-child(13) { transition-delay: 0.52s; }
+        tbody[data-reveal].is-visible tr:nth-child(14) { transition-delay: 0.56s; }
+        tbody[data-reveal].is-visible tr:nth-child(15) { transition-delay: 0.60s; }
+
+        tbody tr:hover td {
+            transform: translateX(4px);
+            transition: transform 0.2s ease;
+        }
+
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
                 animation: none !important;
                 transition: none !important;
+            }
+
+            [data-reveal],
+            tbody[data-reveal] tr {
+                opacity: 1 !important;
+                transform: none !important;
             }
         }
 
@@ -779,7 +855,7 @@
         <!-- Main Content -->
         <main class="content">
             <!-- 数据概览 -->
-            <section id="overview">
+            <section id="overview" data-reveal>
                 <h2>比赛数据概览</h2>
                 <div class="image-container">
                     <img src="img/finalstage_data.png" alt="烈光少棒（赤狐队）决赛数据表">
@@ -798,19 +874,19 @@
                     </ul>
                 </div>
                 <div class="key-metrics">
-                    <div class="metric-card">
+                    <div class="metric-card" data-reveal>
                         <span class="metric-value">31</span>
                         <span class="metric-label">总打数</span>
                     </div>
-                    <div class="metric-card">
+                    <div class="metric-card" data-reveal>
                         <span class="metric-value">15</span>
                         <span class="metric-label">总安打</span>
                     </div>
-                    <div class="metric-card">
+                    <div class="metric-card" data-reveal>
                         <span class="metric-value">10</span>
                         <span class="metric-label">总得分</span>
                     </div>
-                    <div class="metric-card">
+                    <div class="metric-card" data-reveal>
                         <span class="metric-value">24</span>
                         <span class="metric-label">总盗垒</span>
                     </div>
@@ -821,20 +897,20 @@
             </section>
 
             <!-- 总结 -->
-            <section id="summary">
+            <section id="summary" data-reveal>
                 <h2>三AI共识总结</h2>
                 <div class="summary-section">
                     <div class="summary-title">🎯 核心结论：核心被针对，阵容深度决定胜负</div>
                     <div class="key-metrics">
-                        <div class="metric-card">
+                        <div class="metric-card" data-reveal>
                             <span class="metric-value">✅</span>
                             <span class="metric-label">进攻体系成熟</span>
                         </div>
-                        <div class="metric-card">
+                        <div class="metric-card" data-reveal>
                             <span class="metric-value">⚠️</span>
                             <span class="metric-label">外野高飞球失误</span>
                         </div>
-                        <div class="metric-card">
+                        <div class="metric-card" data-reveal>
                             <span class="metric-value">🎯</span>
                             <span class="metric-label">内野牵制回位需加强</span>
                         </div>
@@ -851,8 +927,8 @@
             </section>
 
             <!-- Gemini 分析 -->
-            <section id="gemini">
-                <div class="ai-card">
+            <section id="gemini" data-reveal>
+                <div class="ai-card" data-reveal>
                     <div class="ai-card-header gemini">🌟 Gemini 分析</div>
                     <div class="ai-card-content">
                         <h3>1. 进攻端：真实情况是"两极分化"与"战术保送"</h3>
@@ -920,8 +996,8 @@
                 </div>
             </section>
             <!-- ChatGPT 分析 -->
-            <section id="chatgpt">
-                <div class="ai-card">
+            <section id="chatgpt" data-reveal>
+                <div class="ai-card" data-reveal>
                     <div class="ai-card-header chatgpt">💬 ChatGPT 分析</div>
                     <div class="ai-card-content">
                         <p>这张决赛数据比前一张更有价值，因为它说明的不是"能不能打"，而是关键战里能不能按赢球方式去打。</p>
@@ -1036,7 +1112,7 @@
                             <thead>
                                 <tr><th>奖项</th><th>球员</th><th>理由</th></tr>
                             </thead>
-                            <tbody>
+                            <tbody data-reveal>
                                 <tr><td>进攻MVP</td><td><strong>田雨稷</strong></td><td>决赛里最硬的纯输出点之一，安打质量和持续性都很好</td></tr>
                                 <tr><td>比赛节奏MVP</td><td><strong>闫勋捷</strong></td><td>虽然打数少，但他是整场最能改变对方防守和投球选择的人</td></tr>
                                 <tr><td>最稳的定海针</td><td><strong>Max</strong></td><td>数据稳定，防守备注也稳，这种球员在决赛里特别值钱</td></tr>
@@ -1062,8 +1138,8 @@
                 </div>
             </section>
             <!-- Kimi 分析 -->
-            <section id="kimi">
-                <div class="ai-card">
+            <section id="kimi" data-reveal>
+                <div class="ai-card" data-reveal>
                     <div class="ai-card-header kimi">🤖 Kimi 分析</div>
                     <div class="ai-card-content">
                         <p>这是 <strong>烈光少棒（赤狐队）决赛数据</strong> 的深度分析。与小组赛相比，决赛的竞争更激烈，对手针对性更强，我会从<strong>进攻效率</strong>、<strong>防守稳定性</strong>和<strong>关键失误</strong>三个维度为您拆解：</p>
@@ -1083,7 +1159,7 @@
                                     <th>关键表现</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody data-reveal>
                                 <tr><td>🥇</td><td><strong>孙嘉泽</strong></td><td>5</td><td>.600</td><td>1.00</td><td>.600</td><td><strong>1.6</strong></td><td>得点2，二垒安打1，攻击效率最高</td></tr>
                                 <tr><td>🥈</td><td><strong>程思乐</strong></td><td>5</td><td>.400</td><td>1.00</td><td>.600</td><td><strong>1.6</strong></td><td>长打能力突出</td></tr>
                                 <tr><td>🥉</td><td><strong>田雨稷</strong></td><td>7</td><td>.714</td><td>.857</td><td>.714</td><td><strong>1.56</strong></td><td>全队安打王（4支），与小组赛相比爆发</td></tr>
@@ -1118,7 +1194,7 @@
                             <thead>
                                 <tr><th>球员</th><th>位置</th><th>失误类型</th><th>后果</th><th>严重程度</th></tr>
                             </thead>
-                            <tbody>
+                            <tbody data-reveal>
                                 <tr><td><strong>瞿裕桐</strong></td><td>投手</td><td>传一垒失误</td><td>对方安全上垒并跑回一分</td><td>🔴高</td></tr>
                                 <tr><td><strong>孙嘉泽</strong></td><td>中外</td><td>补二垒漏球</td><td>对方跑回本垒下分</td><td>🔴高</td></tr>
                                 <tr><td><strong>孙嘉泽</strong></td><td>中外</td><td>高飞球失误</td><td>局面延续</td><td>🟡中</td></tr>
@@ -1200,7 +1276,7 @@
                             <thead>
                                 <tr><th>等级</th><th>球员</th><th>评价</th></tr>
                             </thead>
-                            <tbody>
+                            <tbody data-reveal>
                                 <tr><td>S</td><td><strong>田雨稷</strong></td><td>决赛真大腿，攻防一体无短板</td></tr>
                                 <tr><td>A</td><td><strong>Max、程思乐、付昌泽</strong></td><td>稳定输出，决赛心态好</td></tr>
                                 <tr><td>B</td><td><strong>孙嘉泽、闫勋捷、刘梵山</strong></td><td>有贡献但有关键失误或被针对</td></tr>

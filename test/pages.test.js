@@ -119,7 +119,7 @@ describe('Page Structure and Navigation Tests', () => {
     describe('Match Review Page (match_review.html)', () => {
         beforeEach(async () => {
             if (!browserLaunchError) {
-                await page.goto(PAGE_PATHS.matchReview, { waitUntil: 'networkidle2' });
+                await page.goto(PAGE_PATHS.matchReview, { waitUntil: 'domcontentloaded' });
             }
         });
 
@@ -850,5 +850,104 @@ describe('Floating Baseball Behavior Coverage', () => {
         expect(js).not.toContain("element.setAttribute('aria-label'");
         expect(js).not.toContain("addEventListener('click'");
         expect(js).not.toContain('classList.add(\'is-hit\')');
+    });
+});
+
+describe('Scroll Reveal Assets', () => {
+    const pagesWithScrollReveal = [
+        'index.html',
+        'match_review.html',
+        'u10_rules.html',
+        'pony_u10_rules.html',
+        'tigercup_groupstage.html',
+        'tigercup_finalstage.html'
+    ];
+
+    pagesWithScrollReveal.forEach((file) => {
+        test(`${file} should include scroll_reveal.js`, () => {
+            const filePath = path.resolve(__dirname, '..', file);
+            const html = fs.readFileSync(filePath, 'utf8');
+            expect(html).toContain('src="scroll_reveal.js"');
+        });
+    });
+
+    test('sponsor_me.html should not include scroll_reveal.js', () => {
+        const html = fs.readFileSync(path.resolve(__dirname, '..', 'sponsor_me.html'), 'utf8');
+        expect(html).not.toContain('scroll_reveal.js');
+    });
+});
+
+describe('Count Up Assets', () => {
+    const pagesWithCountUp = [
+        'u10_rules.html',
+        'pony_u10_rules.html',
+        'tigercup_groupstage.html',
+        'tigercup_finalstage.html'
+    ];
+
+    pagesWithCountUp.forEach((file) => {
+        test(`${file} should include count_up.js`, () => {
+            const filePath = path.resolve(__dirname, '..', file);
+            const html = fs.readFileSync(filePath, 'utf8');
+            expect(html).toContain('src="count_up.js"');
+        });
+    });
+
+    test('sponsor_me.html should not include count_up.js', () => {
+        const html = fs.readFileSync(path.resolve(__dirname, '..', 'sponsor_me.html'), 'utf8');
+        expect(html).not.toContain('count_up.js');
+    });
+});
+
+describe('Data Reveal Attributes', () => {
+    test('index.html should have data-reveal on nav cards', () => {
+        const html = fs.readFileSync(path.resolve(__dirname, '..', 'index.html'), 'utf8');
+        const navCardMatches = html.match(/class="nav-card"[^>]*data-reveal/g);
+        expect(navCardMatches.length).toBeGreaterThanOrEqual(5);
+    });
+
+    test('match_review.html should have data-reveal on video cards', () => {
+        const html = fs.readFileSync(path.resolve(__dirname, '..', 'match_review.html'), 'utf8');
+        const videoCardMatches = html.match(/class="video-card"[^>]*data-reveal/g);
+        expect(videoCardMatches.length).toBeGreaterThanOrEqual(7);
+    });
+
+    test('u10_rules.html should have data-reveal on sections and metric cards', () => {
+        const html = fs.readFileSync(path.resolve(__dirname, '..', 'u10_rules.html'), 'utf8');
+        expect(html).toContain('<section id="schedule" data-reveal>');
+        expect(html).toContain('<div class="metric-card" data-reveal>');
+        expect(html).toContain('<tbody data-reveal>');
+    });
+
+    test('pony_u10_rules.html should have data-reveal on sections and metric cards', () => {
+        const html = fs.readFileSync(path.resolve(__dirname, '..', 'pony_u10_rules.html'), 'utf8');
+        expect(html).toContain('<section id="field-specs" data-reveal>');
+        expect(html).toContain('<div class="metric-card" data-reveal>');
+        expect(html).toContain('<tbody data-reveal>');
+    });
+
+    test('analysis pages should have data-reveal on sections, ai-cards and metric cards', () => {
+        const groupstageHtml = fs.readFileSync(path.resolve(__dirname, '..', 'tigercup_groupstage.html'), 'utf8');
+        const finalstageHtml = fs.readFileSync(path.resolve(__dirname, '..', 'tigercup_finalstage.html'), 'utf8');
+
+        [groupstageHtml, finalstageHtml].forEach((html) => {
+            expect(html).toContain('<div class="ai-card" data-reveal>');
+            expect(html).toContain('<div class="metric-card" data-reveal>');
+            expect(html).toContain('<tbody data-reveal>');
+        });
+    });
+});
+
+describe('AI Card Hover Glow', () => {
+    test('analysis pages should include AI card hover glow styles', () => {
+        const groupstageHtml = fs.readFileSync(path.resolve(__dirname, '..', 'tigercup_groupstage.html'), 'utf8');
+        const finalstageHtml = fs.readFileSync(path.resolve(__dirname, '..', 'tigercup_finalstage.html'), 'utf8');
+
+        [groupstageHtml, finalstageHtml].forEach((html) => {
+            expect(html).toContain('.ai-card:hover');
+            expect(html).toContain('.ai-card:has(.ai-card-header.kimi):hover');
+            expect(html).toContain('.ai-card:has(.ai-card-header.gemini):hover');
+            expect(html).toContain('.ai-card:has(.ai-card-header.chatgpt):hover');
+        });
     });
 });
