@@ -8,6 +8,13 @@
     }
 
     function init() {
+        // Set stagger index for table rows dynamically
+        document.querySelectorAll('tbody[data-reveal]').forEach(tbody => {
+            tbody.querySelectorAll('tr').forEach((tr, index) => {
+                tr.style.setProperty('--stagger-index', index);
+            });
+        });
+
         const elements = document.querySelectorAll('[data-reveal]');
         if (!elements.length) return;
 
@@ -31,8 +38,9 @@
         elements.forEach(el => observer.observe(el));
 
         // Safety net 1: reveal any remaining elements after 3 seconds
-        setTimeout(() => {
+        const timeoutId = setTimeout(() => {
             revealAll(Array.from(elements).filter(el => !el.classList.contains('is-visible')));
+            window.removeEventListener('scroll', onScroll);
         }, 3000);
 
         // Safety net 2: check viewport position after scroll stops (Safari iOS fallback)
@@ -53,7 +61,11 @@
 
         // Safety net 3: reveal all if page is already near bottom on load
         if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
-            setTimeout(() => revealAll(elements), 100);
+            clearTimeout(timeoutId);
+            setTimeout(() => {
+                revealAll(elements);
+                window.removeEventListener('scroll', onScroll);
+            }, 100);
         }
     }
 
