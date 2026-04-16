@@ -841,8 +841,13 @@ describe('Floating Baseball Behavior Coverage', () => {
         const js = fs.readFileSync(path.resolve(__dirname, '..', 'baseball_floats.js'), 'utf8');
 
         expect(js).toContain('const BALL_COUNT = 7;');
+        expect(js).toContain("document.createElement('div')");
+        expect(js).toContain("element.setAttribute('aria-hidden', 'true');");
         expect(js).toContain("element.textContent = '⚾';");
         expect(js).toContain('requestAnimationFrame(animate);');
+        expect(js).not.toContain("document.createElement('button')");
+        expect(js).not.toContain("element.type = 'button'");
+        expect(js).not.toContain("element.setAttribute('aria-label'");
         expect(js).not.toContain("addEventListener('click'");
         expect(js).not.toContain('classList.add(\'is-hit\')');
     });

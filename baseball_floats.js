@@ -10,10 +10,9 @@
     }
 
     function createBall(index, viewportWidth, viewportHeight) {
-        const element = document.createElement('button');
-        element.type = 'button';
+        const element = document.createElement('div');
         element.className = 'floating-baseball';
-        element.setAttribute('aria-label', '弹跳棒球');
+        element.setAttribute('aria-hidden', 'true');
         element.textContent = '⚾';
 
         const size = Math.round(randomBetween(38, 56));
