@@ -39,6 +39,7 @@
 
         if (REDUCED_MOTION) return;
 
+        let remaining = elements.length;
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -55,6 +56,10 @@
                         }
                     }
                     observer.unobserve(el);
+                    remaining--;
+                    if (remaining === 0) {
+                        observer.disconnect();
+                    }
                 }
             });
         }, {

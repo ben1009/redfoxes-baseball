@@ -3,12 +3,23 @@
 
     const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+    function revealAll(elements) {
+        elements.forEach(el => el.classList.add('is-visible'));
+    }
+
     function init() {
+        // Set stagger index for table rows dynamically
+        document.querySelectorAll('tbody[data-reveal]').forEach(tbody => {
+            tbody.querySelectorAll('tr').forEach((tr, index) => {
+                tr.style.setProperty('--stagger-index', index);
+            });
+        });
+
         const elements = document.querySelectorAll('[data-reveal]');
         if (!elements.length) return;
 
         if (REDUCED_MOTION) {
-            elements.forEach(el => el.classList.add('is-visible'));
+            revealAll(elements);
             return;
         }
 
@@ -20,11 +31,42 @@
                 }
             });
         }, {
-            threshold: 0.15,
-            rootMargin: '0px 0px -50px 0px'
+            threshold: 0.05,
+            rootMargin: '0px 0px 50px 0px'
         });
 
         elements.forEach(el => observer.observe(el));
+
+        // Safety net 1: reveal any remaining elements after 3 seconds
+        const timeoutId = setTimeout(() => {
+            revealAll(Array.from(elements).filter(el => !el.classList.contains('is-visible')));
+            window.removeEventListener('scroll', onScroll);
+        }, 3000);
+
+        // Safety net 2: check viewport position after scroll stops (Safari iOS fallback)
+        let scrollTimeout;
+        function onScroll() {
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                elements.forEach(el => {
+                    if (el.classList.contains('is-visible')) return;
+                    const rect = el.getBoundingClientRect();
+                    if (rect.top < window.innerHeight && rect.bottom > 0) {
+                        el.classList.add('is-visible');
+                    }
+                });
+            }, 150);
+        }
+        window.addEventListener('scroll', onScroll, { passive: true });
+
+        // Safety net 3: reveal all if page is already near bottom on load
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
+            clearTimeout(timeoutId);
+            setTimeout(() => {
+                revealAll(elements);
+                window.removeEventListener('scroll', onScroll);
+            }, 100);
+        }
     }
 
     if (document.readyState === 'loading') {

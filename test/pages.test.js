@@ -505,7 +505,7 @@ describe('Page Structure and Navigation Tests', () => {
     describe('Sponsor Page (sponsor_me.html)', () => {
         beforeEach(async () => {
             if (!browserLaunchError) {
-                await page.goto(PAGE_PATHS.sponsor, { waitUntil: 'networkidle2' });
+                await page.goto(PAGE_PATHS.sponsor, { waitUntil: 'domcontentloaded' });
             }
         });
 
@@ -869,11 +869,22 @@ describe('Scroll Reveal Assets', () => {
             const html = fs.readFileSync(filePath, 'utf8');
             expect(html).toContain('src="scroll_reveal.js"');
         });
+
+        test(`${file} should include scroll_reveal.css`, () => {
+            const filePath = path.resolve(__dirname, '..', file);
+            const html = fs.readFileSync(filePath, 'utf8');
+            expect(html).toContain('href="scroll_reveal.css"');
+        });
     });
 
     test('sponsor_me.html should not include scroll_reveal.js', () => {
         const html = fs.readFileSync(path.resolve(__dirname, '..', 'sponsor_me.html'), 'utf8');
         expect(html).not.toContain('scroll_reveal.js');
+    });
+
+    test('sponsor_me.html should not include scroll_reveal.css', () => {
+        const html = fs.readFileSync(path.resolve(__dirname, '..', 'sponsor_me.html'), 'utf8');
+        expect(html).not.toContain('scroll_reveal.css');
     });
 });
 
