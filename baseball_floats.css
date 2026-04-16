@@ -4,7 +4,6 @@
     pointer-events: none;
     overflow: hidden;
     z-index: 0;
-    touch-action: none;
 }
 
 .floating-baseball {
