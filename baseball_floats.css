@@ -1,0 +1,39 @@
+.floating-baseball-layer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.floating-baseball {
+    position: absolute;
+    width: var(--ball-size, 46px);
+    height: var(--ball-size, 46px);
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    pointer-events: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.16s ease, filter 0.16s ease;
+    will-change: transform, left, top;
+    display: grid;
+    place-items: center;
+    font-size: calc(var(--ball-size, 46px) - 4px);
+    line-height: 1;
+    filter: drop-shadow(0 10px 18px rgba(0,0,0,0.18));
+}
+
+@media (max-width: 768px) {
+    .floating-baseball {
+        width: var(--ball-size-mobile, 38px);
+        height: var(--ball-size-mobile, 38px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .floating-baseball {
+        transition: none;
+    }
+}

@@ -22,6 +22,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="baseball_floats.css">
+    <script src="baseball_floats.js" defer></script>
     
     <style>
         /* ============================================
@@ -34,12 +36,14 @@
         }
         
         :root {
-            --color-primary: #8B4513;
-            --color-accent: #DC143C;
-            --color-bg-dark: #2d5a27;
-            --color-bg-darker: #1a3d17;
-            --color-text: #555;
-            --color-text-light: #fafafa;
+            --color-primary: #8b1e24;
+            --color-primary-light: #bf3e3f;
+            --color-accent: #f3c24e;
+            --color-bg-dark: #123f30;
+            --color-bg-darker: #0d2f23;
+            --color-clay: #b5532f;
+            --color-text: #4d3928;
+            --color-text-light: #fffaf1;
             --font-serif: 'Noto Serif SC', serif;
             --font-mono: 'Courier New', monospace;
             --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', sans-serif;
@@ -47,9 +51,47 @@
         
         body {
             font-family: var(--font-sans);
-            background: linear-gradient(135deg, var(--color-bg-dark) 0%, var(--color-bg-darker) 100%);
+            background:
+                radial-gradient(circle at 50% 14%, rgba(255,255,255,0.16), transparent 18%),
+                radial-gradient(circle at 50% 112%, rgba(181,83,47,0.9), rgba(119,49,27,0.98) 20%, transparent 21%),
+                repeating-linear-gradient(90deg, rgba(255,255,255,0.03) 0, rgba(255,255,255,0.03) 78px, rgba(0,0,0,0.05) 78px, rgba(0,0,0,0.05) 156px),
+                linear-gradient(180deg, #133f30 0%, var(--color-bg-dark) 50%, var(--color-bg-darker) 100%);
             min-height: 100vh;
             padding: 20px;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 20% 12%, rgba(255,255,255,0.12) 0 2px, transparent 3px),
+                radial-gradient(circle at 80% 12%, rgba(255,255,255,0.12) 0 3px, transparent 4px),
+                radial-gradient(circle at 50% 46%, transparent 0 28%, rgba(255,255,255,0.07) 28.2%, rgba(255,255,255,0.07) 28.8%, transparent 29%),
+                linear-gradient(135deg, transparent 0 49.75%, rgba(255,255,255,0.07) 49.75% 50.25%, transparent 50.25% 100%),
+                linear-gradient(45deg, transparent 0 49.75%, rgba(255,255,255,0.07) 49.75% 50.25%, transparent 50.25% 100%);
+            pointer-events: none;
+            opacity: 0.55;
+        }
+
+        @keyframes pageFadeIn {
+            from { opacity: 0; transform: translateY(22px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes marqueeSweep {
+            from { transform: translateX(-18%) rotate(18deg); }
+            to { transform: translateX(260%) rotate(18deg); }
+        }
+
+        @keyframes cardLiftIn {
+            from { opacity: 0; transform: translateY(26px) scale(0.99); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes badgeBob {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
         }
         
         /* ============================================
@@ -58,7 +100,9 @@
         #passwordOverlay {
             position: fixed;
             inset: 0;
-            background: linear-gradient(135deg, rgba(139, 69, 19, 0.98) 0%, rgba(93, 58, 26, 0.99) 100%);
+            background:
+                radial-gradient(circle at top, rgba(255,255,255,0.12), transparent 28%),
+                linear-gradient(135deg, rgba(93, 16, 24, 0.98) 0%, rgba(32, 15, 10, 0.99) 100%);
             z-index: 9999;
             display: flex;
             align-items: center;
@@ -66,30 +110,49 @@
         }
         
         .password-box {
-            background: white;
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.96), rgba(248,241,226,0.98)),
+                repeating-linear-gradient(180deg, rgba(139,30,36,0.04) 0 2px, transparent 2px 40px);
             padding: 50px 40px;
-            border-radius: 20px;
-            border: 4px dashed var(--color-accent);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border-radius: 28px;
+            border: 2px solid rgba(255,255,255,0.18);
+            box-shadow: 0 28px 70px rgba(0, 0, 0, 0.42);
             text-align: center;
             max-width: 450px;
             width: 90%;
+            position: relative;
+            overflow: hidden;
+            animation: pageFadeIn 0.7s ease-out;
+        }
+
+        .password-box::before {
+            content: '';
+            position: absolute;
+            inset: 14px;
+            border: 2px solid rgba(139,30,36,0.14);
+            border-radius: 18px;
+            pointer-events: none;
         }
         
         .password-box h2 {
             font-family: var(--font-serif);
             color: var(--color-primary);
-            margin-bottom: 10px;
-            font-size: 1.8em;
+            margin-bottom: 12px;
+            font-size: 2em;
+            position: relative;
+            z-index: 1;
         }
         
         .hint-box {
-            background: #f5f5f5;
-            border-left: 4px solid var(--color-accent);
+            background: linear-gradient(135deg, rgba(255,249,239,0.96), rgba(255,232,178,0.85));
+            border-left: 5px solid var(--color-accent);
             padding: 20px;
             margin: 20px 0;
             font-family: var(--font-serif);
             font-size: 1.1em;
+            border-radius: 0 14px 14px 0;
+            position: relative;
+            z-index: 1;
         }
         
         .hint-box .name {
@@ -101,29 +164,37 @@
         .password-input {
             width: 100%;
             padding: 15px;
-            border: 3px solid var(--color-primary);
-            border-radius: 10px;
+            border: 2px solid rgba(139,30,36,0.3);
+            border-radius: 999px;
             font-size: 1.3em;
             text-align: center;
             letter-spacing: 10px;
             margin: 20px 0;
             font-family: var(--font-mono);
+            background: rgba(255,255,255,0.9);
+            position: relative;
+            z-index: 1;
         }
         
         .password-btn {
-            background: var(--color-primary);
-            color: white;
-            border: 2px solid var(--color-accent);
+            background: linear-gradient(135deg, #5d1018, var(--color-primary-light));
+            color: #fff7e2;
+            border: 2px solid rgba(243,194,78,0.6);
             padding: 14px 50px;
-            border-radius: 25px;
+            border-radius: 999px;
             font-size: 1.1em;
             cursor: pointer;
             font-family: var(--font-serif);
-            transition: background 0.3s ease;
+            font-weight: 700;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 12px 22px rgba(93,16,24,0.28);
+            position: relative;
+            z-index: 1;
         }
         
         .password-btn:hover {
-            background: var(--color-accent);
+            transform: translateY(-2px);
+            box-shadow: 0 18px 28px rgba(93,16,24,0.34);
         }
         
         .error-msg {
@@ -158,6 +229,9 @@
         .container {
             max-width: 1400px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            animation: pageFadeIn 0.75s ease-out;
         }
 
         .home-link {
@@ -168,13 +242,14 @@
             margin-top: 18px;
             border-radius: 999px;
             background: rgba(255, 255, 255, 0.12);
-            border: 2px solid rgba(255, 255, 255, 0.28);
-            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.24);
+            color: #fff6df;
             text-decoration: none;
             font-weight: 700;
             -webkit-backdrop-filter: blur(4px);
             backdrop-filter: blur(4px);
             transition: background 0.2s ease, transform 0.2s ease;
+            animation: badgeBob 3s ease-in-out infinite;
         }
 
         .home-link:hover {
@@ -185,55 +260,99 @@
         /* Header */
         header {
             text-align: center;
-            padding: 40px 20px;
-            background: linear-gradient(180deg, var(--color-primary) 0%, #654321 100%);
-            border-radius: 20px;
-            border: 4px dashed var(--color-accent);
-            margin-bottom: 30px;
+            padding: 46px 22px;
+            background:
+                radial-gradient(circle at top, rgba(255,255,255,0.18), transparent 35%),
+                linear-gradient(145deg, rgba(42,18,20,0.35), transparent 40%),
+                linear-gradient(180deg, #5d1018 0%, var(--color-primary) 58%, #6a3320 100%);
+            border-radius: 28px;
+            border: 2px solid rgba(255,255,255,0.14);
+            margin-bottom: 34px;
             color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 26px 60px rgba(0, 0, 0, 0.28);
+            animation: cardLiftIn 0.85s ease-out;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            inset: 16px;
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 18px;
+            pointer-events: none;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            inset: -38% auto auto -12%;
+            width: 40%;
+            height: 175%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent);
+            transform: rotate(18deg);
+            animation: marqueeSweep 7s linear infinite;
         }
         
         h1 {
             font-family: var(--font-serif);
-            font-size: 2.4em;
+            font-size: 2.7em;
             margin-bottom: 10px;
-            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
+            text-shadow: 0 8px 22px rgba(0, 0, 0, 0.34);
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 1;
         }
         
         .match-info {
-            font-size: 1.2em;
-            opacity: 0.95;
+            font-size: 1.08em;
+            opacity: 0.92;
             font-family: var(--font-mono);
+            letter-spacing: 1px;
+            position: relative;
+            z-index: 1;
         }
         
         /* ============================================
            Video Cards
            ============================================ */
         .video-card {
-            background: white;
-            border-radius: 16px;
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.97), rgba(248,241,226,0.98)),
+                repeating-linear-gradient(180deg, rgba(139,30,36,0.04) 0 2px, transparent 2px 40px);
+            border-radius: 24px;
             overflow: hidden;
-            border: 6px solid #f0f0f0;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255,255,255,0.24);
+            box-shadow: 0 18px 36px rgba(0, 0, 0, 0.22);
             margin-bottom: 30px;
             position: relative;
+            animation: cardLiftIn 0.65s ease-out backwards;
         }
         
         .video-card::before {
             content: '';
             position: absolute;
-            inset: -3px;
-            border: 2px dashed var(--color-accent);
-            border-radius: 18px;
+            inset: 14px;
+            border: 1px solid rgba(139,30,36,0.14);
+            border-radius: 16px;
             pointer-events: none;
             z-index: 10;
         }
+
+        .video-card:nth-of-type(1) { animation-delay: 0.1s; }
+        .video-card:nth-of-type(2) { animation-delay: 0.16s; }
+        .video-card:nth-of-type(3) { animation-delay: 0.22s; }
+        .video-card:nth-of-type(4) { animation-delay: 0.28s; }
+        .video-card:nth-of-type(5) { animation-delay: 0.34s; }
+        .video-card:nth-of-type(6) { animation-delay: 0.4s; }
+        .video-card:nth-of-type(7) { animation-delay: 0.46s; }
         
         /* Video Header */
         .video-header {
-            background: var(--color-primary);
-            color: white;
-            padding: 15px 20px;
+            background: linear-gradient(135deg, #5d1018 0%, var(--color-primary) 62%, var(--color-primary-light) 100%);
+            color: #fff7df;
+            padding: 18px 22px;
             display: flex;
             align-items: center;
             gap: 12px;
@@ -246,8 +365,9 @@
         
         .video-title-text {
             font-weight: 700;
-            font-size: 1.15em;
+            font-size: 1.18em;
             font-family: var(--font-mono);
+            letter-spacing: 0.4px;
         }
         
         /* Video Container */
@@ -269,10 +389,10 @@
         
         /* Video Description */
         .video-desc {
-            padding: 20px;
+            padding: 24px;
             background: var(--color-text-light);
             color: var(--color-text);
-            border-top: 2px solid #e0e0e0;
+            border-top: 1px solid rgba(139,30,36,0.12);
             line-height: 1.8;
             font-size: 1em;
         }
@@ -287,19 +407,19 @@
         }
         
         .mistake-point {
-            background: #fff5f5;
-            border-left: 3px solid var(--color-accent);
+            background: linear-gradient(135deg, #fff4f1, #fff7ef);
+            border-left: 4px solid var(--color-primary);
             padding: 10px 15px;
             margin: 10px 0;
-            border-radius: 0 5px 5px 0;
+            border-radius: 0 10px 10px 0;
         }
         
         .rule-highlight {
-            background: #f0f8ff;
+            background: linear-gradient(135deg, #eff8ff, #f8fcff);
             border-left: 3px solid #4169E1;
             padding: 10px 15px;
             margin: 10px 0;
-            border-radius: 0 5px 5px 0;
+            border-radius: 0 10px 10px 0;
         }
         
         /* ============================================
@@ -309,7 +429,9 @@
             text-align: center;
             margin-top: 50px;
             padding: 30px;
-            color: rgba(255, 255, 255, 0.9);
+            color: rgba(255, 255, 255, 0.92);
+            text-shadow: 0 1px 1px rgba(0,0,0,0.25);
+            animation: cardLiftIn 0.8s ease-out 0.42s backwards;
         }
         
         footer img {
@@ -328,6 +450,13 @@
         @media (max-width: 768px) {
             h1 {
                 font-size: 1.8em;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
             }
         }
     </style>
