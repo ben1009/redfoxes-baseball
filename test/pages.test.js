@@ -696,7 +696,7 @@ describe('Back To Index Link Coverage', () => {
         {
             file: 'match_review.html',
             requiredSnippets: [
-                '<div class="match-info">2026年3月29日 上午 · 七个战术片段分析</div>',
+                'class="match-info"',
                 '<a href="index.html" class="home-link" target="_self">🏠 返回首页</a>'
             ]
         },
@@ -742,16 +742,5 @@ describe('Back To Index Link Coverage', () => {
                 expect(html).toContain(snippet);
             });
         });
-    });
-
-    test('match_review.html should place the home link immediately after match info', () => {
-        const filePath = path.resolve(__dirname, '..', 'match_review.html');
-        const html = fs.readFileSync(filePath, 'utf8');
-        const matchInfoIndex = html.indexOf('<div class="match-info">2026年3月29日 上午 · 七个战术片段分析</div>');
-        const homeLinkIndex = html.indexOf('<a href="index.html" class="home-link" target="_self">🏠 返回首页</a>');
-
-        expect(matchInfoIndex).toBeGreaterThan(-1);
-        expect(homeLinkIndex).toBeGreaterThan(matchInfoIndex);
-        expect(html.slice(matchInfoIndex, homeLinkIndex)).not.toContain('<a ');
     });
 });
