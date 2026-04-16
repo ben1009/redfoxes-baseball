@@ -19,6 +19,8 @@
     <link rel="stylesheet" href="baseball_floats.css">
     <link rel="stylesheet" href="rules_style.css">
     <script src="baseball_floats.js" defer></script>
+    <script src="scroll_reveal.js" defer></script>
+    <script src="count_up.js" defer></script>
     <base target="_blank">
 </head>
 <body>
@@ -51,20 +53,20 @@
         <!-- Main Content -->
         <main class="content">
             <!-- 场地与器材规格 -->
-            <section id="field-specs">
+            <section id="field-specs" data-reveal>
                 <h2>场地与器材规格</h2>
 
                 <h3>U10组场地参数</h3>
                 <div class="key-metrics">
-                    <div class="metric-card">
+                    <div class="metric-card" data-reveal>
                         <span class="metric-value">18.29米</span>
                         <span class="metric-label">垒间距</span>
                     </div>
-                    <div class="metric-card">
+                    <div class="metric-card" data-reveal>
                         <span class="metric-value">14.02米</span>
                         <span class="metric-label">投球距离</span>
                     </div>
-                    <div class="metric-card">
+                    <div class="metric-card" data-reveal>
                         <span class="metric-value">6局/90分钟</span>
                         <span class="metric-label">比赛时限</span>
                     </div>
@@ -79,7 +81,7 @@
             </section>
 
             <!-- 比赛时间 -->
-            <section id="game-format">
+            <section id="game-format" data-reveal>
                 <h2>比赛时间与赛制</h2>
 
                 <table>
@@ -89,7 +91,7 @@
                             <th>具体规定</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody data-reveal>
                         <tr>
                             <td><strong>比赛时长</strong></td>
                             <td>每场6局或限时90分钟</td>
@@ -124,7 +126,7 @@
             </section>
 
             <!-- 投手规则 -->
-            <section id="pitcher-limits">
+            <section id="pitcher-limits" data-reveal>
                 <h2>投手限制（严格执行）</h2>
 
                 <div class="warning-box">
@@ -138,7 +140,7 @@
                             <th>具体规定</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody data-reveal>
                         <tr>
                             <td><strong>单场限制</strong></td>
                             <td>同一名投手一场比赛不能投球超过 <strong style="color:var(--color-accent)">2局</strong></td>
@@ -162,23 +164,23 @@
             </section>
 
             <!-- 教练指导 -->
-            <section id="coach-rules">
+            <section id="coach-rules" data-reveal>
                 <h2>教练员进场指导规则</h2>
 
                 <div class="key-metrics">
-                    <div class="metric-card">
+                    <div class="metric-card" data-reveal>
                         <span class="metric-value">3次</span>
                         <span class="metric-label">每场比赛可进场指导投手</span>
                     </div>
-                    <div class="metric-card">
+                    <div class="metric-card" data-reveal>
                         <span class="metric-value">更换投手</span>
                         <span class="metric-label">同局指导两次需更换投手</span>
                     </div>
-                    <div class="metric-card">
+                    <div class="metric-card" data-reveal>
                         <span class="metric-value">1次</span>
                         <span class="metric-label">延长局每三局可指导</span>
                     </div>
-                    <div class="metric-card">
+                    <div class="metric-card" data-reveal>
                         <span class="metric-value">间接指导</span>
                         <span class="metric-label">教练员与队员交谈后，该队员与投手交谈，视同指导一次</span>
                     </div>
@@ -186,7 +188,7 @@
             </section>
 
             <!-- 跑垒规则 -->
-            <section id="base-running">
+            <section id="base-running" data-reveal>
                 <h2>盗垒与跑垒规则</h2>
 
                 <ul>
@@ -202,7 +204,7 @@
             </section>
 
             <!-- 比赛流程 -->
-            <section id="preparation">
+            <section id="preparation" data-reveal>
                 <h2>比赛流程与纪律</h2>
 
                 <h3>赛前准备</h3>
@@ -229,7 +231,7 @@
             </section>
 
             <!-- 天气与中断 -->
-            <section id="weather">
+            <section id="weather" data-reveal>
                 <h2>天气与比赛中断</h2>
 
                 <ul>
@@ -240,7 +242,7 @@
             </section>
 
             <!-- 积分规则 -->
-            <section id="scoring">
+            <section id="scoring" data-reveal>
                 <h2>积分与排名</h2>
 
                 <h3>积分规则</h3>
@@ -251,7 +253,7 @@
                             <th>积分</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody data-reveal>
                         <tr>
                             <td>胜一场</td>
                             <td><strong>3分</strong></td>
@@ -279,7 +281,7 @@
             </section>
 
             <!-- 申诉规则 -->
-            <section id="appeal">
+            <section id="appeal" data-reveal>
                 <h2>申诉与资格</h2>
 
                 <div class="warning-box">

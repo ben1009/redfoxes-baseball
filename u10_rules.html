@@ -19,6 +19,8 @@
     <link rel="stylesheet" href="baseball_floats.css">
     <link rel="stylesheet" href="rules_style.css">
     <script src="baseball_floats.js" defer></script>
+    <script src="scroll_reveal.js" defer></script>
+    <script src="count_up.js" defer></script>
     <base target="_blank">
 </head>
 <body>
@@ -53,7 +55,7 @@
         <!-- Main Content -->
         <main class="content">
             <!-- 烈光少棒赤狐队赛程图片 -->
-            <section id="schedule">
+            <section id="schedule" data-reveal>
                 <h2>烈光少棒（赤狐队）U10俱乐部组完整赛程</h2>
                 <div class="image-container">
                     <img src="img/schedule.jpg" alt="烈光少棒赤狐队U10俱乐部组完整赛程表">
@@ -65,7 +67,7 @@
             </section>
 
             <!-- 场地地图图片 -->
-            <section id="venue">
+            <section id="venue" data-reveal>
                 <h2>芦城体校棒垒球场场地指引</h2>
                 <div class="image-container">
                     <img src="img/venue_map.jpg" alt="芦城体校棒垒球场场地地图">
@@ -77,7 +79,7 @@
             </section>
 
             <!-- 比赛基本信息 -->
-            <section id="basic-info">
+            <section id="basic-info" data-reveal>
                 <h2>比赛基本信息</h2>
                 <ul>
                     <li><strong>主办单位：</strong>北京市棒球运动协会</li>
@@ -90,7 +92,7 @@
             </section>
 
             <!-- 参赛资格 -->
-            <section id="eligibility">
+            <section id="eligibility" data-reveal>
                 <h2>参赛资格与报名</h2>
                 <div class="highlight-box">
                     <strong>出生日期要求：</strong>2015年9月1日当天及以后出生
@@ -119,7 +121,7 @@
             </section>
 
             <!-- 赛季人员管理 -->
-            <section id="personnel">
+            <section id="personnel" data-reveal>
                 <h2>赛季人员管理规定</h2>
                 <div class="warning-box">
                     所有参与比赛的球员，赛季内不得更换、递补新球员！<br>
@@ -128,7 +130,7 @@
             </section>
 
             <!-- 赛前准备 -->
-            <section id="preparation">
+            <section id="preparation" data-reveal>
                 <h2>赛前准备与流程</h2>
                 <div class="highlight-box">
                     <strong>比赛前30分钟</strong>须提交上场队员名单，未列入名单的替补队员<strong>不得参加</strong>本场比赛。
@@ -153,24 +155,24 @@
             </section>
 
             <!-- 竞赛规则 -->
-            <section id="rules-base">
+            <section id="rules-base" data-reveal>
                 <h2>竞赛规则基础</h2>
                 <p>采用<strong>国家体育总局审定的2018版《棒球竞赛规则》</strong></p>
             </section>
 
             <!-- 比赛时间 -->
-            <section id="game-format">
+            <section id="game-format" data-reveal>
                 <h2>比赛时间与赛制</h2>
                 <div class="key-metrics">
-                    <div class="metric-card">
+                    <div class="metric-card" data-reveal>
                         <span class="metric-value">60分钟</span>
                         <span class="metric-label">比赛限时</span>
                     </div>
-                    <div class="metric-card">
+                    <div class="metric-card" data-reveal>
                         <span class="metric-value">5局</span>
                         <span class="metric-label">满局数</span>
                     </div>
-                    <div class="metric-card">
+                    <div class="metric-card" data-reveal>
                         <span class="metric-value">3局</span>
                         <span class="metric-label">投手限投局数</span>
                     </div>
@@ -185,7 +187,7 @@
             </section>
 
             <!-- 提前结束 -->
-            <section id="early-end">
+            <section id="early-end" data-reveal>
                 <h2>提前结束比赛条件</h2>
                 <table>
                     <thead>
@@ -195,7 +197,7 @@
                             <th>时间条件</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody data-reveal>
                         <tr>
                             <td>打完3局后</td>
                             <td>相差<strong style="color:var(--color-accent)">15分</strong>以上</td>
@@ -221,7 +223,7 @@
             </section>
 
             <!-- 攻防交换 -->
-            <section id="switch">
+            <section id="switch" data-reveal>
                 <h2>攻防交换规则</h2>
                 <div class="highlight-box">
                     <strong>交换条件（满足任一）：</strong>
@@ -234,7 +236,7 @@
             </section>
 
             <!-- 投手限制 -->
-            <section id="pitcher-limits">
+            <section id="pitcher-limits" data-reveal>
                 <h2>投手限制（严格规定）</h2>
                 <div class="warning-box">
                     超局投球违规将导致该场比赛 0:20 告负！
@@ -247,7 +249,7 @@
                             <th>具体规定</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody data-reveal>
                         <tr>
                             <td>局数限制</td>
                             <td>每名投手每场比赛限投 <strong>3局</strong>（蹬板即为1局）</td>
@@ -273,18 +275,18 @@
             </section>
 
             <!-- 场地规格 -->
-            <section id="field-specs">
+            <section id="field-specs" data-reveal>
                 <h2>场地规格</h2>
                 <div class="key-metrics">
-                    <div class="metric-card">
+                    <div class="metric-card" data-reveal>
                         <span class="metric-value">21米</span>
                         <span class="metric-label">垒间距离</span>
                     </div>
-                    <div class="metric-card">
+                    <div class="metric-card" data-reveal>
                         <span class="metric-value">14米</span>
                         <span class="metric-label">投手距离</span>
                     </div>
-                    <div class="metric-card">
+                    <div class="metric-card" data-reveal>
                         <span class="metric-value">60米</span>
                         <span class="metric-label">本垒打线</span>
                     </div>
@@ -292,7 +294,7 @@
             </section>
 
             <!-- 教练员指导规则 -->
-            <section id="coach-rules">
+            <section id="coach-rules" data-reveal>
                 <h2>教练员进场指导规则</h2>
                 <table>
                     <thead>
@@ -301,7 +303,7 @@
                             <th>规定</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody data-reveal>
                         <tr>
                             <td>指定打击(DH)</td>
                             <td><strong>不设指定打击</strong>，场上所有选手必须上场轮击</td>
@@ -339,7 +341,7 @@
             </section>
 
             <!-- 安全与行为 -->
-            <section id="safety">
+            <section id="safety" data-reveal>
                 <h2>安全与行为规范</h2>
                 <ul>
                     <li><strong>甩棒规定：</strong>挥棒后需平稳放棒，第一次警告，第二次判击球员<strong>出局</strong></li>
@@ -350,7 +352,7 @@
             </section>
 
             <!-- 服装与器材 -->
-            <section id="equipment">
+            <section id="equipment" data-reveal>
                 <h2>服装与器材</h2>
                 <table>
                     <thead>
@@ -359,7 +361,7 @@
                             <th>要求</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody data-reveal>
                         <tr>
                             <td>比赛服装</td>
                             <td>两套不同颜色、号码清晰（16CM高），<strong>报名单注明颜色和号码</strong></td>
@@ -393,7 +395,7 @@
             </section>
 
             <!-- 申诉规则 -->
-            <section id="appeal">
+            <section id="appeal" data-reveal>
                 <h2>申诉规则</h2>
                 <ul>
                     <li><strong>申诉时机：</strong>局面发生后、新局面出现前可进行申诉，申诉结果由<strong>主裁判决</strong></li>
@@ -405,7 +407,7 @@
             </section>
 
             <!-- 积分与名次 -->
-            <section id="scoring">
+            <section id="scoring" data-reveal>
                 <h2>积分与名次</h2>
                 <h3>积分规则</h3>
                 <table>
@@ -415,7 +417,7 @@
                             <th>积分</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody data-reveal>
                         <tr>
                             <td>胜一场</td>
                             <td><strong>2分</strong></td>
@@ -441,7 +443,7 @@
             </section>
 
             <!-- 录取名次 -->
-            <section id="awards">
+            <section id="awards" data-reveal>
                 <h2>录取名次与奖励</h2>
                 <ul>
                     <li><strong>录取名次：</strong>根据各个组别参赛队数量决定录取名次</li>
@@ -451,7 +453,7 @@
             </section>
 
             <!-- 重要提示 -->
-            <section id="important">
+            <section id="important" data-reveal>
                 <h2>重要提示</h2>
                 <div class="warning-box">
                     比赛中不得中途弃权，弃权学校将取消下一届参赛资格！

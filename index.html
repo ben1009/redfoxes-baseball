@@ -18,6 +18,7 @@
     </script>
     <link rel="stylesheet" href="baseball_floats.css">
     <script src="baseball_floats.js" defer></script>
+    <script src="scroll_reveal.js" defer></script>
     
     <style>
         /* ============================================
@@ -385,10 +386,27 @@
             }
         }
 
+        [data-reveal] {
+            opacity: 0;
+            transform: translateY(18px);
+            transition: opacity 0.6s cubic-bezier(0.22, 0.61, 0.36, 1),
+                        transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+
+        [data-reveal].is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
                 animation: none !important;
                 transition: none !important;
+            }
+
+            [data-reveal] {
+                opacity: 1 !important;
+                transform: none !important;
             }
         }
     </style>
@@ -407,42 +425,42 @@
 
         <!-- Navigation Grid -->
         <nav class="nav-grid">
-            <a href="match_review.html" class="nav-card">
+            <a href="match_review.html" class="nav-card" data-reveal>
                 <div class="nav-card-icon">⚾</div>
                 <h2>友谊赛战术复盘</h2>
                 <p>烈光 vs 飞雪 友谊赛的七个战术片段详细分析，包含视频讲解、问题诊断和改进建议。</p>
                 <span class="nav-card-badge">7个战术片段</span>
             </a>
 
-            <a href="u10_rules.html" class="nav-card">
+            <a href="u10_rules.html" class="nav-card" data-reveal>
                 <div class="nav-card-icon">📋</div>
                 <h2>猛虎杯 U10 竞赛章程</h2>
                 <p>北京市第八届猛虎杯春季棒球比赛 U10 投手投打组完整竞赛规程、赛程安排和场地信息。</p>
                 <span class="nav-card-badge">2026年3-5月</span>
             </a>
 
-            <a href="pony_u10_rules.html" class="nav-card">
+            <a href="pony_u10_rules.html" class="nav-card" data-reveal>
                 <div class="nav-card-icon">🐴</div>
                 <h2>PONY U10 竞赛规则</h2>
                 <p>2025年秋季PONY小马棒球联赛 U10组（Bronco-10）完整竞赛规则，场地规格与赛制说明。</p>
                 <span class="nav-card-badge">天津赛区</span>
             </a>
 
-            <a href="tigercup_groupstage.html" class="nav-card">
+            <a href="tigercup_groupstage.html" class="nav-card" data-reveal>
                 <div class="nav-card-icon">📊</div>
                 <h2>小组赛数据分析</h2>
                 <p>猛虎杯小组赛球员表现数据深度分析，多AI联合评估，进攻与防守全面复盘。</p>
                 <span class="nav-card-badge">攻强守弱</span>
             </a>
 
-            <a href="tigercup_finalstage.html" class="nav-card">
+            <a href="tigercup_finalstage.html" class="nav-card" data-reveal>
                 <div class="nav-card-icon">🏆</div>
                 <h2>决赛数据分析</h2>
                 <p>猛虎杯决赛球员表现数据深度分析，多AI联合评估，核心被针对、阵容深度制胜。</p>
                 <span class="nav-card-badge">核心被针对 深度制胜</span>
             </a>
 
-            <a href="sponsor_me.html" class="nav-card">
+            <a href="sponsor_me.html" class="nav-card" data-reveal>
                 <div class="nav-card-icon nav-card-icon-sponsor" aria-hidden="true">
                     <img src="img/08_cheerleading.png" alt="">
                 </div>
