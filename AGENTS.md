@@ -1,7 +1,7 @@
 # AGENTS.md - Red Foxes Baseball Team Website
 
 > This file provides essential context for AI coding agents working on this project.
-> Last updated: 2026-04-13
+> Last updated: 2026-04-17
 
 ---
 
@@ -44,14 +44,18 @@ redfoxes-baseball/
 ├── index.html                 # Navigation hub - entry point
 ├── match_review.html          # Match review page (7 tactical clips, password protected)
 ├── u10_rules.html             # U10 tournament rules page
+├── pony_u10_rules.html        # PONY U10 tournament rules page
 ├── tigercup_groupstage.html   # Groupstage performance analysis
 ├── tigercup_finalstage.html   # Finalstage performance analysis
+├── sponsor_me.html            # Sponsor page (independent theme)
+├── baseball-theme.css         # Shared baseball field theme CSS
+├── rules_style.css            # Shared rules page styling
 ├── u10_rules.js               # U10 page JavaScript (image modal)
 ├── README.md                  # Project documentation
 ├── AGENTS.md                  # This file
 ├── LICENSE                    # CC BY-NC-SA 4.0 License
 └── img/                       # Static image assets
-    ├── 01_本垒打_主图.png ... 16_称霸全国_主图.png
+    ├── baseball-field-bg.svg  # Aerial baseball field background
     ├── schedule.jpg           # U10 tournament schedule
     ├── venue_map.jpg          # Venue map
     ├── groupstage_data.png    # Groupstage match statistics
@@ -62,10 +66,11 @@ redfoxes-baseball/
 ### File Organization Notes
 
 - **index.html**: Navigation hub with card-based layout
-- **match_review.html**: Single-file architecture (HTML + CSS + JS), password protected
-- **u10_rules.html**: External CSS in style tag, external JS via u10_rules.js
-- **tigercup_groupstage.html**: Multi-AI analysis page with tables
-- **tigercup_finalstage.html**: Multi-AI final analysis page with tables, match scores, and ranking image
+- **match_review.html**: Password protected; links shared `baseball-theme.css` plus inline page-specific styles
+- **u10_rules.html** / **pony_u10_rules.html**: Link `baseball-theme.css` + `rules_style.css`; external JS via `u10_rules.js`
+- **tigercup_groupstage.html** / **tigercup_finalstage.html**: Link `baseball-theme.css` plus inline page-specific styles
+- **sponsor_me.html**: Independent styling, does not use baseball field background or floating assets
+- **baseball-theme.css**: Shared theme variables, body background, resets, and common animations
 - No build process or bundling required
 - No framework dependencies
 
@@ -105,14 +110,22 @@ Single-file architecture with embedded CSS and JavaScript.
 
 ### CSS Architecture
 
-Uses CSS custom properties (variables) for theming:
-- --color-primary: #8B4513 (Saddle brown)
-- --color-accent: #c41e3a (Crimson red)
-- --color-bg-dark: #1e3c2f (Dark green)
-- --color-paper: #f5f1e8 (Paper background)
+Uses a shared `baseball-theme.css` with CSS custom properties (variables) for the baseball field theme:
+- --grass-vibrant: #4caf50 (Field green)
+- --dirt-orange: #e67e22 (Infield dirt)
+- --dirt-dark-orange: #d35400 (Dirt shadow)
+- --dirt-light-orange: #f39c12 (Scoreboard accent)
+- --leather-cream: #fff9e6 (Base leather)
+- --leather-tan: #f5e6c8 (Stitch border)
+- --stitch-red: #c41e3a (Baseball stitch)
+- --fox-red: #c0392b (Team red)
+- --color-primary: #c0392b (Primary brand)
+- --color-accent: #f39c12 (Accent)
 - --color-kimi: #00a8e8 (Kimi blue)
 - --color-gemini: #4285f4 (Gemini blue)
 - --color-chatgpt: #10a37f (ChatGPT green)
+
+All themed pages link `baseball-theme.css` for the shared background (`img/baseball-field-bg.svg`), resets, and common animations. Page-specific styles remain inline in each HTML file.
 
 ### Key CSS Classes
 
@@ -261,7 +274,7 @@ Update index.html navigation grid with a new nav-card element.
 3. Update hint text in password overlay
 
 ### Change Color Theme
-Modify CSS variables in :root across all HTML files.
+Modify CSS variables in `baseball-theme.css`. If a page needs an override (e.g. a different border radius), keep the override in that page's inline `:root`.
 
 ### Update Google Analytics ID
 Replace G-QJ6EXQH8SW in script src and gtag config.
