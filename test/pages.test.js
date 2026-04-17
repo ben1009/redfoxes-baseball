@@ -23,6 +23,24 @@ const PAGE_PATHS = {
     sponsor: 'file://' + path.resolve(__dirname, '../sponsor_me.html')
 };
 
+function getEffectiveContent(file) {
+    const filePath = path.resolve(__dirname, '..', file);
+    let content = fs.readFileSync(filePath, 'utf8');
+
+    const linkMatches = content.match(/<link[^>]+rel=["']stylesheet["'][^>]+href=["']([^"']+)["']/gi) || [];
+    linkMatches.forEach((match) => {
+        const hrefMatch = match.match(/href=["']([^"']+)["']/i);
+        if (hrefMatch) {
+            const cssPath = path.resolve(__dirname, '..', hrefMatch[1]);
+            if (fs.existsSync(cssPath)) {
+                content += fs.readFileSync(cssPath, 'utf8');
+            }
+        }
+    });
+
+    return content;
+}
+
 describe('Page Structure and Navigation Tests', () => {
     let browser;
     let page;
@@ -782,13 +800,13 @@ describe('Floating Baseball Assets', () => {
 
 describe('Baseball Theme Motion Coverage', () => {
     test('index.html should include stadium-style animation hooks', () => {
-        const html = fs.readFileSync(path.resolve(__dirname, '..', 'index.html'), 'utf8');
+        const content = getEffectiveContent('index.html');
 
-        expect(html).toContain('@keyframes stadiumRise');
-        expect(html).toContain('@keyframes lightSweep');
-        expect(html).toContain('@keyframes cardReveal');
-        expect(html).toContain('animation: scoreboardDrop 0.9s ease-out;');
-        expect(html).toContain('@media (prefers-reduced-motion: reduce)');
+        expect(content).toContain('@keyframes stadiumRise');
+        expect(content).toContain('@keyframes lightSweep');
+        expect(content).toContain('@keyframes cardReveal');
+        expect(content).toContain('animation: scoreboardDrop 0.9s ease-out;');
+        expect(content).toContain('@media (prefers-reduced-motion: reduce)');
     });
 
     test('rules_style.css should include shared baseball motion system', () => {
@@ -802,27 +820,27 @@ describe('Baseball Theme Motion Coverage', () => {
     });
 
     test('match_review.html should include animated review-page effects', () => {
-        const html = fs.readFileSync(path.resolve(__dirname, '..', 'match_review.html'), 'utf8');
+        const content = getEffectiveContent('match_review.html');
 
-        expect(html).toContain('@keyframes pageFadeIn');
-        expect(html).toContain('@keyframes marqueeSweep');
-        expect(html).toContain('@keyframes cardLiftIn');
-        expect(html).toContain('animation: badgeBob 3s ease-in-out infinite;');
-        expect(html).toContain('.video-card:nth-of-type(7) { animation-delay: 0.46s; }');
-        expect(html).toContain('@media (prefers-reduced-motion: reduce)');
+        expect(content).toContain('@keyframes pageFadeIn');
+        expect(content).toContain('@keyframes marqueeSweep');
+        expect(content).toContain('@keyframes cardLiftIn');
+        expect(content).toContain('animation: badgeBob 3s ease-in-out infinite;');
+        expect(content).toContain('.video-card:nth-of-type(7) { animation-delay: 0.46s; }');
+        expect(content).toContain('@media (prefers-reduced-motion: reduce)');
     });
 
     test('analysis pages should include report reveal animations', () => {
-        const groupstageHtml = fs.readFileSync(path.resolve(__dirname, '..', 'tigercup_groupstage.html'), 'utf8');
-        const finalstageHtml = fs.readFileSync(path.resolve(__dirname, '..', 'tigercup_finalstage.html'), 'utf8');
+        const groupstageContent = getEffectiveContent('tigercup_groupstage.html');
+        const finalstageContent = getEffectiveContent('tigercup_finalstage.html');
 
-        [groupstageHtml, finalstageHtml].forEach((html) => {
-            expect(html).toContain('@keyframes reportEnter');
-            expect(html).toContain('@keyframes scoreboardFlash');
-            expect(html).toContain('@keyframes aiReveal');
-            expect(html).toContain('@keyframes highlightSweep');
-            expect(html).toContain('.ai-card:nth-of-type(3) { animation-delay: 0.4s; }');
-            expect(html).toContain('@media (prefers-reduced-motion: reduce)');
+        [groupstageContent, finalstageContent].forEach((content) => {
+            expect(content).toContain('@keyframes reportEnter');
+            expect(content).toContain('@keyframes scoreboardFlash');
+            expect(content).toContain('@keyframes aiReveal');
+            expect(content).toContain('@keyframes highlightSweep');
+            expect(content).toContain('.ai-card:nth-of-type(3) { animation-delay: 0.4s; }');
+            expect(content).toContain('@media (prefers-reduced-motion: reduce)');
         });
     });
 });
@@ -960,5 +978,86 @@ describe('AI Card Hover Glow', () => {
             expect(html).toContain('.ai-card:has(.ai-card-header.gemini):hover');
             expect(html).toContain('.ai-card:has(.ai-card-header.chatgpt):hover');
         });
+    });
+});
+
+describe('Baseball Field Theme Consistency', () => {
+    const themedPages = [
+        'index.html',
+        'match_review.html',
+        'u10_rules.html',
+        'pony_u10_rules.html',
+        'tigercup_groupstage.html',
+        'tigercup_finalstage.html'
+    ];
+
+    // getEffectiveContent is defined at module scope above
+
+    test('baseball field background SVG should exist', () => {
+        expect(fs.existsSync(path.resolve(__dirname, '../img/baseball-field-bg.svg'))).toBe(true);
+    });
+
+    test('all themed pages should reference the baseball field background SVG', () => {
+        themedPages.forEach((file) => {
+            const content = getEffectiveContent(file);
+            expect(content).toContain("img/baseball-field-bg.svg");
+        });
+    });
+
+    test('sponsor page should not use the baseball field background', () => {
+        const html = fs.readFileSync(path.resolve(__dirname, '../sponsor_me.html'), 'utf8');
+        expect(html).not.toContain("baseball-field-bg.svg");
+    });
+
+    test('all themed pages should share the index-style color system', () => {
+        themedPages.forEach((file) => {
+            const content = getEffectiveContent(file);
+            expect(content).toContain('--fox-red:');
+            expect(content).toContain('--dirt-orange:');
+            expect(content).toContain('--leather-cream:');
+            expect(content).toContain('--stitch-red:');
+        });
+    });
+
+    test('headers should use the scoreboard style (dirt-orange accents)', () => {
+        const pagesWithInlineCss = [
+            'index.html',
+            'match_review.html',
+            'tigercup_groupstage.html',
+            'tigercup_finalstage.html'
+        ];
+
+        pagesWithInlineCss.forEach((file) => {
+            const html = fs.readFileSync(path.resolve(__dirname, '..', file), 'utf8');
+            expect(html).toContain('var(--dirt-dark-orange)');
+            expect(html).toContain('var(--dirt-light-orange)');
+        });
+
+        const css = fs.readFileSync(path.resolve(__dirname, '../rules_style.css'), 'utf8');
+        expect(css).toContain('var(--dirt-dark-orange)');
+        expect(css).toContain('var(--dirt-light-orange)');
+    });
+
+    test('containers and cards should have baseball base styling', () => {
+        [
+            'index.html',
+            'match_review.html',
+            'tigercup_groupstage.html',
+            'tigercup_finalstage.html'
+        ].forEach((file) => {
+            const html = fs.readFileSync(path.resolve(__dirname, '..', file), 'utf8');
+            expect(html).toContain('var(--leather-tan)');
+            expect(html).toContain('var(--stitch-red)');
+        });
+
+        const css = fs.readFileSync(path.resolve(__dirname, '../rules_style.css'), 'utf8');
+        expect(css).toContain('var(--leather-tan)');
+        expect(css).toContain('var(--stitch-red)');
+    });
+
+    test('index page nav cards should have the leather-tan border and stitch-red dashed border', () => {
+        const html = fs.readFileSync(path.resolve(__dirname, '../index.html'), 'utf8');
+        expect(html).toContain('border: 3px solid var(--leather-tan)');
+        expect(html).toContain('border: 2px dashed var(--stitch-red)');
     });
 });
