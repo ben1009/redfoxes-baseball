@@ -24,10 +24,18 @@ redfoxes-baseball/
 ├── index.html                 # Navigation hub - entry point for all content
 ├── match_review.html          # Match review page (7 tactical clips with password protection)
 ├── u10_rules.html             # U10 tournament rules page
+├── pony_u10_rules.html        # PONY U10 tournament rules page
 ├── tigercup_groupstage.html   # Groupstage performance analysis with multi-AI insights
 ├── tigercup_finalstage.html   # Finalstage performance analysis with multi-AI insights
+├── sponsor_me.html            # Sponsor support page
+├── baseball-theme.css         # Shared baseball field theme stylesheet
+├── rules_style.css            # Shared rules page styling
 ├── u10_rules.js               # JavaScript for U10 page (image modal functionality)
+├── baseball_floats.css/js     # Floating baseball background animation
+├── scroll_reveal.css/js       # Scroll-triggered reveal animations
+├── count_up.js                # Animated number counter
 ├── img/                       # Static image assets
+│   ├── baseball-field-bg.svg  # Aerial baseball field background
 │   ├── *.png                  # Decorative icons for pages
 │   ├── schedule.jpg           # U10 tournament schedule
 │   ├── venue_map.jpg          # Venue map
@@ -123,12 +131,19 @@ The match review page (`match_review.html`) requires a password to enter:
 ## 🛠️ Tech Stack
 
 - HTML5
-- CSS3 (Flexbox + Grid, CSS Variables)
+- CSS3 (Flexbox + Grid, CSS Custom Properties, `prefers-reduced-motion`)
 - Vanilla JavaScript (ES6+)
 - Google Fonts (Noto Serif SC, Segoe UI)
 - Bilibili Video Embedding
 - Google Analytics 4
 - 🦊 SVG Emoji Favicon
+
+### Theme Architecture
+All themed pages share a unified **Baseball Field Theme** via `baseball-theme.css`:
+- Aerial baseball field background (`img/baseball-field-bg.svg`) with mowing-stripe fallback
+- Scoreboard-style headers with dirt-orange accents
+- Leather-cream card styling with baseball-stitch dashed borders
+- Shared CSS custom properties for consistent colors across pages
 
 ## 📊 Analytics
 
@@ -136,14 +151,19 @@ This site uses Google Analytics 4 to track visitor engagement and improve conten
 
 ## 🧪 Testing
 
-Comprehensive test suite covering:
+Comprehensive test suite with **129 tests** covering:
 - Page structure and navigation tests
 - Video autopause functionality tests
 - Cross-page link verification
 - File existence checks
+- **Baseball Field Theme Consistency** — shared CSS variables, backgrounds, and scoreboard headers
+- **Baseball Theme Motion Coverage** — animation hooks and reduced-motion support
+- **Floating Baseball Behavior Coverage** — passive background animations
+- Scroll reveal and count-up asset coverage
 
 Run tests locally:
 ```bash
+npm install
 npm test
 ```
 
