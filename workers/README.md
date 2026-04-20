@@ -10,10 +10,12 @@ Browser (sponsor_me.html)
     │ GET /               │ POST /like          │ POST /unlike
     ▼                     ▼                     ▼
 Cloudflare Worker (sponsor-likes.js)
-    │
+    │ (rate limiting via KV)
+    ▼
+Durable Object (LikeCounter)
+    │ (atomic count storage)
     ▼
 Cloudflare KV (SPONSOR_LIKES_KV)
-    Key: "sponsor_me_likes"  → Value: "0"
     Key: "rate_like:{ip}"    → Value: timestamp
     Key: "rate_unlike:{ip}"  → Value: timestamp
 ```

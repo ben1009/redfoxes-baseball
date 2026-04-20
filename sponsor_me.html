@@ -891,7 +891,6 @@
                 throw new Error('Invalid response');
             } catch (e) {
                 apiFailed = true;
-                count = parseInt(localStorage.getItem(FALLBACK_KEY), 10) || 0;
                 count = Math.max(0, count + (action === 'like' ? 1 : -1));
                 localStorage.setItem(FALLBACK_KEY, count);
                 updateUI();
@@ -917,15 +916,15 @@
             if (applied) {
                 hasLiked = !hasLiked;
                 localStorage.setItem(LIKE_KEY, hasLiked ? 'true' : 'false');
-                updateUI();
+
+                const icon = btn.querySelector('.like-icon');
+                icon.classList.remove('pop');
+                void icon.offsetWidth;
+                icon.classList.add('pop');
             }
 
+            updateUI();
             isProcessing = false;
-
-            const icon = btn.querySelector('.like-icon');
-            icon.classList.remove('pop');
-            void icon.offsetWidth;
-            icon.classList.add('pop');
         });
 
         fetchCount();

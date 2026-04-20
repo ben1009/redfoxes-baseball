@@ -40,8 +40,9 @@ A global "like" (点赞) feature on the sponsor page (`sponsor_me.html`) that al
 | Component | File | Responsibility |
 |-----------|------|----------------|
 | Frontend Widget | `sponsor_me.html` (inline) | UI rendering, click handling, localStorage fallback |
-| Worker API | `workers/sponsor-likes.js` | Atomic increment/decrement, rate limiting, CORS |
-| KV Store | Cloudflare KV | Persistent global counter storage |
+| Worker API | `workers/sponsor-likes.js` | Request routing, rate limiting, CORS |
+| Durable Object | `LikeCounter` | Atomic count storage (single-threaded, no race conditions) |
+| KV Store | Cloudflare KV | Rate limit timestamp storage |
 | Config | `workers/wrangler.toml` | Worker deployment configuration |
 | CI/CD | `.github/workflows/deploy-worker.yml` | Auto-deploy on push |
 
@@ -235,7 +236,7 @@ Allows the GitHub Pages domain (or any domain) to call the Worker.
 ### 6.2 Known Limitations
 
 - **IP spoofing**: A determined attacker with many IPs could bypass rate limiting. For a youth baseball site, this risk is acceptable.
-- **KV consistency**: Cloudflare KV is eventually consistent. In rare cases, two simultaneous likes from different IPs might result in one overwrite. Acceptable for this use case.
+- **Durable Objects guarantee atomicity**: Single-threaded execution eliminates race conditions entirely.
 - **No user identity**: We intentionally do not track users. One like per IP per 5 seconds is the only restriction.
 
 ---
@@ -324,3 +325,4 @@ npx wrangler deploy
 | 2026-04-20 | Separated rate limit keys for like/unlike |
 | 2026-04-20 | Frontend state now only toggles on successful API response |
 | 2026-04-20 | Added `isProcessing` click lock to prevent rapid-fire double-counting |
+| 2026-04-20 | Migrated from KV-only to Durable Objects for atomic count operations |

@@ -10,6 +10,12 @@ account_id = "3632b3c7a2a58ab7111d9c5d11b04c95"
 
 [[kv_namespaces]]
 binding = "SPONSOR_LIKES_KV"
-# Create a KV namespace via dashboard or: npx wrangler kv:namespace create "SPONSOR_LIKES_KV"
-# Then paste the id below:
 id = "917908191a23495a80425a0249fbaf74"
+
+[[durable_objects.bindings]]
+name = "LIKE_COUNTER"
+class_name = "LikeCounter"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["LikeCounter"]
