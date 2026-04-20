@@ -689,6 +689,320 @@ describe('Page Structure and Navigation Tests', () => {
             expect(hasBaseballFloatCss).toBe(false);
             expect(hasBaseballFloatJs).toBe(false);
         }));
+
+        test('should have a like widget with button and label', async () => withBrowser(async () => {
+            const likeWidget = await page.$('.like-widget');
+            expect(likeWidget).not.toBeNull();
+
+            const likeBtn = await page.$('.like-btn');
+            expect(likeBtn).not.toBeNull();
+
+            const likeCount = await page.$('.like-count');
+            expect(likeCount).not.toBeNull();
+
+            const likeLabel = await page.$('.like-label');
+            expect(likeLabel).not.toBeNull();
+        }));
+
+        test('should show initial like count and unliked state', async () => withBrowser(async () => {
+            const likeBtn = await page.$('.like-btn');
+            const likeCount = await page.$('.like-count');
+
+            // Wait for async fetch/fallback to settle (count becomes a number, not '...')
+            await page.waitForFunction(() => {
+                const countEl = document.querySelector('.like-count');
+                return countEl && /^\d+$/.test(countEl.textContent);
+            }, { timeout: 5000 });
+
+            const countText = await likeCount.evaluate(el => el.textContent);
+            expect(countText).toMatch(/^\d+$/);
+
+            const isLiked = await likeBtn.evaluate(el => el.classList.contains('liked'));
+            expect(isLiked).toBe(false);
+
+            const ariaPressed = await likeBtn.evaluate(el => el.getAttribute('aria-pressed'));
+            expect(ariaPressed).toBe('false');
+        }));
+
+        test('should toggle liked state on click', async () => withBrowser(async () => {
+            // Ensure clean state
+            await page.evaluate(() => {
+                localStorage.removeItem('sponsor_me_liked_v1');
+                localStorage.removeItem('sponsor_me_count_fallback');
+            });
+            await page.reload({ waitUntil: 'domcontentloaded' });
+
+            // Wait for widget to settle before clicking
+            await page.waitForFunction(() => {
+                const countEl = document.querySelector('.like-count');
+                return countEl && /^\d+$/.test(countEl.textContent);
+            }, { timeout: 5000 });
+
+            const likeBtn = await page.$('.like-btn');
+            expect(likeBtn).not.toBeNull();
+
+            // Initial state: not liked
+            let isLiked = await likeBtn.evaluate(el => el.classList.contains('liked'));
+            expect(isLiked).toBe(false);
+
+            // Click to like and wait for state change
+            await likeBtn.click();
+            await page.waitForFunction(() => {
+                const btn = document.querySelector('.like-btn');
+                return btn && btn.classList.contains('liked');
+            }, { timeout: 5000 });
+
+            isLiked = await likeBtn.evaluate(el => el.classList.contains('liked'));
+            expect(isLiked).toBe(true);
+
+            const ariaPressed = await likeBtn.evaluate(el => el.getAttribute('aria-pressed'));
+            expect(ariaPressed).toBe('true');
+
+            // Click again to unlike and wait for state change
+            await likeBtn.click();
+            await page.waitForFunction(() => {
+                const btn = document.querySelector('.like-btn');
+                return btn && !btn.classList.contains('liked');
+            }, { timeout: 5000 });
+
+            isLiked = await likeBtn.evaluate(el => el.classList.contains('liked'));
+            expect(isLiked).toBe(false);
+        }));
+
+        test('should not double-count on rapid clicks', async () => withBrowser(async () => {
+            // Mock fetch for deterministic counting
+            await page.evaluateOnNewDocument(() => {
+                window.__testLikeCount = 0;
+                const origFetch = window.fetch;
+                window.fetch = async (url, opts) => {
+                    if (typeof url === 'string' && url.includes('redfoxes-sponsor-likes')) {
+                        if (opts && opts.method === 'POST' && url.endsWith('/like')) {
+                            window.__testLikeCount++;
+                        } else if (opts && opts.method === 'POST' && url.endsWith('/unlike')) {
+                            window.__testLikeCount = Math.max(0, window.__testLikeCount - 1);
+                        }
+                        return { ok: true, json: async () => ({ count: window.__testLikeCount }) };
+                    }
+                    return origFetch(url, opts);
+                };
+            });
+
+            // Clear and reload
+            await page.evaluate(() => {
+                localStorage.removeItem('sponsor_me_liked_v1');
+                localStorage.removeItem('sponsor_me_count_fallback');
+            });
+            await page.reload({ waitUntil: 'domcontentloaded' });
+
+            // Wait for widget to settle
+            await page.waitForFunction(() => {
+                const countEl = document.querySelector('.like-count');
+                return countEl && /^\d+$/.test(countEl.textContent);
+            }, { timeout: 5000 });
+
+            const likeBtn = await page.$('.like-btn');
+            const initialCount = parseInt(await page.$eval('.like-count', el => el.textContent), 10);
+
+            // Rapid-fire 5 clicks
+            for (let i = 0; i < 5; i++) {
+                await likeBtn.click();
+            }
+
+            // Wait for any pending async operations to finish
+            await page.waitForTimeout(1000);
+
+            const finalCount = parseInt(await page.$eval('.like-count', el => el.textContent), 10);
+            // Count should only change by at most 1 from the initial value
+            expect(Math.abs(finalCount - initialCount)).toBeLessThanOrEqual(1);
+        }));
+
+        test('should persist liked state in localStorage', async () => withBrowser(async () => {
+            // Mock fetch to avoid network/rate-limit flakiness in tests
+            await page.evaluateOnNewDocument(() => {
+                window.__testLikeCount = 0;
+                const origFetch = window.fetch;
+                window.fetch = async (url, opts) => {
+                    if (typeof url === 'string' && url.includes('redfoxes-sponsor-likes')) {
+                        if (opts && opts.method === 'POST' && url.endsWith('/like')) {
+                            window.__testLikeCount++;
+                        } else if (opts && opts.method === 'POST' && url.endsWith('/unlike')) {
+                            window.__testLikeCount = Math.max(0, window.__testLikeCount - 1);
+                        }
+                        return { ok: true, json: async () => ({ count: window.__testLikeCount }) };
+                    }
+                    return origFetch(url, opts);
+                };
+            });
+
+            // Clear and reload
+            await page.evaluate(() => {
+                localStorage.removeItem('sponsor_me_liked_v1');
+                localStorage.removeItem('sponsor_me_count_fallback');
+            });
+            await page.reload({ waitUntil: 'domcontentloaded' });
+
+            // Wait for widget to settle
+            await page.waitForFunction(() => {
+                const countEl = document.querySelector('.like-count');
+                return countEl && /^\d+$/.test(countEl.textContent);
+            }, { timeout: 5000 });
+
+            const likeBtn = await page.$('.like-btn');
+
+            // Click to like and wait for state change
+            await likeBtn.click();
+            await page.waitForFunction(() => {
+                const btn = document.querySelector('.like-btn');
+                return btn && btn.classList.contains('liked');
+            }, { timeout: 5000 });
+
+            // Verify localStorage
+            const stored = await page.evaluate(() => localStorage.getItem('sponsor_me_liked_v1'));
+            expect(stored).toBe('true');
+
+            // Reload and verify state persists
+            await page.reload({ waitUntil: 'domcontentloaded' });
+
+            // Wait for widget to settle after reload
+            await page.waitForFunction(() => {
+                const countEl = document.querySelector('.like-count');
+                return countEl && /^\d+$/.test(countEl.textContent);
+            }, { timeout: 5000 });
+
+            const reloadedBtn = await page.$('.like-btn');
+            const isLiked = await reloadedBtn.evaluate(el => el.classList.contains('liked'));
+            expect(isLiked).toBe(true);
+        }));
+
+        test('should not toggle state on rate-limited response', async () => withBrowser(async () => {
+            // Mock fetch: like succeeds, unlike is rate-limited
+            await page.evaluateOnNewDocument(() => {
+                window.__testLikeCount = 0;
+                const origFetch = window.fetch;
+                window.fetch = async (url, opts) => {
+                    if (typeof url === 'string' && url.includes('redfoxes-sponsor-likes')) {
+                        if (opts && opts.method === 'POST') {
+                            if (url.endsWith('/like')) {
+                                window.__testLikeCount++;
+                                return { ok: true, json: async () => ({ count: window.__testLikeCount }) };
+                            }
+                            if (url.endsWith('/unlike')) {
+                                return { ok: true, json: async () => ({ count: window.__testLikeCount, rateLimited: true }) };
+                            }
+                        }
+                        return { ok: true, json: async () => ({ count: window.__testLikeCount }) };
+                    }
+                    return origFetch(url, opts);
+                };
+            });
+
+            // Clear localStorage and reload for clean state
+            await page.evaluate(() => {
+                localStorage.removeItem('sponsor_me_liked_v1');
+                localStorage.removeItem('sponsor_me_count_fallback');
+            });
+            await page.reload({ waitUntil: 'domcontentloaded' });
+
+            // Wait for widget to settle
+            await page.waitForFunction(() => {
+                const countEl = document.querySelector('.like-count');
+                return countEl && /^\d+$/.test(countEl.textContent);
+            }, { timeout: 5000 });
+
+            const likeBtn = await page.$('.like-btn');
+
+            // Verify starts unliked
+            expect(await likeBtn.evaluate(el => el.classList.contains('liked'))).toBe(false);
+
+            // First click — like succeeds
+            await likeBtn.click();
+            await page.waitForFunction(() => {
+                const btn = document.querySelector('.like-btn');
+                return btn && btn.classList.contains('liked');
+            }, { timeout: 5000 });
+            expect(await likeBtn.evaluate(el => el.classList.contains('liked'))).toBe(true);
+
+            // Second click — unlike is rate-limited, should NOT toggle state
+            await likeBtn.click();
+            await page.waitForTimeout(600);
+            expect(await likeBtn.evaluate(el => el.classList.contains('liked'))).toBe(true);
+
+            // Count should still be 1
+            const countText = await page.$eval('.like-count', el => el.textContent);
+            expect(parseInt(countText, 10)).toBe(1);
+        }));
+
+        test('should animate only on successful like', async () => withBrowser(async () => {
+            // Mock fetch: first like succeeds, second unlike is rate-limited
+            await page.evaluateOnNewDocument(() => {
+                window.__testLikeCount = 0;
+                window.__actionAttempts = 0;
+                const origFetch = window.fetch;
+                window.fetch = async (url, opts) => {
+                    if (typeof url === 'string' && url.includes('redfoxes-sponsor-likes')) {
+                        if (opts && opts.method === 'POST') {
+                            window.__actionAttempts++;
+                            if (window.__actionAttempts === 1) {
+                                // First action (like) succeeds
+                                window.__testLikeCount++;
+                                return { ok: true, json: async () => ({ count: window.__testLikeCount }) };
+                            }
+                            // Second action (unlike) is rate-limited
+                            return { ok: true, json: async () => ({ count: window.__testLikeCount, rateLimited: true }) };
+                        }
+                        return { ok: true, json: async () => ({ count: window.__testLikeCount }) };
+                    }
+                    return origFetch(url, opts);
+                };
+            });
+
+            // Clear and reload
+            await page.evaluate(() => {
+                localStorage.removeItem('sponsor_me_liked_v1');
+                localStorage.removeItem('sponsor_me_count_fallback');
+            });
+            await page.reload({ waitUntil: 'domcontentloaded' });
+
+            // Wait for widget to settle
+            await page.waitForFunction(() => {
+                const countEl = document.querySelector('.like-count');
+                return countEl && /^\d+$/.test(countEl.textContent);
+            }, { timeout: 5000 });
+
+            const likeBtn = await page.$('.like-btn');
+
+            // First click — succeeds, animation should fire
+            await likeBtn.click();
+            await page.waitForFunction(() => {
+                const btn = document.querySelector('.like-btn');
+                return btn && btn.classList.contains('liked');
+            }, { timeout: 5000 });
+
+            const hadPopAfterSuccess = await page.evaluate(() => {
+                const icon = document.querySelector('.like-icon');
+                return icon && icon.classList.contains('pop');
+            });
+            expect(hadPopAfterSuccess).toBe(true);
+
+            // Wait for animation class to settle
+            await page.waitForTimeout(300);
+
+            // Remove pop class manually to detect re-addition
+            await page.evaluate(() => {
+                const icon = document.querySelector('.like-icon');
+                if (icon) icon.classList.remove('pop');
+            });
+
+            // Second click — rate-limited, animation should NOT re-fire
+            await likeBtn.click();
+            await page.waitForTimeout(300);
+
+            const hasPopAfterRateLimit = await page.evaluate(() => {
+                const icon = document.querySelector('.like-icon');
+                return icon && icon.classList.contains('pop');
+            });
+            expect(hasPopAfterRateLimit).toBe(false);
+        }));
     });
 
     describe('Cross-Page Navigation', () => {
@@ -753,7 +1067,11 @@ describe('File Existence Tests', () => {
         'rules_style.css',
         'img/groupstage_data.png',
         'img/finalstage_data.png',
-        'img/tigercup_final_ranking.jpg'
+        'img/tigercup_final_ranking.jpg',
+        'workers/sponsor-likes.js',
+        'workers/wrangler.toml',
+        'workers/README.md',
+        '.github/workflows/deploy-worker.yml'
     ];
 
     files.forEach(file => {

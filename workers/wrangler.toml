@@ -1,0 +1,21 @@
+# Cloudflare Worker configuration for sponsor page like counter
+# Fill in the values below, then run: npx wrangler deploy
+
+name = "redfoxes-sponsor-likes"
+main = "sponsor-likes.js"
+compatibility_date = "2026-04-20"
+
+# Replace with your Cloudflare Account ID (found on the right sidebar of your CF dashboard)
+account_id = "3632b3c7a2a58ab7111d9c5d11b04c95"
+
+[[kv_namespaces]]
+binding = "SPONSOR_LIKES_KV"
+id = "917908191a23495a80425a0249fbaf74"
+
+[[durable_objects.bindings]]
+name = "LIKE_COUNTER"
+class_name = "LikeCounter"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["LikeCounter"]
