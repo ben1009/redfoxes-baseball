@@ -78,7 +78,7 @@ describe('Page Structure and Navigation Tests', () => {
     describe('Index Page (Navigation Hub)', () => {
         beforeEach(async () => {
             if (!browserLaunchError) {
-                await page.goto(PAGE_PATHS.index, { waitUntil: 'networkidle2' });
+                await page.goto(PAGE_PATHS.index, { waitUntil: 'domcontentloaded' });
             }
         });
 
@@ -232,7 +232,7 @@ describe('Page Structure and Navigation Tests', () => {
     describe('U10 Rules Page (u10_rules.html)', () => {
         beforeEach(async () => {
             if (!browserLaunchError) {
-                await page.goto(PAGE_PATHS.rules, { waitUntil: 'networkidle2' });
+                await page.goto(PAGE_PATHS.rules, { waitUntil: 'domcontentloaded' });
             }
         });
 
@@ -312,7 +312,7 @@ describe('Page Structure and Navigation Tests', () => {
     describe('PONY U10 Rules Page (pony_u10_rules.html)', () => {
         beforeEach(async () => {
             if (!browserLaunchError) {
-                await page.goto(PAGE_PATHS.ponyRules, { waitUntil: 'networkidle2' });
+                await page.goto(PAGE_PATHS.ponyRules, { waitUntil: 'domcontentloaded' });
             }
         });
 
@@ -329,6 +329,36 @@ describe('Page Structure and Navigation Tests', () => {
             
             const navLinks = await page.$$('.nav-link');
             expect(navLinks.length).toBeGreaterThan(5);
+        }));
+
+        test('should have schedule section with tournament image', async () => withBrowser(async () => {
+            const scheduleSection = await page.$('#schedule');
+            expect(scheduleSection).not.toBeNull();
+
+            const scheduleImage = await page.$('img[src*="u10_pony_tianjin_schedule"]');
+            expect(scheduleImage).not.toBeNull();
+
+            const imageCaption = await scheduleSection.$('.image-caption');
+            expect(imageCaption).not.toBeNull();
+            const captionText = await imageCaption.evaluate(el => el.textContent);
+            expect(captionText).toContain('5月2-3日');
+            expect(captionText).toContain('5月4日');
+
+            const infoBox = await scheduleSection.$('.info-box');
+            expect(infoBox).not.toBeNull();
+        }));
+
+        test('should have schedule nav link', async () => withBrowser(async () => {
+            const scheduleLink = await page.$('a.nav-link[href="#schedule"]');
+            expect(scheduleLink).not.toBeNull();
+        }));
+
+        test('should have image containers with lightbox functionality', async () => withBrowser(async () => {
+            const imageContainers = await page.$$('.image-container');
+            expect(imageContainers.length).toBeGreaterThan(0);
+            
+            const modal = await page.$('#imageModal');
+            expect(modal).not.toBeNull();
         }));
 
         test('should link to external rules_style.css', async () => withBrowser(async () => {
@@ -421,7 +451,7 @@ describe('Page Structure and Navigation Tests', () => {
     describe('Groupstage Analysis Page (tigercup_groupstage.html)', () => {
         beforeEach(async () => {
             if (!browserLaunchError) {
-                await page.goto(PAGE_PATHS.groupstage, { waitUntil: 'networkidle2' });
+                await page.goto(PAGE_PATHS.groupstage, { waitUntil: 'domcontentloaded' });
             }
         });
 
@@ -485,7 +515,7 @@ describe('Page Structure and Navigation Tests', () => {
     describe('Finalstage Analysis Page (tigercup_finalstage.html)', () => {
         beforeEach(async () => {
             if (!browserLaunchError) {
-                await page.goto(PAGE_PATHS.finalstage, { waitUntil: 'networkidle2' });
+                await page.goto(PAGE_PATHS.finalstage, { waitUntil: 'domcontentloaded' });
             }
         });
 
@@ -1007,7 +1037,7 @@ describe('Page Structure and Navigation Tests', () => {
 
     describe('Cross-Page Navigation', () => {
         test('should navigate from index to match_review page', async () => withBrowser(async () => {
-            await page.goto(PAGE_PATHS.index, { waitUntil: 'networkidle2' });
+            await page.goto(PAGE_PATHS.index, { waitUntil: 'domcontentloaded' });
             
             // Find and click the match review link
             const matchReviewLink = await page.$('a[href="match_review.html"]');
@@ -1015,35 +1045,35 @@ describe('Page Structure and Navigation Tests', () => {
         }));
 
         test('should navigate from index to u10_rules page', async () => withBrowser(async () => {
-            await page.goto(PAGE_PATHS.index, { waitUntil: 'networkidle2' });
+            await page.goto(PAGE_PATHS.index, { waitUntil: 'domcontentloaded' });
             
             const rulesLink = await page.$('a[href="u10_rules.html"]');
             expect(rulesLink).not.toBeNull();
         }));
 
         test('should navigate from index to pony_u10_rules page', async () => withBrowser(async () => {
-            await page.goto(PAGE_PATHS.index, { waitUntil: 'networkidle2' });
+            await page.goto(PAGE_PATHS.index, { waitUntil: 'domcontentloaded' });
             
             const ponyRulesLink = await page.$('a[href="pony_u10_rules.html"]');
             expect(ponyRulesLink).not.toBeNull();
         }));
 
         test('should navigate from index to groupstage page', async () => withBrowser(async () => {
-            await page.goto(PAGE_PATHS.index, { waitUntil: 'networkidle2' });
+            await page.goto(PAGE_PATHS.index, { waitUntil: 'domcontentloaded' });
             
             const groupstageLink = await page.$('a[href="tigercup_groupstage.html"]');
             expect(groupstageLink).not.toBeNull();
         }));
 
         test('should navigate from index to finalstage page', async () => withBrowser(async () => {
-            await page.goto(PAGE_PATHS.index, { waitUntil: 'networkidle2' });
+            await page.goto(PAGE_PATHS.index, { waitUntil: 'domcontentloaded' });
 
             const finalstageLink = await page.$('a[href="tigercup_finalstage.html"]');
             expect(finalstageLink).not.toBeNull();
         }));
 
         test('should navigate from index to sponsor page', async () => withBrowser(async () => {
-            await page.goto(PAGE_PATHS.index, { waitUntil: 'networkidle2' });
+            await page.goto(PAGE_PATHS.index, { waitUntil: 'domcontentloaded' });
 
             const sponsorLink = await page.$('a[href="sponsor_me.html"]');
             expect(sponsorLink).not.toBeNull();
@@ -1068,6 +1098,7 @@ describe('File Existence Tests', () => {
         'img/groupstage_data.png',
         'img/finalstage_data.png',
         'img/tigercup_final_ranking.jpg',
+        'img/u10_pony_tianjin_schedule.png',
         'workers/sponsor-likes.js',
         'workers/wrangler.toml',
         'workers/README.md',
@@ -1130,6 +1161,7 @@ describe('Shared Script Coverage', () => {
     test('image-modal consumers should use the shared lightbox script', () => {
         const modalPages = [
             'u10_rules.html',
+            'pony_u10_rules.html',
             'tigercup_groupstage.html',
             'tigercup_finalstage.html',
             'sponsor_me.html'
@@ -1144,6 +1176,7 @@ describe('Shared Script Coverage', () => {
     test('image modal pages should declare their modal mode explicitly', () => {
         const standardPages = [
             'u10_rules.html',
+            'pony_u10_rules.html',
             'tigercup_groupstage.html',
             'tigercup_finalstage.html'
         ];
@@ -1385,6 +1418,7 @@ describe('Data Reveal Attributes', () => {
 
     test('pony_u10_rules.html should have data-reveal on sections and metric cards', () => {
         const html = fs.readFileSync(path.resolve(__dirname, '..', 'pony_u10_rules.html'), 'utf8');
+        expect(html).toContain('<section id="schedule" data-reveal>');
         expect(html).toContain('<section id="field-specs" data-reveal>');
         expect(html).toContain('<div class="metric-card" data-reveal>');
         expect(html).toContain('<tbody data-reveal>');

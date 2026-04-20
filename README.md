@@ -83,6 +83,17 @@ Complete regulations for the 猛虎杯 (Tiger Cup) U10 Baseball Competition:
   - 📋 Complete rules: eligibility, game format, pitcher limits, field specs
   - 🖨️ Print-friendly styles
 
+## 🐴 PONY U10 Tournament Rules (pony_u10_rules.html)
+
+Complete regulations for the PONY小马棒球联赛 (PONY Little League) U10 Competition:
+
+- **Team**: 烈光少棒（赤狐队）/ Red Foxes (Red Fox Team)
+- **Features**:
+  - 📍 Sticky navigation with quick links to all sections
+  - 📅 PONY Tianjin division tournament schedule with image lightbox
+  - 📋 Complete rules: field specs, game format, pitcher limits, coach rules, base running
+  - 🖨️ Print-friendly styles
+
 ## 📊 Groupstage Analysis (tigercup_groupstage.html)
 
 **猛虎杯小组赛数据分析** - Multi-AI Performance Analysis
@@ -159,7 +170,7 @@ This site uses Google Analytics 4 to track visitor engagement and improve conten
 
 ## 🧪 Testing
 
-Comprehensive test suite with **145 tests** covering:
+Comprehensive test suite with **152 tests** covering:
 - Page structure and navigation tests
 - Video autopause functionality tests
 - Cross-page link verification

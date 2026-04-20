@@ -47,6 +47,13 @@ describe('Video Autopause Feature', () => {
         }
     });
 
+    beforeEach(async () => {
+        if (!page || browserLaunchError) return;
+        // Reset scroll position between tests for consistent observer state
+        await page.evaluate(() => window.scrollTo(0, 0));
+        await new Promise(r => setTimeout(r, 500));
+    });
+
     async function loginToPage() {
         if (browserLaunchError) {
             return;
@@ -54,42 +61,51 @@ describe('Video Autopause Feature', () => {
 
         // Load the page
         const filePath = 'file://' + path.resolve(__dirname, '../match_review.html');
-        await page.goto(filePath, { waitUntil: 'networkidle2' });
-        
+        // Use 'domcontentloaded' instead of 'networkidle2' to avoid hanging on
+        // persistent connections inside Bilibili iframes.
+        await page.goto(filePath, { waitUntil: 'domcontentloaded', timeout: 15000 });
+
         // Check if already logged in (main content visible)
         const isLoggedIn = await page.evaluate(() => {
             return document.getElementById('mainContent')?.classList.contains('visible');
         });
-        
+
         if (!isLoggedIn) {
             // Wait for password input
             await page.waitForSelector('#passwordInput', { timeout: 5000 });
             await new Promise(r => setTimeout(r, 100));
-            
+
             // Enter password
             await page.type('#passwordInput', TEST_CONFIG.password);
-            
+
             // Click button via evaluate
             await page.evaluate(() => {
                 const btn = document.querySelector('.password-btn');
                 if (btn) btn.click();
             });
-            
+
             // Wait for main content
             await page.waitForSelector('#mainContent.visible', { timeout: 5000 });
         }
-        
-        // Wait for iframes
-        await new Promise(r => setTimeout(r, 2000));
+
+        // Manually trigger autopause init so we don't have to wait for the 'load'
+        // event, which can be delayed by slow external iframe resources.
+        await page.evaluate(() => {
+            if (typeof initVideoAutopause === 'function') {
+                initVideoAutopause();
+            }
+        });
+        // Give the IntersectionObserver time to fire its initial callbacks
+        await new Promise(r => setTimeout(r, 1500));
     }
 
     test('should have 7 video containers with data-src attributes', async () => withBrowser(async () => {
         await loginToPage();
-        
+
         // Check that all 7 video containers exist
         const containers = await page.$$('.video-container');
         expect(containers.length).toBe(7);
-        
+
         // Check that each container has a data-src (lazy-loading stores src here)
         // or has an iframe (if currently visible)
         let hasVideoSource = 0;
@@ -112,16 +128,14 @@ describe('Video Autopause Feature', () => {
 
     test('should remove iframe when scrolled out of viewport and restore when back', async () => withBrowser(async () => {
         await loginToPage();
-        
-        // Wait for autopause to initialize
-        await new Promise(r => setTimeout(r, 1500));
 
         // Get first video container
         const containerHandle = await page.$('.video-container');
-        
-        // Scroll first video into view
+        expect(containerHandle).not.toBeNull();
+
+        // Scroll first video into view and ensure iframe is present
         await containerHandle.evaluate(el => el.scrollIntoView({ block: 'center' }));
-        await new Promise(r => setTimeout(r, 500));
+        await new Promise(r => setTimeout(r, 1000));
 
         // Verify iframe exists before scroll
         const iframeBefore = await containerHandle.$('iframe');
@@ -133,12 +147,12 @@ describe('Video Autopause Feature', () => {
         await page.evaluate(() => {
             window.scrollTo(0, document.body.scrollHeight);
         });
-        await new Promise(r => setTimeout(r, 800));
+        await new Promise(r => setTimeout(r, 1000));
 
         // Verify iframe was removed
         const iframeAfterScroll = await containerHandle.$('iframe');
         expect(iframeAfterScroll).toBeNull();
-        
+
         // Verify src was stored in data attribute
         const hasStoredSrc = await containerHandle.evaluate(el => !!el.dataset.src);
         expect(hasStoredSrc).toBe(true);
@@ -147,12 +161,12 @@ describe('Video Autopause Feature', () => {
         await page.evaluate(() => {
             window.scrollTo(0, 0);
         });
-        await new Promise(r => setTimeout(r, 800));
+        await new Promise(r => setTimeout(r, 1000));
 
         // Verify iframe was restored
         const iframeRestored = await containerHandle.$('iframe');
         expect(iframeRestored).not.toBeNull();
-        
+
         // Verify src is correct
         const srcRestored = await iframeRestored.evaluate(el => el.src);
         expect(srcRestored).toBe(srcBefore);
@@ -160,8 +174,16 @@ describe('Video Autopause Feature', () => {
 
     test('should maintain video src after scroll', async () => withBrowser(async () => {
         await loginToPage();
+
+        // Ensure first video is in viewport so iframe exists
+        const containerHandle = await page.$('.video-container');
+        expect(containerHandle).not.toBeNull();
+        await containerHandle.evaluate(el => el.scrollIntoView({ block: 'center' }));
+        await new Promise(r => setTimeout(r, 1000));
+
         const firstVideo = await page.$('.video-container iframe');
-        
+        expect(firstVideo).not.toBeNull();
+
         const originalSrc = await firstVideo.evaluate(el => el.src);
         expect(originalSrc).toContain('bilibili.com');
 
@@ -169,14 +191,20 @@ describe('Video Autopause Feature', () => {
         await page.evaluate(() => {
             window.scrollTo(0, document.body.scrollHeight);
         });
-        await new Promise(r => setTimeout(r, 500));
+        await new Promise(r => setTimeout(r, 1000));
 
         await page.evaluate(() => {
             window.scrollTo(0, 0);
         });
-        await new Promise(r => setTimeout(r, 500));
+        await new Promise(r => setTimeout(r, 1000));
 
-        const currentSrc = await firstVideo.evaluate(el => el.src);
+        // Scroll back into view to restore iframe
+        await containerHandle.evaluate(el => el.scrollIntoView({ block: 'center' }));
+        await new Promise(r => setTimeout(r, 1000));
+
+        const currentVideo = await page.$('.video-container iframe');
+        expect(currentVideo).not.toBeNull();
+        const currentSrc = await currentVideo.evaluate(el => el.src);
         expect(currentSrc).toBe(originalSrc);
     }));
 });
