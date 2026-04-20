@@ -12,6 +12,7 @@ This is the official website for **烈光少棒赤狐队 (Red Foxes Youth Baseba
 - **Match Reviews** - Tactical analysis videos from friendship matches
 - **Tournament Information** - Rules and schedules for competitions
 - **Performance Analysis** - Data-driven player performance insights (groupstage + finalstage)
+- **Sponsor Support** - Sponsor page with global like counter (Cloudflare Worker + KV)
 
 ## 🔗 Live Demo
 
@@ -138,6 +139,7 @@ The match review page (`match_review.html`) requires a password to enter:
 - Google Fonts (Noto Serif SC, Segoe UI)
 - Bilibili Video Embedding
 - Google Analytics 4
+- Cloudflare Workers + KV (global like counter)
 - 🦊 SVG Emoji Favicon
 
 ### Theme Architecture
@@ -157,7 +159,7 @@ This site uses Google Analytics 4 to track visitor engagement and improve conten
 
 ## 🧪 Testing
 
-Comprehensive test suite with **129 tests** covering:
+Comprehensive test suite with **145 tests** covering:
 - Page structure and navigation tests
 - Video autopause functionality tests
 - Cross-page link verification
@@ -165,6 +167,7 @@ Comprehensive test suite with **129 tests** covering:
 - **Baseball Field Theme Consistency** — shared CSS variables, backgrounds, and scoreboard headers
 - **Baseball Theme Motion Coverage** — animation hooks and reduced-motion support
 - **Floating Baseball Behavior Coverage** — passive background animations
+- **Like Widget Coverage** — DOM presence, toggle interaction, localStorage persistence
 - Scroll reveal and count-up asset coverage
 
 Run tests locally:

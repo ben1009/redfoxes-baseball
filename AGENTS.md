@@ -14,6 +14,7 @@ This is a **static website** for **烈光少棒赤狐队 (Red Foxes Youth Baseba
 3. **U10 Tournament Rules** (`u10_rules.html`) - Complete competition regulations  
 4. **Groupstage Analysis** (`tigercup_groupstage.html`) - Multi-AI performance analysis
 5. **Finalstage Analysis** (`tigercup_finalstage.html`) - Multi-AI final match analysis
+6. **Sponsor Page** (`sponsor_me.html`) - Sponsor support with global like counter (Cloudflare Worker)
 
 - **Live Site**: https://ben1009.github.io/redfoxes-baseball/
 - **Language**: Chinese (Simplified)
@@ -34,6 +35,7 @@ This is a **static website** for **烈光少棒赤狐队 (Red Foxes Youth Baseba
 | Analytics | Google Analytics 4 (G-QJ6EXQH8SW) |
 | Deployment | GitHub Pages |
 | Testing | Jest + Puppeteer |
+| Like Counter Backend | Cloudflare Workers + KV |
 
 ---
 
@@ -47,14 +49,20 @@ redfoxes-baseball/
 ├── pony_u10_rules.html        # PONY U10 tournament rules page
 ├── tigercup_groupstage.html   # Groupstage performance analysis
 ├── tigercup_finalstage.html   # Finalstage performance analysis
-├── sponsor_me.html            # Sponsor page (independent theme)
+├── sponsor_me.html            # Sponsor page (independent theme, global like widget)
 ├── site-analytics.js          # Shared Google Analytics bootstrap
 ├── image-modal.js             # Shared lightbox behavior for zoomable images
 ├── baseball-theme.css         # Shared baseball field theme CSS
 ├── rules_style.css            # Shared rules page styling
 ├── u10_rules.js               # Legacy compatibility stub for older U10 modal script references
+├── workers/                   # Cloudflare Worker for global like counter
+│   ├── sponsor-likes.js       # Worker script
+│   ├── wrangler.toml          # Deployment config
+│   └── README.md              # Worker setup guide
 ├── README.md                  # Project documentation
 ├── AGENTS.md                  # This file
+├── rfc/
+│   └── 001-like-counter.md    # Like feature architecture design (RFC)
 ├── LICENSE                    # CC BY-NC-SA 4.0 License
 └── img/                       # Static image assets
     ├── baseball-field-bg.svg  # Aerial baseball field background
@@ -154,6 +162,13 @@ tigercup_groupstage.html / tigercup_finalstage.html:
 - .summary-section - Key metrics summary
 - .page-nav - Sticky navigation with cross-page links
 
+sponsor_me.html:
+- .like-widget - Like button container
+- .like-btn - The 👍 button (toggleable)
+- .like-btn.liked - Active/liked state
+- .like-count - Live counter display
+- .like-label - Supporting text label
+
 ### JavaScript Components
 
 site-analytics.js:
@@ -169,6 +184,12 @@ u10_rules.js:
 match_review.html:
 - Password verification (SHA-256)
 - Video autopause with IntersectionObserver
+
+sponsor_me.html:
+- Global like counter powered by Cloudflare Worker
+- localStorage fallback when Worker is unreachable
+- IP-based rate limiting (5-second cooldown)
+- See `rfc/001-like-counter.md` for full architecture
 
 **Password**: 4-digit year (SHA-256 hashed: "1972")
 **Hint**: "张锦新 哪年开始接触从事棒球运动？"
@@ -200,6 +221,7 @@ Tests include:
 - Video autopause functionality tests
 - Cross-page link verification
 - File existence checks
+- Like widget DOM and interaction tests
 
 ### Deployment
 
@@ -207,6 +229,13 @@ Tests include:
 - Branch: main
 - Source: Root directory
 - URL: https://ben1009.github.io/redfoxes-baseball/
+
+### Cloudflare Worker Deployment
+
+The like counter Worker auto-deploys via GitHub Actions when `workers/**` changes:
+- Workflow: `.github/workflows/deploy-worker.yml`
+- Requires repository secret: `CLOUDFLARE_API_TOKEN`
+- Manual deploy: `cd workers && npx wrangler deploy`
 
 ---
 

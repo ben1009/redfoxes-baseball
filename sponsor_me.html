@@ -517,6 +517,76 @@
             white-space: nowrap;
         }
 
+        .like-widget {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 14px;
+            margin-top: 26px;
+        }
+
+        .like-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--ink);
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            backdrop-filter: blur(4px);
+        }
+
+        .like-btn:hover {
+            border-color: var(--fox);
+            background: rgba(255, 106, 0, 0.12);
+            transform: translateY(-1px);
+        }
+
+        .like-btn:focus-visible {
+            outline: 2px solid rgba(255, 106, 0, 0.5);
+            outline-offset: 3px;
+        }
+
+        .like-btn.liked {
+            background: linear-gradient(135deg, var(--fox), #b63f00);
+            border-color: transparent;
+            color: #fff;
+            box-shadow: 0 0 24px rgba(255, 106, 0, 0.25);
+        }
+
+        .like-icon {
+            display: inline-block;
+            font-size: 1.15rem;
+            line-height: 1;
+        }
+
+        .like-icon.pop {
+            animation: like-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes like-pop {
+            0% { transform: scale(1); }
+            40% { transform: scale(1.4); }
+            100% { transform: scale(1); }
+        }
+
+        .like-count {
+            min-width: 1.5em;
+            text-align: center;
+            letter-spacing: 0.02em;
+        }
+
+        .like-label {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
         @media (max-width: 980px) {
             .hero,
             .offers,
@@ -658,6 +728,14 @@
                         <span>给记数据、拍视频的家长也补上一份场边能量</span>
                     </div>
                 </div>
+
+                <div class="like-widget">
+                    <button class="like-btn" type="button" aria-pressed="false" aria-label="为赤狐队点赞">
+                        <span class="like-icon" aria-hidden="true">👍</span>
+                        <span class="like-count">...</span>
+                    </button>
+                    <span class="like-label"><span class="sticker-highlight">有钱的捧个钱场，没钱的捧个人场</span></span>
+                </div>
             </article>
 
             <aside class="hero-qr">
@@ -751,5 +829,107 @@
     </div>
 
     <script src="image-modal.js" defer></script>
+    <script>
+    (function() {
+        // Cloudflare Worker global like counter (recommended).
+        // If the Worker is unavailable, the widget falls back to localStorage.
+        // Replace WORKER_URL with your deployed Worker URL (see workers/README.md).
+        const WORKER_URL = 'https://redfoxes-sponsor-likes.liuhe1009.workers.dev';
+        const LIKE_KEY = 'sponsor_me_liked_v1';
+        const FALLBACK_KEY = 'sponsor_me_count_fallback';
+
+        const btn = document.querySelector('.like-btn');
+        const countSpan = btn.querySelector('.like-count');
+        const labelSpan = document.querySelector('.like-label');
+
+        let hasLiked = localStorage.getItem(LIKE_KEY) === 'true';
+        let count = 0;
+        let apiFailed = false;
+        let isProcessing = false;
+
+        function fetchWithTimeout(url, options, timeout) {
+            const controller = new AbortController();
+            const id = setTimeout(function() { controller.abort(); }, timeout || 5000);
+            return fetch(url, Object.assign({}, options, { signal: controller.signal }))
+                .finally(function() { clearTimeout(id); });
+        }
+
+        async function fetchCount() {
+            try {
+                const res = await fetchWithTimeout(WORKER_URL + '/', {}, 5000);
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const data = await res.json();
+                count = typeof data.count === 'number' ? data.count : 0;
+                apiFailed = false;
+            } catch (e) {
+                apiFailed = true;
+                count = parseInt(localStorage.getItem(FALLBACK_KEY), 10) || 0;
+            }
+            updateUI();
+        }
+
+        async function postAction(action) {
+            if (apiFailed) {
+                count = Math.max(0, count + (action === 'like' ? 1 : -1));
+                localStorage.setItem(FALLBACK_KEY, count);
+                updateUI();
+                return true;
+            }
+            try {
+                const res = await fetchWithTimeout(WORKER_URL + '/' + action, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                }, 5000);
+                const data = await res.json();
+                if (typeof data.count === 'number') {
+                    count = data.count;
+                    localStorage.setItem(FALLBACK_KEY, count);
+                    apiFailed = false;
+                    // If server says rateLimited, the action did not apply
+                    return !data.rateLimited;
+                }
+                throw new Error('Invalid response');
+            } catch (e) {
+                apiFailed = true;
+                count = parseInt(localStorage.getItem(FALLBACK_KEY), 10) || 0;
+                count = Math.max(0, count + (action === 'like' ? 1 : -1));
+                localStorage.setItem(FALLBACK_KEY, count);
+                updateUI();
+                return true;
+            }
+        }
+
+        function updateUI() {
+            countSpan.textContent = count.toLocaleString();
+            btn.classList.toggle('liked', hasLiked);
+            btn.setAttribute('aria-pressed', hasLiked);
+            const actionText = hasLiked ? '取消点赞' : '点赞';
+            btn.setAttribute('aria-label', actionText + '，当前 ' + count + ' 人点赞');
+            labelSpan.innerHTML = hasLiked ? '感谢你的支持！' : '<span class="sticker-highlight">有钱的捧个钱场，没钱的捧个人场</span>';
+        }
+
+        btn.addEventListener('click', async function() {
+            if (isProcessing) return;
+            isProcessing = true;
+
+            const action = hasLiked ? 'unlike' : 'like';
+            const applied = await postAction(action);
+            if (applied) {
+                hasLiked = !hasLiked;
+                localStorage.setItem(LIKE_KEY, hasLiked ? 'true' : 'false');
+                updateUI();
+            }
+
+            isProcessing = false;
+
+            const icon = btn.querySelector('.like-icon');
+            icon.classList.remove('pop');
+            void icon.offsetWidth;
+            icon.classList.add('pop');
+        });
+
+        fetchCount();
+    })();
+    </script>
 </body>
 </html>
