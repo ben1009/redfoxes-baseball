@@ -1,7 +1,7 @@
 # AGENTS.md - Red Foxes Baseball Team Website
 
 > This file provides essential context for AI coding agents working on this project.
-> Last updated: 2026-04-17
+> Last updated: 2026-04-20
 
 ---
 
@@ -66,23 +66,24 @@ redfoxes-baseball/
 ├── LICENSE                    # CC BY-NC-SA 4.0 License
 └── img/                       # Static image assets
     ├── baseball-field-bg.svg  # Aerial baseball field background
-    ├── schedule.jpg           # U10 tournament schedule
-    ├── venue_map.jpg          # Venue map
-    ├── groupstage_data.png    # Groupstage match statistics
-    ├── finalstage_data.png    # Finalstage match statistics
-    └── tigercup_final_ranking.jpg  # Final tournament ranking
+    ├── schedule.jpg                  # U10 tournament schedule (猛虎杯)
+    ├── u10_pony_tianjin_schedule.png # U10 PONY Tianjin division schedule
+    ├── venue_map.jpg                 # Venue map
+    ├── groupstage_data.png           # Groupstage match statistics
+    ├── finalstage_data.png           # Finalstage match statistics
+    └── tigercup_final_ranking.jpg    # Final tournament ranking
 ```
 
 ### File Organization Notes
 
 - **index.html**: Navigation hub with card-based layout
 - **match_review.html**: Password protected; links shared `baseball-theme.css` plus inline page-specific styles
-- **u10_rules.html** / **pony_u10_rules.html**: Link `baseball-theme.css` + `rules_style.css`
+- **u10_rules.html** / **pony_u10_rules.html**: Link `baseball-theme.css` + `rules_style.css`; both include schedule images with lightbox support
 - **tigercup_groupstage.html** / **tigercup_finalstage.html**: Link `baseball-theme.css` plus inline page-specific styles
 - **sponsor_me.html**: Independent styling, does not use baseball field background or floating assets
 - **baseball-theme.css**: Shared theme variables, body background, resets, and common animations
 - **site-analytics.js**: Centralized GA initialization used by all HTML pages
-- **image-modal.js**: Shared lightbox behavior used by rules, report, and sponsor pages
+- **image-modal.js**: Shared lightbox behavior used by rules (both U10 and PONY), report, and sponsor pages
 - No build process or bundling required
 - No framework dependencies
 
@@ -151,10 +152,11 @@ match_review.html:
 - .video-card - Container for each video clip
 - .video-container - 16:9 responsive video wrapper
 
-u10_rules.html:
+u10_rules.html / pony_u10_rules.html:
 - .page-nav - Sticky navigation bar
 - .image-modal - Full-screen image lightbox
 - .metric-card - Stats card
+- #schedule - Tournament schedule section with image and caption
 
 tigercup_groupstage.html / tigercup_finalstage.html:
 - .ai-card - Container for AI analysis
@@ -222,6 +224,7 @@ Tests include:
 - Cross-page link verification
 - File existence checks
 - Like widget DOM and interaction tests
+- Image modal and lightbox coverage
 
 ### Deployment
 
@@ -263,9 +266,10 @@ The like counter Worker auto-deploys via GitHub Actions when `workers/**` change
 - All 7 video iframes load without errors
 - Video autopause feature works when scrolling
 
-### u10_rules.html
+### u10_rules.html / pony_u10_rules.html
 - Sticky navigation displays and sticks on scroll
 - Images display correctly
+- Schedule section displays tournament image and caption
 - Image click opens lightbox/modal
 - Modal closes properly
 

@@ -25,6 +25,7 @@
     <nav class="page-nav">
         <div class="nav-container">
             <a href="index.html" class="nav-link" target="_self">🏠 首页</a>
+            <a href="#schedule" class="nav-link" target="_self">📅 赛程</a>
             <a href="#field-specs" class="nav-link" target="_self">🏟️ 场地</a>
             <a href="#game-format" class="nav-link" target="_self">⏱️ 赛制</a>
             <a href="#pitcher-limits" class="nav-link" target="_self">⚾ 投手</a>
@@ -49,6 +50,18 @@
 
         <!-- Main Content -->
         <main class="content">
+            <!-- 烈光少棒赤狐队赛程图片 -->
+            <section id="schedule" data-reveal>
+                <h2>烈光少棒（赤狐队）U10 PONY天津赛区赛程</h2>
+                <div class="image-container">
+                    <img src="img/u10_pony_tianjin_schedule.png" alt="烈光少棒赤狐队U10 PONY天津赛区赛程表">
+                    <div class="image-caption">📅 小组赛：5月2-3日 | 跨组名次赛：5月4日（基于小组排名）</div>
+                </div>
+                <div class="info-box">
+                    <strong>💡 温馨提示：</strong>5月4日的具体场地和对阵将取决于小组赛最终排名，请密切关注群通知！
+                </div>
+            </section>
+
             <!-- 场地与器材规格 -->
             <section id="field-specs" data-reveal>
                 <h2>场地与器材规格</h2>
@@ -303,5 +316,13 @@
         </footer>
     </div>
 
+    <!-- Image Modal -->
+    <div id="imageModal" class="image-modal" data-modal-mode="standard">
+        <button class="modal-close" aria-label="Close modal">&times;</button>
+        <img class="modal-content" id="modalImage">
+        <div class="modal-caption" id="modalCaption"></div>
+    </div>
+
+    <script src="image-modal.js" defer></script>
 </body>
 </html>
