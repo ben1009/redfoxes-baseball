@@ -7,7 +7,7 @@
 
 ## 1. Overview
 
-A global "like" (点赞) feature on the sponsor page (`sponsor_me.html`) that allows visitors to show support for the Red Foxes team. The count is shared across all visitors worldwide, backed by Cloudflare KV, with graceful degradation to localStorage when the network is unavailable.
+A global "like" (点赞) feature on the sponsor page (`sponsor_me.html`) that allows visitors to show support for the Red Foxes team. The count is shared across all visitors worldwide, backed by a Cloudflare Durable Object (atomic counter) with KV for rate-limit storage, with graceful degradation to localStorage when the network is unavailable.
 
 ### Goals
 
@@ -27,9 +27,9 @@ A global "like" (点赞) feature on the sponsor page (`sponsor_me.html`) that al
 │  (sponsor_me)   │     {count: 0}      │  redfoxes-sponsor-likes     │
 │                 │                     │                             │
 │  ┌───────────┐  │      POST /like     │  ┌─────────────────────┐  │
-│  │ localStorage│ │ ──────────────────> │  │ KV: SPONSOR_LIKES_KV │  │
-│  │ (fallback) │ │     {count: 1}      │  │  key: sponsor_me_likes│  │
-│  └───────────┘  │                     │  │  value: "0"           │  │
+│  │ localStorage│ │ ──────────────────> │  │ Durable Object       │  │
+│  │ (fallback) │ │     {count: 1}      │  │  LikeCounter         │  │
+│  └───────────┘  │                     │  │  count: 0            │  │
 │                 │      POST /unlike   │  └─────────────────────┘  │
 │                 │ ──────────────────> │                             │
 └─────────────────┘     {count: 0}      └─────────────────────────────┘
@@ -142,12 +142,16 @@ When `fetch()` fails (network error, Worker down, blocked):
 
 Using separate keys for `like` and `unlike` allows users to immediately correct a misclick. If a user accidentally likes, they can unlike right away without waiting.
 
-### 4.4 KV Data Model
+### 4.4 Storage Model
 
+**Durable Object (count)**
 ```
-Key: "sponsor_me_likes"
-Value: "0"  // stringified integer
+Key: "count"
+Value: "0"  // stringified integer, atomic read-write
+```
 
+**KV (rate limits)**
+```
 Key: "rate_like:192.0.2.1"
 Value: "1713576000000"  // timestamp of last like
 
@@ -300,7 +304,7 @@ npx wrangler deploy
 ### 8.3 Monitoring
 
 - Cloudflare Workers dashboard shows request volume and errors
-- KV namespace shows current value of `sponsor_me_likes`
+- Cloudflare Workers dashboard shows Durable Object state and request metrics
 
 ---
 
@@ -309,7 +313,7 @@ npx wrangler deploy
 | Idea | Effort | Impact |
 |------|--------|--------|
 | Add daily/weekly like stats | Low | Show engagement trends |
-| Durable Objects for strict rate limiting | Medium | Eliminate KV consistency issues |
+| Geo-distributed DO replication | Medium | Lower latency for global visitors |
 | Geo-distribution chart | High | See where supporters are from |
 | Heart animation instead of 👍 | Low | Better visual feedback |
 | Share on social after liking | Medium | Viral growth |
