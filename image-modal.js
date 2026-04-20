@@ -8,7 +8,8 @@
     const modalCaption = modal.querySelector('#modalCaption, .modal-caption');
     const closeBtn = modal.querySelector('.modal-close, #imageModalClose, .image-modal-close');
     const zoomableSelector = '[data-zoomable], .image-container img';
-    const isSponsorStyleModal = modal.classList.contains('open') || modal.hasAttribute('aria-hidden');
+    const modalMode = modal.dataset.modalMode || 'standard';
+    const usesOverlayModal = modalMode === 'overlay';
     let lastFocusedElement = null;
 
     if (!modalImg || !closeBtn) {
@@ -30,7 +31,7 @@
             modalCaption.textContent = getCaptionText(img);
         }
 
-        if (isSponsorStyleModal) {
+        if (usesOverlayModal) {
             modal.classList.add('open');
             modal.setAttribute('aria-hidden', 'false');
             document.body.style.overflow = 'hidden';
@@ -42,7 +43,7 @@
     };
 
     const closeModal = () => {
-        if (isSponsorStyleModal) {
+        if (usesOverlayModal) {
             modal.classList.remove('open');
             modal.setAttribute('aria-hidden', 'true');
             document.body.style.overflow = '';
@@ -63,6 +64,14 @@
     };
 
     document.querySelectorAll(zoomableSelector).forEach((img) => {
+        if (!img.hasAttribute('tabindex')) {
+            img.setAttribute('tabindex', '0');
+        }
+
+        if (!img.hasAttribute('role')) {
+            img.setAttribute('role', 'button');
+        }
+
         img.addEventListener('click', () => {
             openModal(img);
         });

@@ -264,6 +264,45 @@ describe('Page Structure and Navigation Tests', () => {
             expect(modal).not.toBeNull();
         }));
 
+        test('should support keyboard access for shared lightbox images', async () => withBrowser(async () => {
+            const imageState = await page.evaluate(() => {
+                const image = document.querySelector('.image-container img');
+                const modal = document.getElementById('imageModal');
+                const modalImage = document.getElementById('modalImage');
+
+                if (!image || !modal || !modalImage) {
+                    return null;
+                }
+
+                image.focus();
+                image.dispatchEvent(new KeyboardEvent('keydown', {
+                    key: 'Enter',
+                    bubbles: true
+                }));
+
+                const opened = modal.classList.contains('active');
+                const modalSrc = modalImage.getAttribute('src');
+
+                document.dispatchEvent(new KeyboardEvent('keydown', {
+                    key: 'Escape',
+                    bubbles: true
+                }));
+
+                return {
+                    tabIndex: image.getAttribute('tabindex'),
+                    role: image.getAttribute('role'),
+                    opened,
+                    modalSrc
+                };
+            });
+
+            expect(imageState).not.toBeNull();
+            expect(imageState.tabIndex).toBe('0');
+            expect(imageState.role).toBe('button');
+            expect(imageState.opened).toBe(true);
+            expect(imageState.modalSrc).toContain('img/');
+        }));
+
         test('should have key metrics cards', async () => withBrowser(async () => {
             const metricCards = await page.$$('.metric-card');
             expect(metricCards.length).toBeGreaterThan(0);
@@ -742,8 +781,12 @@ describe('Shared Script Coverage', () => {
         expect(js).toContain("const zoomableSelector = '[data-zoomable], .image-container img';");
         expect(js).toContain("modal.querySelector('#modalImage, #imageModalImg, img')");
         expect(js).toContain("modal.querySelector('.modal-close, #imageModalClose, .image-modal-close')");
+        expect(js).toContain("const modalMode = modal.dataset.modalMode || 'standard';");
+        expect(js).toContain("const usesOverlayModal = modalMode === 'overlay';");
         expect(js).toContain("modal.classList.add('open');");
         expect(js).toContain("modal.classList.add('active');");
+        expect(js).toContain("img.setAttribute('tabindex', '0');");
+        expect(js).toContain("img.setAttribute('role', 'button');");
         expect(js).toContain("if (event.key === 'Enter' || event.key === ' ')");
         expect(js).toContain("if (event.key !== 'Escape')");
     });
@@ -778,6 +821,22 @@ describe('Shared Script Coverage', () => {
             const html = fs.readFileSync(path.resolve(__dirname, '..', file), 'utf8');
             expect(html).toContain('src="image-modal.js"');
         });
+    });
+
+    test('image modal pages should declare their modal mode explicitly', () => {
+        const standardPages = [
+            'u10_rules.html',
+            'tigercup_groupstage.html',
+            'tigercup_finalstage.html'
+        ];
+
+        standardPages.forEach((file) => {
+            const html = fs.readFileSync(path.resolve(__dirname, '..', file), 'utf8');
+            expect(html).toContain('data-modal-mode="standard"');
+        });
+
+        const sponsorHtml = fs.readFileSync(path.resolve(__dirname, '..', 'sponsor_me.html'), 'utf8');
+        expect(sponsorHtml).toContain('data-modal-mode="overlay"');
     });
 });
 
