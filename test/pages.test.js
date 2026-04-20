@@ -707,6 +707,8 @@ describe('File Existence Tests', () => {
         'tigercup_groupstage.html',
         'tigercup_finalstage.html',
         'sponsor_me.html',
+        'site-analytics.js',
+        'image-modal.js',
         'baseball_floats.css',
         'baseball_floats.js',
         'rules_style.css',
@@ -719,6 +721,62 @@ describe('File Existence Tests', () => {
         test(`${file} should exist`, () => {
             const filePath = path.resolve(__dirname, '..', file);
             expect(fs.existsSync(filePath)).toBe(true);
+        });
+    });
+});
+
+describe('Shared Script Coverage', () => {
+    test('site-analytics.js should define the shared analytics bootstrap', () => {
+        const js = fs.readFileSync(path.resolve(__dirname, '..', 'site-analytics.js'), 'utf8');
+
+        expect(js).toContain('window.dataLayer = window.dataLayer || [];');
+        expect(js).toContain('function gtag()');
+        expect(js).toContain("gtag('js', new Date());");
+        expect(js).toContain("gtag('config', 'G-QJ6EXQH8SW');");
+    });
+
+    test('image-modal.js should support both standard and sponsor modal variants', () => {
+        const js = fs.readFileSync(path.resolve(__dirname, '..', 'image-modal.js'), 'utf8');
+
+        expect(js).toContain("const modal = document.getElementById('imageModal');");
+        expect(js).toContain("const zoomableSelector = '[data-zoomable], .image-container img';");
+        expect(js).toContain("modal.querySelector('#modalImage, #imageModalImg, img')");
+        expect(js).toContain("modal.querySelector('.modal-close, #imageModalClose, .image-modal-close')");
+        expect(js).toContain("modal.classList.add('open');");
+        expect(js).toContain("modal.classList.add('active');");
+        expect(js).toContain("if (event.key === 'Enter' || event.key === ' ')");
+        expect(js).toContain("if (event.key !== 'Escape')");
+    });
+
+    test('all pages should use the shared analytics bootstrap', () => {
+        const pages = [
+            'index.html',
+            'match_review.html',
+            'u10_rules.html',
+            'pony_u10_rules.html',
+            'tigercup_groupstage.html',
+            'tigercup_finalstage.html',
+            'sponsor_me.html'
+        ];
+
+        pages.forEach((file) => {
+            const html = fs.readFileSync(path.resolve(__dirname, '..', file), 'utf8');
+            expect(html).toContain('src="site-analytics.js"');
+            expect(html).not.toContain("function gtag(){dataLayer.push(arguments);}");
+        });
+    });
+
+    test('image-modal consumers should use the shared lightbox script', () => {
+        const modalPages = [
+            'u10_rules.html',
+            'tigercup_groupstage.html',
+            'tigercup_finalstage.html',
+            'sponsor_me.html'
+        ];
+
+        modalPages.forEach((file) => {
+            const html = fs.readFileSync(path.resolve(__dirname, '..', file), 'utf8');
+            expect(html).toContain('src="image-modal.js"');
         });
     });
 });
