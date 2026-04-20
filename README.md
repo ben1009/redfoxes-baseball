@@ -28,9 +28,11 @@ redfoxes-baseball/
 ├── tigercup_groupstage.html   # Groupstage performance analysis with multi-AI insights
 ├── tigercup_finalstage.html   # Finalstage performance analysis with multi-AI insights
 ├── sponsor_me.html            # Sponsor support page
+├── site-analytics.js          # Shared Google Analytics bootstrap
+├── image-modal.js             # Shared lightbox behavior across pages
 ├── baseball-theme.css         # Shared baseball field theme stylesheet
 ├── rules_style.css            # Shared rules page styling
-├── u10_rules.js               # JavaScript for U10 page (image modal functionality)
+├── u10_rules.js               # Legacy compatibility stub for older U10 modal references
 ├── baseball_floats.css/js     # Floating baseball background animation
 ├── scroll_reveal.css/js       # Scroll-triggered reveal animations
 ├── count_up.js                # Animated number counter
@@ -144,6 +146,10 @@ All themed pages share a unified **Baseball Field Theme** via `baseball-theme.cs
 - Scoreboard-style headers with dirt-orange accents
 - Leather-cream card styling with baseball-stitch dashed borders
 - Shared CSS custom properties for consistent colors across pages
+
+### Shared JavaScript
+- `site-analytics.js` centralizes the Google Analytics bootstrap used by every page
+- `image-modal.js` centralizes lightbox behavior for rules, report, and sponsor pages
 
 ## 📊 Analytics
 

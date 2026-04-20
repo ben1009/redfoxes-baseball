@@ -48,9 +48,11 @@ redfoxes-baseball/
 ├── tigercup_groupstage.html   # Groupstage performance analysis
 ├── tigercup_finalstage.html   # Finalstage performance analysis
 ├── sponsor_me.html            # Sponsor page (independent theme)
+├── site-analytics.js          # Shared Google Analytics bootstrap
+├── image-modal.js             # Shared lightbox behavior for zoomable images
 ├── baseball-theme.css         # Shared baseball field theme CSS
 ├── rules_style.css            # Shared rules page styling
-├── u10_rules.js               # U10 page JavaScript (image modal)
+├── u10_rules.js               # Legacy compatibility stub for older U10 modal script references
 ├── README.md                  # Project documentation
 ├── AGENTS.md                  # This file
 ├── LICENSE                    # CC BY-NC-SA 4.0 License
@@ -67,10 +69,12 @@ redfoxes-baseball/
 
 - **index.html**: Navigation hub with card-based layout
 - **match_review.html**: Password protected; links shared `baseball-theme.css` plus inline page-specific styles
-- **u10_rules.html** / **pony_u10_rules.html**: Link `baseball-theme.css` + `rules_style.css`; external JS via `u10_rules.js`
+- **u10_rules.html** / **pony_u10_rules.html**: Link `baseball-theme.css` + `rules_style.css`
 - **tigercup_groupstage.html** / **tigercup_finalstage.html**: Link `baseball-theme.css` plus inline page-specific styles
 - **sponsor_me.html**: Independent styling, does not use baseball field background or floating assets
 - **baseball-theme.css**: Shared theme variables, body background, resets, and common animations
+- **site-analytics.js**: Centralized GA initialization used by all HTML pages
+- **image-modal.js**: Shared lightbox behavior used by rules, report, and sponsor pages
 - No build process or bundling required
 - No framework dependencies
 
@@ -152,9 +156,15 @@ tigercup_groupstage.html / tigercup_finalstage.html:
 
 ### JavaScript Components
 
+site-analytics.js:
+- Shared Google Analytics bootstrap (`gtag` + config)
+
+image-modal.js:
+- Shared image lightbox/modal behavior
+- Supports both report/rules modals and sponsor page zoom modal
+
 u10_rules.js:
-- Image Modal/Lightbox functionality
-- Navigation smooth scroll
+- Backward-compatibility stub; shared lightbox behavior now lives in `image-modal.js`
 
 match_review.html:
 - Password verification (SHA-256)
