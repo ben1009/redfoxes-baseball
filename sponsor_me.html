@@ -10,12 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
 
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-QJ6EXQH8SW"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-QJ6EXQH8SW');
-    </script>
+    <script src="site-analytics.js"></script>
 
     <style>
         :root {
@@ -750,62 +745,11 @@
         </footer>
     </main>
 
-    <div class="image-modal" id="imageModal" aria-hidden="true">
+    <div class="image-modal" id="imageModal" aria-hidden="true" data-modal-mode="overlay">
         <button class="image-modal-close" id="imageModalClose" type="button" aria-label="关闭放大图片">×</button>
         <img id="imageModalImg" src="" alt="">
     </div>
 
-    <script>
-        const imageModal = document.getElementById('imageModal');
-        const imageModalImg = document.getElementById('imageModalImg');
-        const imageModalClose = document.getElementById('imageModalClose');
-        let lastFocusedZoomable = null;
-
-        function openImageModal(img) {
-            lastFocusedZoomable = img;
-            imageModalImg.src = img.src;
-            imageModalImg.alt = img.alt;
-            imageModal.classList.add('open');
-            imageModal.setAttribute('aria-hidden', 'false');
-            document.body.style.overflow = 'hidden';
-            imageModalClose.focus();
-        }
-
-        function closeImageModal() {
-            imageModal.classList.remove('open');
-            imageModal.setAttribute('aria-hidden', 'true');
-            imageModalImg.src = '';
-            imageModalImg.alt = '';
-            document.body.style.overflow = '';
-            if (lastFocusedZoomable) {
-                lastFocusedZoomable.focus();
-            }
-        }
-
-        document.querySelectorAll('[data-zoomable]').forEach((img) => {
-            img.addEventListener('click', () => {
-                openImageModal(img);
-            });
-            img.addEventListener('keydown', (event) => {
-                if (event.key === 'Enter' || event.key === ' ') {
-                    event.preventDefault();
-                    openImageModal(img);
-                }
-            });
-        });
-
-        imageModalClose.addEventListener('click', closeImageModal);
-        imageModal.addEventListener('click', (event) => {
-            if (event.target === imageModal) {
-                closeImageModal();
-            }
-        });
-
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape' && imageModal.classList.contains('open')) {
-                closeImageModal();
-            }
-        });
-    </script>
+    <script src="image-modal.js" defer></script>
 </body>
 </html>
