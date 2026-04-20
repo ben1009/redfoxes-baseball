@@ -1,7 +1,7 @@
 # Cloudflare Worker: Sponsor Page Like Counter
 
 > Global like counter backend for `sponsor_me.html`
-> Worker URL: `https://redfoxes-sponsor-likes.ben1009-account.workers.dev`
+> Worker URL: `https://redfoxes-sponsor-likes.ben1009.workers.dev`
 
 ## Architecture
 
@@ -67,7 +67,7 @@ npx wrangler deploy
 ### Check current count
 
 ```bash
-curl https://redfoxes-sponsor-likes.ben1009-account.workers.dev/
+curl https://redfoxes-sponsor-likes.ben1009.workers.dev/
 ```
 
 ### Reset count
