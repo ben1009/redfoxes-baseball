@@ -271,13 +271,13 @@ See `test/pages.test.js` — Sponsor Page section:
 
 ```bash
 # Read count
-curl https://redfoxes-sponsor-likes.ben1009-account.workers.dev/
+curl https://redfoxes-sponsor-likes.ben1009.workers.dev/
 
 # Like
-curl -X POST https://redfoxes-sponsor-likes.ben1009-account.workers.dev/like
+curl -X POST https://redfoxes-sponsor-likes.ben1009.workers.dev/like
 
 # Unlike
-curl -X POST https://redfoxes-sponsor-likes.ben1009-account.workers.dev/unlike
+curl -X POST https://redfoxes-sponsor-likes.ben1009.workers.dev/unlike
 ```
 
 ---
