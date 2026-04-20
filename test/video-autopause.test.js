@@ -51,7 +51,7 @@ describe('Video Autopause Feature', () => {
         if (!page || browserLaunchError) return;
         // Reset scroll position between tests for consistent observer state
         await page.evaluate(() => window.scrollTo(0, 0));
-        await page.waitForTimeout(300);
+        await page.waitForFunction(() => window.scrollY === 0);
     });
 
     async function loginToPage() {
@@ -95,8 +95,7 @@ describe('Video Autopause Feature', () => {
                 initVideoAutopause();
             }
         });
-        // Give the IntersectionObserver time to fire its initial callbacks
-        await new Promise(r => setTimeout(r, 1500));
+        // IntersectionObserver state is handled by waitForFunction in individual tests
     }
 
     test('should have 7 video containers with data-src attributes', async () => withBrowser(async () => {
@@ -135,10 +134,7 @@ describe('Video Autopause Feature', () => {
 
         // Scroll first video into view and ensure iframe is present
         await containerHandle.evaluate(el => el.scrollIntoView({ block: 'center' }));
-        await page.waitForFunction(() => {
-            const container = document.querySelector('.video-container');
-            return container && !!container.querySelector('iframe');
-        });
+        await page.waitForFunction(el => !!el.querySelector('iframe'), {}, containerHandle);
 
         // Verify iframe exists before scroll
         const iframeBefore = await containerHandle.$('iframe');
@@ -150,10 +146,7 @@ describe('Video Autopause Feature', () => {
         await page.evaluate(() => {
             window.scrollTo(0, document.body.scrollHeight);
         });
-        await page.waitForFunction(() => {
-            const container = document.querySelector('.video-container');
-            return container && !container.querySelector('iframe');
-        });
+        await page.waitForFunction(el => !el.querySelector('iframe'), {}, containerHandle);
 
         // Verify iframe was removed
         const iframeAfterScroll = await containerHandle.$('iframe');
@@ -167,10 +160,7 @@ describe('Video Autopause Feature', () => {
         await page.evaluate(() => {
             window.scrollTo(0, 0);
         });
-        await page.waitForFunction(() => {
-            const container = document.querySelector('.video-container');
-            return container && !!container.querySelector('iframe');
-        });
+        await page.waitForFunction(el => !!el.querySelector('iframe'), {}, containerHandle);
 
         // Verify iframe was restored
         const iframeRestored = await containerHandle.$('iframe');
@@ -188,12 +178,9 @@ describe('Video Autopause Feature', () => {
         const containerHandle = await page.$('.video-container');
         expect(containerHandle).not.toBeNull();
         await containerHandle.evaluate(el => el.scrollIntoView({ block: 'center' }));
-        await page.waitForFunction(() => {
-            const container = document.querySelector('.video-container');
-            return container && !!container.querySelector('iframe');
-        });
+        await page.waitForFunction(el => !!el.querySelector('iframe'), {}, containerHandle);
 
-        const firstVideo = await page.$('.video-container iframe');
+        const firstVideo = await containerHandle.$('iframe');
         expect(firstVideo).not.toBeNull();
 
         const originalSrc = await firstVideo.evaluate(el => el.src);
@@ -203,25 +190,16 @@ describe('Video Autopause Feature', () => {
         await page.evaluate(() => {
             window.scrollTo(0, document.body.scrollHeight);
         });
-        await page.waitForFunction(() => {
-            const container = document.querySelector('.video-container');
-            return container && !container.querySelector('iframe');
-        });
+        await page.waitForFunction(el => !el.querySelector('iframe'), {}, containerHandle);
 
         await page.evaluate(() => {
             window.scrollTo(0, 0);
         });
-        await page.waitForFunction(() => {
-            const container = document.querySelector('.video-container');
-            return container && !!container.querySelector('iframe');
-        });
+        await page.waitForFunction(el => !!el.querySelector('iframe'), {}, containerHandle);
 
         // Scroll back into view to restore iframe
         await containerHandle.evaluate(el => el.scrollIntoView({ block: 'center' }));
-        await page.waitForFunction(() => {
-            const container = document.querySelector('.video-container');
-            return container && !!container.querySelector('iframe');
-        });
+        await page.waitForFunction(el => !!el.querySelector('iframe'), {}, containerHandle);
 
         const currentVideo = await page.$('.video-container iframe');
         expect(currentVideo).not.toBeNull();
