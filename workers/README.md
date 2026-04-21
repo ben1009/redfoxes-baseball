@@ -1,9 +1,20 @@
-# Cloudflare Worker: Sponsor Page Like Counter
+# Cloudflare Worker: Sponsor Page Like Counter (Legacy)
 
-> Global like counter backend for `sponsor_me.html`
-> Worker URL: `https://redfoxes-sponsor-likes.ben1009.workers.dev`
+> Legacy backend for `sponsor_me.html`
+> Status: retained for rollback/reference only
 
-## Architecture
+The active production backend now lives under [`../supabase/README.md`](../supabase/README.md) and uses:
+- Supabase Edge Functions
+- Supabase Postgres
+- Upstash Redis for rate limiting
+
+Current production endpoint:
+
+```text
+https://ohwiimchzlesczdvasbh.supabase.co/functions/v1/sponsor-likes
+```
+
+## Legacy Architecture
 
 ```
 Browser (sponsor_me.html)
@@ -43,7 +54,7 @@ The frontend uses `rateLimited` to decide whether to toggle the local UI state.
 | `sponsor-likes.js` | Worker script — handles API requests, KV reads/writes, rate limiting |
 | `wrangler.toml` | Deployment config — account ID, KV namespace binding |
 
-## Deployment
+## Legacy Deployment
 
 ### Automatic (GitHub Actions)
 
@@ -62,7 +73,7 @@ cd workers
 npx wrangler deploy
 ```
 
-## Operations
+## Legacy Operations
 
 ### Check current count
 
@@ -90,7 +101,7 @@ Cloudflare Workers free plan:
 
 More than enough for a youth baseball team site.
 
-## Troubleshooting
+## Legacy Troubleshooting
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
@@ -99,6 +110,7 @@ More than enough for a youth baseball team site.
 | Count resets to 0 | KV value cleared | Re-seed with `wrangler kv:key put` |
 | CORS errors | Missing CORS headers | Worker automatically sends headers; check if Worker is deployed |
 
-## Design Document
+## Design Documents
 
-Full architecture, data flows, and security considerations: see [`rfc/001-like-counter.md`](../rfc/001-like-counter.md)
+- Legacy Cloudflare design: [`rfc/001-like-counter.md`](../rfc/001-like-counter.md)
+- Active Supabase design and implementation: [`../supabase/README.md`](../supabase/README.md) and [`rfc/002-supabase-like-counter.md`](../rfc/002-supabase-like-counter.md)

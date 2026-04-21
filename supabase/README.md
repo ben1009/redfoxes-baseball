@@ -2,6 +2,12 @@
 
 This directory contains the Supabase implementation of the sponsor page global like counter.
 
+Live deployment:
+
+```text
+https://ohwiimchzlesczdvasbh.supabase.co/functions/v1/sponsor-likes
+```
+
 ## Files
 
 | File | Purpose |
@@ -21,10 +27,12 @@ This directory contains the Supabase implementation of the sponsor page global l
 
 Set these on the Supabase project before deploying the function:
 
-- `SUPABASE_URL`
-- `SUPABASE_SERVICE_ROLE_KEY`
 - `UPSTASH_REDIS_REST_URL`
 - `UPSTASH_REDIS_REST_TOKEN`
+
+Notes:
+- The hosted Edge Function runtime provides the Supabase project context automatically.
+- Do not expose the service role key in the frontend.
 
 ## Local Development
 
@@ -44,14 +52,14 @@ supabase functions deploy sponsor-likes --no-verify-jwt
 After deployment, configure the sponsor page to point at:
 
 ```text
-https://YOUR-PROJECT-REF.supabase.co/functions/v1/sponsor-likes
+https://ohwiimchzlesczdvasbh.supabase.co/functions/v1/sponsor-likes
 ```
 
 You can do that by setting:
 
 ```html
 <script>
-window.REDFOXES_LIKES_API_URL = 'https://YOUR-PROJECT-REF.supabase.co/functions/v1/sponsor-likes';
+window.REDFOXES_LIKES_API_URL = 'https://ohwiimchzlesczdvasbh.supabase.co/functions/v1/sponsor-likes';
 </script>
 ```
 

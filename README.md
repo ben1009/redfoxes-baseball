@@ -174,7 +174,7 @@ This site uses Google Analytics 4 to track visitor engagement and improve conten
 
 ## 🧪 Testing
 
-Comprehensive test suite with **152 tests** covering:
+Comprehensive test suite with **155 tests** covering:
 - Page structure and navigation tests
 - Video autopause functionality tests
 - Cross-page link verification
