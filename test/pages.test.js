@@ -1033,6 +1033,60 @@ describe('Page Structure and Navigation Tests', () => {
             });
             expect(hasPopAfterRateLimit).toBe(false);
         }));
+
+        test('should not animate when post falls back after API failure', async () => withBrowser(async () => {
+            await page.evaluateOnNewDocument(() => {
+                window.__testLikeCount = 0;
+                window.__actionAttempts = 0;
+                const origFetch = window.fetch;
+                window.fetch = async (url, opts) => {
+                    if (typeof url === 'string' && url.includes('sponsor-likes')) {
+                        if (opts && opts.method === 'POST') {
+                            window.__actionAttempts++;
+                            if (window.__actionAttempts === 1) {
+                                throw new Error('network failed');
+                            }
+                            window.__testLikeCount = Math.max(0, window.__testLikeCount - 1);
+                            return { ok: true, json: async () => ({ count: window.__testLikeCount }) };
+                        }
+                        return { ok: true, json: async () => ({ count: window.__testLikeCount }) };
+                    }
+                    return origFetch(url, opts);
+                };
+            });
+
+            await page.evaluate(() => {
+                localStorage.removeItem('sponsor_me_liked_v1');
+                localStorage.removeItem('sponsor_me_count_fallback');
+            });
+            await page.reload({ waitUntil: 'domcontentloaded' });
+
+            await page.waitForFunction(() => {
+                const countEl = document.querySelector('.like-count');
+                return countEl && /^\d+$/.test(countEl.textContent);
+            }, { timeout: 5000 });
+
+            const likeBtn = await page.$('.like-btn');
+
+            await likeBtn.click();
+            await page.waitForFunction(() => {
+                const btn = document.querySelector('.like-btn');
+                return btn && btn.classList.contains('liked');
+            }, { timeout: 5000 });
+
+            const hasPopAfterFallback = await page.evaluate(() => {
+                const icon = document.querySelector('.like-icon');
+                return icon && icon.classList.contains('pop');
+            });
+            expect(hasPopAfterFallback).toBe(false);
+
+            const stored = await page.evaluate(() => ({
+                liked: localStorage.getItem('sponsor_me_liked_v1'),
+                count: localStorage.getItem('sponsor_me_count_fallback')
+            }));
+            expect(stored.liked).toBe('true');
+            expect(stored.count).toBe('1');
+        }));
     });
 
     describe('Cross-Page Navigation', () => {

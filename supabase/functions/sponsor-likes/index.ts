@@ -6,7 +6,6 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
 
-const RATE_LIMIT_MS = 5000;
 const RATE_LIMIT_SECONDS = 5;
 
 function jsonResponse(body: Record<string, unknown>, status = 200) {
@@ -92,19 +91,16 @@ async function getCurrentCount(client: ReturnType<typeof createClient>) {
 
 async function isRateLimited(request: Request, action: "like" | "unlike") {
   const ip = getRequestIp(request);
-  const now = Date.now();
   const key = `rate_${action}:${ip}`;
-  const rawValue = await redisCommand(["get", key]);
-
-  if (rawValue) {
-    const lastAction = Number(rawValue);
-    if (Number.isFinite(lastAction) && now - lastAction < RATE_LIMIT_MS) {
-      return true;
-    }
-  }
-
-  await redisCommand(["set", key, now.toString(), "EX", RATE_LIMIT_SECONDS.toString()]);
-  return false;
+  const result = await redisCommand([
+    "set",
+    key,
+    "1",
+    "EX",
+    RATE_LIMIT_SECONDS.toString(),
+    "NX",
+  ]);
+  return result === null;
 }
 
 Deno.serve(async (request) => {

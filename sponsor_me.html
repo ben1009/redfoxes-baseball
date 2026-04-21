@@ -877,7 +877,7 @@
                 count = Math.max(0, count + (action === 'like' ? 1 : -1));
                 localStorage.setItem(FALLBACK_KEY, count);
                 updateUI();
-                return true;
+                return { applied: true, animate: false };
             }
             try {
                 const res = await fetchWithTimeout(getApiUrl('/' + action), {
@@ -889,8 +889,8 @@
                     count = data.count;
                     localStorage.setItem(FALLBACK_KEY, count);
                     apiFailed = false;
-                    // If server says rateLimited, the action did not apply
-                    return !data.rateLimited;
+                    const applied = !data.rateLimited;
+                    return { applied: applied, animate: applied };
                 }
                 throw new Error('Invalid response');
             } catch (e) {
@@ -898,7 +898,7 @@
                 count = Math.max(0, count + (action === 'like' ? 1 : -1));
                 localStorage.setItem(FALLBACK_KEY, count);
                 updateUI();
-                return true;
+                return { applied: true, animate: false };
             }
         }
 
@@ -916,15 +916,17 @@
             isProcessing = true;
 
             const action = hasLiked ? 'unlike' : 'like';
-            const applied = await postAction(action);
-            if (applied) {
+            const result = await postAction(action);
+            if (result.applied) {
                 hasLiked = !hasLiked;
                 localStorage.setItem(LIKE_KEY, hasLiked ? 'true' : 'false');
 
-                const icon = btn.querySelector('.like-icon');
-                icon.classList.remove('pop');
-                void icon.offsetWidth;
-                icon.classList.add('pop');
+                if (result.animate) {
+                    const icon = btn.querySelector('.like-icon');
+                    icon.classList.remove('pop');
+                    void icon.offsetWidth;
+                    icon.classList.add('pop');
+                }
             }
 
             updateUI();
