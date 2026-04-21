@@ -131,12 +131,21 @@ begin
     raise exception 'invalid action';
   end if;
 
-  return coalesce(new_count, 0);
+  if new_count is null then
+    raise exception 'global counter row not found';
+  end if;
+
+  return new_count;
 end;
 $$;
+
+revoke execute on function public.apply_sponsor_like_action(text) from public;
+grant execute on function public.apply_sponsor_like_action(text) to service_role;
 ```
 
 This is the core atomicity mechanism. Unlike the current Durable Object design, concurrency control here depends on Postgres row updates rather than a single-threaded object.
+
+The explicit permission change is important. If the function remains callable by `anon`, a browser client could bypass the Edge Function and its rate limiting by calling the RPC directly.
 
 ---
 
@@ -158,6 +167,7 @@ The browser should **not** write directly to Supabase tables. All writes go thro
 - Centralizes CORS and validation
 - Allows rate limiting before the database mutation
 - Preserves the static-site deployment model
+- Prevents direct browser access to privileged write operations when paired with revoked public function execution
 
 ---
 
@@ -236,6 +246,7 @@ However, the simplest public model is still:
 
 - browser reads and writes through Edge Function
 - Edge Function uses privileged credentials internally
+- write-oriented SQL functions should not remain executable by `anon` or `public`
 
 ---
 
