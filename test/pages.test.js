@@ -805,7 +805,7 @@ describe('Page Structure and Navigation Tests', () => {
                 window.__testLikeCount = 0;
                 const origFetch = window.fetch;
                 window.fetch = async (url, opts) => {
-                    if (typeof url === 'string' && url.includes('redfoxes-sponsor-likes')) {
+                    if (typeof url === 'string' && url.includes('sponsor-likes')) {
                         if (opts && opts.method === 'POST' && url.endsWith('/like')) {
                             window.__testLikeCount++;
                         } else if (opts && opts.method === 'POST' && url.endsWith('/unlike')) {
@@ -852,7 +852,7 @@ describe('Page Structure and Navigation Tests', () => {
                 window.__testLikeCount = 0;
                 const origFetch = window.fetch;
                 window.fetch = async (url, opts) => {
-                    if (typeof url === 'string' && url.includes('redfoxes-sponsor-likes')) {
+                    if (typeof url === 'string' && url.includes('sponsor-likes')) {
                         if (opts && opts.method === 'POST' && url.endsWith('/like')) {
                             window.__testLikeCount++;
                         } else if (opts && opts.method === 'POST' && url.endsWith('/unlike')) {
@@ -910,7 +910,7 @@ describe('Page Structure and Navigation Tests', () => {
                 window.__testLikeCount = 0;
                 const origFetch = window.fetch;
                 window.fetch = async (url, opts) => {
-                    if (typeof url === 'string' && url.includes('redfoxes-sponsor-likes')) {
+                    if (typeof url === 'string' && url.includes('sponsor-likes')) {
                         if (opts && opts.method === 'POST') {
                             if (url.endsWith('/like')) {
                                 window.__testLikeCount++;
@@ -969,7 +969,7 @@ describe('Page Structure and Navigation Tests', () => {
                 window.__actionAttempts = 0;
                 const origFetch = window.fetch;
                 window.fetch = async (url, opts) => {
-                    if (typeof url === 'string' && url.includes('redfoxes-sponsor-likes')) {
+                    if (typeof url === 'string' && url.includes('sponsor-likes')) {
                         if (opts && opts.method === 'POST') {
                             window.__actionAttempts++;
                             if (window.__actionAttempts === 1) {
@@ -1102,6 +1102,9 @@ describe('File Existence Tests', () => {
         'workers/sponsor-likes.js',
         'workers/wrangler.toml',
         'workers/README.md',
+        'supabase/functions/sponsor-likes/index.ts',
+        'supabase/migrations/20260421_sponsor_likes.sql',
+        'supabase/README.md',
         '.github/workflows/deploy-worker.yml'
     ];
 

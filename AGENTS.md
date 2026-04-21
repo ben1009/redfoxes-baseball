@@ -1,7 +1,7 @@
 # AGENTS.md - Red Foxes Baseball Team Website
 
 > This file provides essential context for AI coding agents working on this project.
-> Last updated: 2026-04-20
+> Last updated: 2026-04-21
 
 ---
 
@@ -14,7 +14,7 @@ This is a **static website** for **烈光少棒赤狐队 (Red Foxes Youth Baseba
 3. **U10 Tournament Rules** (`u10_rules.html`) - Complete competition regulations  
 4. **Groupstage Analysis** (`tigercup_groupstage.html`) - Multi-AI performance analysis
 5. **Finalstage Analysis** (`tigercup_finalstage.html`) - Multi-AI final match analysis
-6. **Sponsor Page** (`sponsor_me.html`) - Sponsor support with global like counter (Cloudflare Worker)
+6. **Sponsor Page** (`sponsor_me.html`) - Sponsor support with global like counter (Supabase Edge Function)
 
 - **Live Site**: https://ben1009.github.io/redfoxes-baseball/
 - **Language**: Chinese (Simplified)
@@ -35,7 +35,7 @@ This is a **static website** for **烈光少棒赤狐队 (Red Foxes Youth Baseba
 | Analytics | Google Analytics 4 (G-QJ6EXQH8SW) |
 | Deployment | GitHub Pages |
 | Testing | Jest + Puppeteer |
-| Like Counter Backend | Cloudflare Workers + KV |
+| Like Counter Backend | Supabase Edge Functions + Postgres + Upstash Redis |
 
 ---
 
@@ -55,10 +55,15 @@ redfoxes-baseball/
 ├── baseball-theme.css         # Shared baseball field theme CSS
 ├── rules_style.css            # Shared rules page styling
 ├── u10_rules.js               # Legacy compatibility stub for older U10 modal script references
-├── workers/                   # Cloudflare Worker for global like counter
-│   ├── sponsor-likes.js       # Worker script
-│   ├── wrangler.toml          # Deployment config
-│   └── README.md              # Worker setup guide
+├── supabase/                  # Supabase backend for global like counter
+│   ├── functions/
+│   │   └── sponsor-likes/     # Edge Function API
+│   ├── migrations/            # SQL schema + function setup
+│   └── README.md              # Deployment and secret guide
+├── workers/                   # Legacy Cloudflare Worker implementation
+│   ├── sponsor-likes.js       # Legacy Worker script
+│   ├── wrangler.toml          # Legacy deployment config
+│   └── README.md              # Legacy setup guide
 ├── README.md                  # Project documentation
 ├── AGENTS.md                  # This file
 ├── rfc/
@@ -81,6 +86,8 @@ redfoxes-baseball/
 - **u10_rules.html** / **pony_u10_rules.html**: Link `baseball-theme.css` + `rules_style.css`; both include schedule images with lightbox support
 - **tigercup_groupstage.html** / **tigercup_finalstage.html**: Link `baseball-theme.css` plus inline page-specific styles
 - **sponsor_me.html**: Independent styling, does not use baseball field background or floating assets
+- **supabase/**: Edge Function and SQL migration for the active global like counter backend
+- **workers/**: Legacy Cloudflare implementation retained for reference and rollback
 - **baseball-theme.css**: Shared theme variables, body background, resets, and common animations
 - **site-analytics.js**: Centralized GA initialization used by all HTML pages
 - **image-modal.js**: Shared lightbox behavior used by rules (both U10 and PONY), report, and sponsor pages
@@ -188,10 +195,10 @@ match_review.html:
 - Video autopause with IntersectionObserver
 
 sponsor_me.html:
-- Global like counter powered by Cloudflare Worker
-- localStorage fallback when Worker is unreachable
-- IP-based rate limiting (5-second cooldown)
-- See `rfc/001-like-counter.md` for full architecture
+- Global like counter powered by Supabase Edge Function
+- localStorage fallback when the API is unreachable or unconfigured
+- IP-based rate limiting (5-second cooldown) via Upstash Redis
+- See `rfc/002-supabase-like-counter.md` for the active architecture
 
 **Password**: 4-digit year (SHA-256 hashed: "1972")
 **Hint**: "张锦新 哪年开始接触从事棒球运动？"
@@ -233,9 +240,16 @@ Tests include:
 - Source: Root directory
 - URL: https://ben1009.github.io/redfoxes-baseball/
 
-### Cloudflare Worker Deployment
+### Supabase Like Counter Deployment
 
-The like counter Worker auto-deploys via GitHub Actions when `workers/**` changes:
+The active like counter backend lives under `supabase/`:
+- SQL migration: `supabase/migrations/20260421_sponsor_likes.sql`
+- Edge Function: `supabase/functions/sponsor-likes/index.ts`
+- Setup guide: `supabase/README.md`
+
+### Legacy Cloudflare Worker Deployment
+
+The old Worker remains in `workers/` for reference and rollback:
 - Workflow: `.github/workflows/deploy-worker.yml`
 - Requires repository secret: `CLOUDFLARE_API_TOKEN`
 - Manual deploy: `cd workers && npx wrangler deploy`
