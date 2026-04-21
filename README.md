@@ -12,7 +12,7 @@ This is the official website for **烈光少棒赤狐队 (Red Foxes Youth Baseba
 - **Match Reviews** - Tactical analysis videos from friendship matches
 - **Tournament Information** - Rules and schedules for competitions
 - **Performance Analysis** - Data-driven player performance insights (groupstage + finalstage)
-- **Sponsor Support** - Sponsor page with global like counter (Cloudflare Worker + KV)
+- **Sponsor Support** - Sponsor page with global like counter (Supabase Edge Function + Postgres + Upstash Redis)
 
 ## 🔗 Live Demo
 
@@ -37,6 +37,10 @@ redfoxes-baseball/
 ├── baseball_floats.css/js     # Floating baseball background animation
 ├── scroll_reveal.css/js       # Scroll-triggered reveal animations
 ├── count_up.js                # Animated number counter
+├── supabase/                  # Supabase Edge Function + SQL migration for like counter
+│   ├── functions/
+│   ├── migrations/
+│   └── README.md
 ├── img/                       # Static image assets
 │   ├── baseball-field-bg.svg  # Aerial baseball field background
 │   ├── *.png                  # Decorative icons for pages
@@ -150,7 +154,7 @@ The match review page (`match_review.html`) requires a password to enter:
 - Google Fonts (Noto Serif SC, Segoe UI)
 - Bilibili Video Embedding
 - Google Analytics 4
-- Cloudflare Workers + KV (global like counter)
+- Supabase Edge Functions + Postgres + Upstash Redis (global like counter)
 - 🦊 SVG Emoji Favicon
 
 ### Theme Architecture
@@ -170,7 +174,7 @@ This site uses Google Analytics 4 to track visitor engagement and improve conten
 
 ## 🧪 Testing
 
-Comprehensive test suite with **152 tests** covering:
+Comprehensive test suite with **155 tests** covering:
 - Page structure and navigation tests
 - Video autopause functionality tests
 - Cross-page link verification

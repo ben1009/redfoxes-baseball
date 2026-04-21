@@ -1,7 +1,10 @@
 node_modules/
 package-lock.json
 .env
+.env.local
+.env.*.local
 .DS_Store
 *.log
 .codex
 .vscode/
+supabase/.temp/

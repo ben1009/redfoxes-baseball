@@ -831,10 +831,10 @@
     <script src="image-modal.js" defer></script>
     <script>
     (function() {
-        // Cloudflare Worker global like counter (recommended).
-        // If the Worker is unavailable, the widget falls back to localStorage.
-        // Replace WORKER_URL with your deployed Worker URL (see workers/README.md).
-        const WORKER_URL = 'https://redfoxes-sponsor-likes.ben1009.workers.dev';
+        // Supabase Edge Function global like counter.
+        // If the API is unavailable or unconfigured, the widget falls back to localStorage.
+        // Set window.REDFOXES_LIKES_API_URL before this script to override the default endpoint.
+        const LIKES_API_URL = window.REDFOXES_LIKES_API_URL || 'https://ohwiimchzlesczdvasbh.supabase.co/functions/v1/sponsor-likes';
         const LIKE_KEY = 'sponsor_me_liked_v1';
         const FALLBACK_KEY = 'sponsor_me_count_fallback';
 
@@ -854,9 +854,13 @@
                 .finally(function() { clearTimeout(id); });
         }
 
+        function getApiUrl(path) {
+            return LIKES_API_URL.replace(/\/+$/, '') + path;
+        }
+
         async function fetchCount() {
             try {
-                const res = await fetchWithTimeout(WORKER_URL + '/', {}, 5000);
+                const res = await fetchWithTimeout(getApiUrl('/count'), {}, 5000);
                 if (!res.ok) throw new Error('HTTP ' + res.status);
                 const data = await res.json();
                 count = typeof data.count === 'number' ? data.count : 0;
@@ -876,7 +880,7 @@
                 return true;
             }
             try {
-                const res = await fetchWithTimeout(WORKER_URL + '/' + action, {
+                const res = await fetchWithTimeout(getApiUrl('/' + action), {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' }
                 }, 5000);
