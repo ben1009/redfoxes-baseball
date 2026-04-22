@@ -147,6 +147,17 @@ This is the core atomicity mechanism. Unlike the current Durable Object design, 
 
 The explicit permission change is important. If the function remains callable by `anon`, a browser client could bypass the Edge Function and its rate limiting by calling the RPC directly.
 
+### IP Spoofing & Rate-Limit Bypass
+
+`X-Forwarded-For` is a comma-separated chain where the **leftmost** element can be spoofed by the client. Extracting the first IP for rate-limiting allows trivial cooldown bypass. The Edge Function should:
+
+1. Prefer infrastructure-set headers (`cf-connecting-ip`, `x-real-ip`) that clients cannot forge.
+2. If `x-forwarded-for` must be used, take the **last** element (closest trusted proxy) rather than the first.
+
+### Error Message Leakage
+
+Never return raw database, Redis, or internal exception messages to the browser. Log detailed errors server-side and return a generic `{"error": "Internal server error"}` payload with HTTP 500.
+
 ---
 
 ## 5. API Design
@@ -217,6 +228,7 @@ The browser-side design can stay almost identical to the current RFC:
 - The current UI contract `{ count, rateLimited }` can be preserved
 - Existing `isProcessing` click lock should remain
 - Existing fallback behavior can remain unchanged
+- `postAction()` should not call `updateUI()` internally; the click handler updates UI uniformly after receiving the result
 
 This means the frontend migration cost is relatively low. Most complexity is in the backend architecture.
 
@@ -232,7 +244,7 @@ This means the frontend migration cost is relatively low. Most complexity is in 
 | Direct client writes | High | Disallow direct browser table mutations |
 | Lost atomicity under concurrency | Low | Use single-row atomic SQL update |
 | Service key exposure | High | Keep `service_role` only in Edge Function secrets |
-| CORS misuse | Low | Explicitly allow GitHub Pages origin or `*` if needed |
+| CORS misuse | Low | Restrict `Access-Control-Allow-Origin` to known production origin(s); avoid `*` for write endpoints |
 
 ### 8.2 RLS Guidance
 
@@ -329,6 +341,8 @@ If the project chooses Supabase later, a safe migration path would be:
 - Verify UI does not toggle when `rateLimited: true`
 - Verify rapid-click protection still limits changes to at most one successful transition
 - Verify localStorage fallback still works when fetch fails
+- Verify no animation fires during fallback paths (API failure or `apiFailed` early-return)
+- Static analysis: CORS whitelist, IP header priority, error sanitization, allowed origins
 
 ### 12.2 Manual Checklist
 
@@ -365,3 +379,4 @@ For a single anonymous global like counter on a static site, Supabase is viable 
 | Date | Change |
 |------|--------|
 | 2026-04-21 | Initial Supabase alternative RFC drafted for architecture comparison |
+| 2026-04-22 | Security hardening: CORS whitelist, IP anti-spoofing, error sanitization; frontend `updateUI()` cleanup; test coverage expanded |

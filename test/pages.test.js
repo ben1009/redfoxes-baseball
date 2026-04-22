@@ -1087,6 +1087,59 @@ describe('Page Structure and Navigation Tests', () => {
             expect(stored.liked).toBe('true');
             expect(stored.count).toBe('1');
         }));
+
+        test('should not animate when apiFailed early fallback is used', async () => withBrowser(async () => {
+            // Mock fetch so initial GET /count fails, forcing apiFailed = true.
+            // POST would succeed, but the early-return path should skip it.
+            await page.evaluateOnNewDocument(() => {
+                window.__testLikeCount = 0;
+                const origFetch = window.fetch;
+                window.fetch = async (url, opts) => {
+                    if (typeof url === 'string' && url.includes('sponsor-likes')) {
+                        if (opts && opts.method === 'POST') {
+                            window.__testLikeCount++;
+                            return { ok: true, json: async () => ({ count: window.__testLikeCount }) };
+                        }
+                        // GET /count always fails
+                        throw new Error('network failed');
+                    }
+                    return origFetch(url, opts);
+                };
+            });
+
+            await page.evaluate(() => {
+                localStorage.removeItem('sponsor_me_liked_v1');
+                localStorage.removeItem('sponsor_me_count_fallback');
+            });
+            await page.reload({ waitUntil: 'domcontentloaded' });
+
+            await page.waitForFunction(() => {
+                const countEl = document.querySelector('.like-count');
+                return countEl && /^\d+$/.test(countEl.textContent);
+            }, { timeout: 5000 });
+
+            const likeBtn = await page.$('.like-btn');
+
+            // Click while apiFailed === true — hits early-return fallback
+            await likeBtn.click();
+            await page.waitForFunction(() => {
+                const btn = document.querySelector('.like-btn');
+                return btn && btn.classList.contains('liked');
+            }, { timeout: 5000 });
+
+            const hasPopAfterApiFailedFallback = await page.evaluate(() => {
+                const icon = document.querySelector('.like-icon');
+                return icon && icon.classList.contains('pop');
+            });
+            expect(hasPopAfterApiFailedFallback).toBe(false);
+
+            const stored = await page.evaluate(() => ({
+                liked: localStorage.getItem('sponsor_me_liked_v1'),
+                count: localStorage.getItem('sponsor_me_count_fallback')
+            }));
+            expect(stored.liked).toBe('true');
+            expect(stored.count).toBe('1');
+        }));
     });
 
     describe('Cross-Page Navigation', () => {
@@ -1167,6 +1220,58 @@ describe('File Existence Tests', () => {
             const filePath = path.resolve(__dirname, '..', file);
             expect(fs.existsSync(filePath)).toBe(true);
         });
+    });
+});
+
+describe('Supabase Edge Function Security', () => {
+    test('should use explicit CORS origin whitelist instead of wildcard', () => {
+        const ts = fs.readFileSync(
+            path.resolve(__dirname, '..', 'supabase/functions/sponsor-likes/index.ts'),
+            'utf8'
+        );
+        expect(ts).toContain('ALLOWED_ORIGINS');
+        expect(ts).not.toContain('"Access-Control-Allow-Origin": "*"');
+        // Unauthorized origins should not fall back to the first allowed origin
+        expect(ts).not.toContain('ALLOWED_ORIGINS[0]');
+    });
+
+    test('should prefer infrastructure IP headers to avoid spoofing', () => {
+        const ts = fs.readFileSync(
+            path.resolve(__dirname, '..', 'supabase/functions/sponsor-likes/index.ts'),
+            'utf8'
+        );
+        // Infrastructure headers must be checked before x-forwarded-for
+        const cfIndex = ts.indexOf('cf-connecting-ip');
+        const realIpIndex = ts.indexOf('x-real-ip');
+        const forwardedForIndex = ts.indexOf('x-forwarded-for');
+        expect(cfIndex).toBeGreaterThan(-1);
+        expect(realIpIndex).toBeGreaterThan(-1);
+        expect(forwardedForIndex).toBeGreaterThan(-1);
+        expect(cfIndex).toBeLessThan(forwardedForIndex);
+        expect(realIpIndex).toBeLessThan(forwardedForIndex);
+        // Must use the last (trusted) element of the chain, not the first
+        expect(ts).toContain('ips[ips.length - 1]');
+        expect(ts).not.toContain('split(",")[0].trim()');
+    });
+
+    test('should return generic error messages instead of raw internals', () => {
+        const ts = fs.readFileSync(
+            path.resolve(__dirname, '..', 'supabase/functions/sponsor-likes/index.ts'),
+            'utf8'
+        );
+        expect(ts).toContain('"Internal server error"');
+        expect(ts).toContain('console.error(');
+        // Should not leak raw error messages to the client
+        expect(ts).not.toContain('return jsonResponse({ error: message }, 500');
+    });
+
+    test('should include VS Code Live Server origin in development whitelist', () => {
+        const ts = fs.readFileSync(
+            path.resolve(__dirname, '..', 'supabase/functions/sponsor-likes/index.ts'),
+            'utf8'
+        );
+        expect(ts).toContain('"http://localhost:5501"');
+        expect(ts).toContain('"http://127.0.0.1:5501"');
     });
 });
 
