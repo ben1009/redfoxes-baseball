@@ -335,7 +335,7 @@ describe('Page Structure and Navigation Tests', () => {
             const scheduleSection = await page.$('#schedule');
             expect(scheduleSection).not.toBeNull();
 
-            const scheduleImage = await page.$('img[src*="u10_pony_tianjin_schedule"]');
+            const scheduleImage = await page.$('img[src*="pony_u10_tianjin_schedule"]');
             expect(scheduleImage).not.toBeNull();
 
             const imageCaption = await scheduleSection.$('.image-caption');
@@ -1205,7 +1205,7 @@ describe('File Existence Tests', () => {
         'img/groupstage_data.png',
         'img/finalstage_data.png',
         'img/tigercup_final_ranking.jpg',
-        'img/u10_pony_tianjin_schedule.png',
+        'img/pony_u10_tianjin_schedule.png',
         'workers/sponsor-likes.js',
         'workers/wrangler.toml',
         'workers/README.md',
