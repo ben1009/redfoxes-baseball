@@ -1,18 +1,38 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization",
-};
+const ALLOWED_ORIGINS = [
+  "https://ben1009.github.io",
+  "http://localhost:8000",
+  "http://localhost:3000",
+  "http://localhost:5501",
+  "http://127.0.0.1:8000",
+  "http://127.0.0.1:3000",
+  "http://127.0.0.1:5501",
+];
+
+function getCorsHeaders(request: Request) {
+  const origin = request.headers.get("origin");
+  const allowedOrigin = ALLOWED_ORIGINS.includes(origin || "")
+    ? origin
+    : ALLOWED_ORIGINS[0];
+  return {
+    "Access-Control-Allow-Origin": allowedOrigin || ALLOWED_ORIGINS[0],
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+  };
+}
 
 const RATE_LIMIT_SECONDS = 5;
 
-function jsonResponse(body: Record<string, unknown>, status = 200) {
+function jsonResponse(
+  body: Record<string, unknown>,
+  status = 200,
+  corsHeaders: Record<string, string>
+) {
   return new Response(JSON.stringify(body), {
     status,
     headers: {
-      ...CORS_HEADERS,
+      ...corsHeaders,
       "Content-Type": "application/json",
     },
   });
@@ -35,14 +55,28 @@ function getClient() {
 }
 
 function getRequestIp(request: Request) {
+  // Prefer infrastructure-set headers that clients cannot spoof.
+  const cfIp = request.headers.get("cf-connecting-ip");
+  if (cfIp) return cfIp.trim();
+
+  const realIp = request.headers.get("x-real-ip");
+  if (realIp) return realIp.trim();
+
+  // X-Forwarded-For is a chain: client, proxy1, proxy2, ...
+  // The first element can be spoofed by the client, so we use the
+  // last element (closest trusted proxy) to avoid rate-limit bypass.
   const forwardedFor = request.headers.get("x-forwarded-for");
   if (forwardedFor) {
-    return forwardedFor.split(",")[0].trim();
+    const ips = forwardedFor
+      .split(",")
+      .map((ip) => ip.trim())
+      .filter(Boolean);
+    if (ips.length > 0) {
+      return ips[ips.length - 1];
+    }
   }
 
-  return request.headers.get("x-real-ip") ||
-    request.headers.get("cf-connecting-ip") ||
-    "unknown";
+  return "unknown";
 }
 
 function getRedisConfig() {
@@ -104,8 +138,10 @@ async function isRateLimited(request: Request, action: "like" | "unlike") {
 }
 
 Deno.serve(async (request) => {
+  const corsHeaders = getCorsHeaders(request);
+
   if (request.method === "OPTIONS") {
-    return new Response(null, { status: 204, headers: CORS_HEADERS });
+    return new Response(null, { status: 204, headers: corsHeaders });
   }
 
   const url = new URL(request.url);
@@ -117,16 +153,19 @@ Deno.serve(async (request) => {
 
     if (request.method === "GET" && route === "count") {
       const count = await getCurrentCount(client);
-      return jsonResponse({ count });
+      return jsonResponse({ count }, 200, corsHeaders);
     }
 
-    if (request.method === "POST" && (route === "like" || route === "unlike")) {
+    if (
+      request.method === "POST" &&
+      (route === "like" || route === "unlike")
+    ) {
       const action = route as "like" | "unlike";
       const rateLimited = await isRateLimited(request, action);
 
       if (rateLimited) {
         const count = await getCurrentCount(client);
-        return jsonResponse({ count, rateLimited: true }, 429);
+        return jsonResponse({ count, rateLimited: true }, 429, corsHeaders);
       }
 
       const { data, error } = await client.rpc("apply_sponsor_like_action", {
@@ -137,14 +176,19 @@ Deno.serve(async (request) => {
         throw new Error(error.message);
       }
 
-      return jsonResponse({
-        count: typeof data === "number" ? data : 0,
-      });
+      return jsonResponse(
+        { count: typeof data === "number" ? data : 0 },
+        200,
+        corsHeaders
+      );
     }
 
-    return jsonResponse({ error: "Not Found" }, 404);
+    return jsonResponse({ error: "Not Found" }, 404, corsHeaders);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
-    return jsonResponse({ error: message }, 500);
+    // Log the detailed error server-side for debugging, but return a
+    // generic message to the client to avoid leaking internals.
+    console.error("Edge Function error:", message);
+    return jsonResponse({ error: "Internal server error" }, 500, corsHeaders);
   }
 });

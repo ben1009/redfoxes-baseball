@@ -876,7 +876,6 @@
             if (apiFailed) {
                 count = Math.max(0, count + (action === 'like' ? 1 : -1));
                 localStorage.setItem(FALLBACK_KEY, count);
-                updateUI();
                 return { applied: true, animate: false };
             }
             try {
@@ -897,7 +896,6 @@
                 apiFailed = true;
                 count = Math.max(0, count + (action === 'like' ? 1 : -1));
                 localStorage.setItem(FALLBACK_KEY, count);
-                updateUI();
                 return { applied: true, animate: false };
             }
         }

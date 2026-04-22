@@ -147,6 +147,17 @@ This is the core atomicity mechanism. Unlike the current Durable Object design, 
 
 The explicit permission change is important. If the function remains callable by `anon`, a browser client could bypass the Edge Function and its rate limiting by calling the RPC directly.
 
+### IP Spoofing & Rate-Limit Bypass
+
+`X-Forwarded-For` is a comma-separated chain where the **leftmost** element can be spoofed by the client. Extracting the first IP for rate-limiting allows trivial cooldown bypass. The Edge Function should:
+
+1. Prefer infrastructure-set headers (`cf-connecting-ip`, `x-real-ip`) that clients cannot forge.
+2. If `x-forwarded-for` must be used, take the **last** element (closest trusted proxy) rather than the first.
+
+### Error Message Leakage
+
+Never return raw database, Redis, or internal exception messages to the browser. Log detailed errors server-side and return a generic `{"error": "Internal server error"}` payload with HTTP 500.
+
 ---
 
 ## 5. API Design
@@ -232,7 +243,7 @@ This means the frontend migration cost is relatively low. Most complexity is in 
 | Direct client writes | High | Disallow direct browser table mutations |
 | Lost atomicity under concurrency | Low | Use single-row atomic SQL update |
 | Service key exposure | High | Keep `service_role` only in Edge Function secrets |
-| CORS misuse | Low | Explicitly allow GitHub Pages origin or `*` if needed |
+| CORS misuse | Low | Restrict `Access-Control-Allow-Origin` to known production origin(s); avoid `*` for write endpoints |
 
 ### 8.2 RLS Guidance
 
