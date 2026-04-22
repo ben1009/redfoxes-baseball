@@ -76,7 +76,7 @@ create table public.page_sections (
   id          uuid primary key default gen_random_uuid(),
   page_path   text not null,                     -- e.g. '/match_review.html'
   page_title  text not null,                     -- e.g. '烈光 vs 飞雪 友谊赛复盘'
-  section_id  text,                              -- DOM id/anchor, e.g. 'video-3'
+  section_id  text not null,                     -- DOM id/anchor, e.g. 'video-3'
   heading     text,                              -- Section heading text
   body        text not null,                     -- Chunked paragraph text
   content     text generated always as (         -- Combined for full-text search
@@ -87,17 +87,17 @@ create table public.page_sections (
     to_tsvector('chinese', coalesce(heading, '') || ' ' || body)
   ) stored,
   token_count int,                               -- For embedding cost tracking
-  updated_at  timestamptz not null default now()
+  updated_at  timestamptz not null default now(),
+  unique(page_path, section_id)                  -- Required for upsert idempotency
 );
 
 -- GIN index for full-text search
 create index idx_page_sections_fts on public.page_sections
   using gin(tsvec);
 
--- IVFFlat index for vector similarity (lists tuned for ~500 rows)
+-- HNSW index for vector similarity (better performance/recall than IVFFlat)
 create index idx_page_sections_vector on public.page_sections
-  using ivfflat(embedding vector_cosine_ops)
-  with (lists = 10);
+  using hnsw(embedding vector_cosine_ops);
 
 -- Composite index for page-level grouping
 create index idx_page_sections_path on public.page_sections(page_path);
