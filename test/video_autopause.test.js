@@ -109,23 +109,24 @@ describe('Video Autopause Feature', () => {
         const containers = await page.$$('.video-container');
         expect(containers.length).toBe(7);
 
-        // Check that each container has a data-src (lazy-loading stores src here)
-        // or has an iframe (if currently visible). Retry once to handle lazy init.
+        // Wait for all containers to have a video source (data-src or iframe)
+        await page.waitForFunction(
+            () => {
+                const containers = document.querySelectorAll('.video-container');
+                if (containers.length !== 7) return false;
+                return Array.from(containers).every(
+                    c => !!c.dataset.src || !!c.querySelector('iframe')
+                );
+            },
+            { timeout: 5000 }
+        );
+
+        // Verify all 7 containers have a video source
         let hasVideoSource = 0;
         for (const container of containers) {
             const hasDataSrc = await container.evaluate(el => !!el.dataset.src);
             const hasIframe = await container.$('iframe') !== null;
             if (hasDataSrc || hasIframe) hasVideoSource++;
-        }
-        // If not all 7 have video source yet, wait a bit and retry once
-        if (hasVideoSource < 7) {
-            await new Promise(r => setTimeout(r, 1000));
-            hasVideoSource = 0;
-            for (const container of containers) {
-                const hasDataSrc = await container.evaluate(el => !!el.dataset.src);
-                const hasIframe = await container.$('iframe') !== null;
-                if (hasDataSrc || hasIframe) hasVideoSource++;
-            }
         }
         expect(hasVideoSource).toBe(7);
     }));
