@@ -109,7 +109,7 @@ A normalized design separates page metadata (URL, title, category, tags) from ch
 ```sql
 create table public.documents (
   id          bigint generated always as identity primary key,
-  url         text not null unique,              -- e.g. 'u10_rules.html' (relative path, same as page_path)
+  url         text not null,                     -- e.g. 'https://ben1009.github.io/redfoxes-baseball/u10_rules.html'
   page_path   text not null unique,              -- e.g. 'u10_rules.html' (relative, used for navigation and upsert)
   title       text not null,                     -- e.g. '猛虎杯 U10 竞赛章程'
   category    text,                              -- 'rules' | 'analysis' | 'sponsor' | 'review'
@@ -314,7 +314,7 @@ as $$
         c.section_id,
         c.heading,
         c.chunk_text as body,
-        row_number() over (order by pgroonga_score(c.tableoid, c.ctid) desc) as fts_rank
+        row_number() over (order by pgroonga_score(c.tableoid, c.ctid) desc, c.id asc) as fts_rank
       from public.document_chunks c
       join public.documents d on c.document_id = d.id
       where c.chunk_text &@~ query_text
@@ -331,7 +331,7 @@ as $$
         c.section_id,
         c.heading,
         c.chunk_text as body,
-        row_number() over (order by c.embedding <=> query_embedding) as vec_rank
+        row_number() over (order by c.embedding <=> query_embedding, c.id asc) as vec_rank
       from public.document_chunks c
       join public.documents d on c.document_id = d.id
       where c.embedding is not null
@@ -452,6 +452,14 @@ async function extractChunks(html, pagePath, pageTitle) {
 }
 
 async function index() {
+  // Cleanup: remove documents that are no longer in PAGES
+  const currentPaths = PAGES.map(p => p.path);
+  const { error: delErr } = await supabase
+    .from('documents')
+    .delete()
+    .not('page_path', 'in', currentPaths);
+  if (delErr) console.warn('Cleanup warning:', delErr);
+
   for (const page of PAGES) {
     const html = fs.readFileSync(page.path, 'utf-8');
     const chunks = await extractChunks(html, page.path, page.title);
@@ -472,7 +480,11 @@ async function index() {
 
     if (docErr) throw docErr;
 
-    // Delete old chunks for this document
+    // Delete old chunks for this document.
+    // NOTE: This is not atomic with the subsequent insert. If the script crashes
+    // here, the document will have no chunks until re-indexed. For atomic
+    // replacement, wrap delete+insert in a stored procedure (RPC) called via
+    // supabase.rpc('replace_chunks', { doc_id, chunk_rows }).
     await supabase.from('document_chunks').delete().eq('document_id', doc.id);
 
     // Generate embeddings in batch for all chunks of this page
@@ -816,12 +828,12 @@ Reuse the existing Upstash Redis setup:
 
 Same concern as the like counter: Supabase hosted regions do not include mainland China. Nearest regions are Singapore / Tokyo / Seoul.
 
-**Search queries** (browser → Supabase Edge Function → Postgres) do NOT call OpenAI. Latency depends on Supabase region choice.
+**Search queries** (browser → Supabase Edge Function → Postgres) require a query embedding from OpenAI on every search (see Section 7.2). The actual hybrid search (FTS + vector + RRF) runs entirely in Postgres and does not call OpenAI. Latency depends on Supabase region choice plus OpenAI embedding latency (~100–300 ms).
 
-**Indexing / embedding generation** requires OpenAI API access. For users in mainland China:
+**Indexing / embedding generation** also requires OpenAI API access. For users in mainland China:
 - Run the indexing script from CI/CD (GitHub Actions) which has unrestricted internet access
 - Or run locally with VPN/proxy during development
-- Once embeddings are stored in Postgres, no further OpenAI calls are needed until content changes
+- Search embedding generation happens on Supabase Edge infrastructure (no mainland network restrictions)
 
 The `generate-embeddings` Edge Function (if using automatic embedding) runs on Supabase's edge infrastructure, which can reach OpenAI without mainland network restrictions.
 
