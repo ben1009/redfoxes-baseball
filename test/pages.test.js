@@ -1208,10 +1208,10 @@ describe('File Existence Tests', () => {
         'img/pony_u10_tianjin_schedule.png',
         'workers/sponsor_likes.js',
         'workers/wrangler.toml',
-        'workers/readme.md',
+        'workers/README.md',
         'supabase/functions/sponsor-likes/index.ts',
         'supabase/migrations/20260421_sponsor_likes.sql',
-        'supabase/readme.md',
+        'supabase/README.md',
         '.github/workflows/deploy-worker.yml'
     ];
 

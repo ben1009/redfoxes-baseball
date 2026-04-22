@@ -59,15 +59,16 @@ redfoxes-baseball/
 │   ├── functions/
 │   │   └── sponsor-likes/     # Edge Function API
 │   ├── migrations/            # SQL schema + function setup
-│   └── readme.md              # Deployment and secret guide
+│   └── README.md              # Deployment and secret guide
 ├── workers/                   # Legacy Cloudflare Worker implementation
 │   ├── sponsor_likes.js       # Legacy Worker script
 │   ├── wrangler.toml          # Legacy deployment config
-│   └── readme.md              # Legacy setup guide
+│   └── README.md              # Legacy setup guide
 ├── README.md                  # Project documentation
 ├── AGENTS.md                  # This file
 ├── rfc/
-│   └── 001_like_counter.md    # Like feature architecture design (RFC)
+│   ├── 001_like_counter.md    # Like feature architecture design (RFC)
+│   └── 002_supabase_like_counter.md # Active Supabase like counter design (RFC)
 ├── LICENSE                    # CC BY-NC-SA 4.0 License
 └── img/                       # Static image assets
     ├── baseball_field_bg.svg  # Aerial baseball field background
@@ -245,7 +246,7 @@ Tests include:
 The active like counter backend lives under `supabase/`:
 - SQL migration: `supabase/migrations/20260421_sponsor_likes.sql`
 - Edge Function: `supabase/functions/sponsor-likes/index.ts`
-- Setup guide: `supabase/readme.md`
+- Setup guide: `supabase/README.md`
 
 ### Legacy Cloudflare Worker Deployment
 

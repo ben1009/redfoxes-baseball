@@ -3,7 +3,7 @@
 > Legacy backend for `sponsor_me.html`
 > Status: retained for rollback/reference only
 
-The active production backend now lives under [`../supabase/readme.md`](../supabase/readme.md) and uses:
+The active production backend now lives under [`../supabase/README.md`](../supabase/README.md) and uses:
 - Supabase Edge Functions
 - Supabase Postgres
 - Upstash Redis for rate limiting
@@ -113,4 +113,4 @@ More than enough for a youth baseball team site.
 ## Design Documents
 
 - Legacy Cloudflare design: [`rfc/001_like_counter.md`](../rfc/001_like_counter.md)
-- Active Supabase design and implementation: [`../supabase/readme.md`](../supabase/readme.md) and [`rfc/002_supabase_like_counter.md`](../rfc/002_supabase_like_counter.md)
+- Active Supabase design and implementation: [`../supabase/README.md`](../supabase/README.md) and [`rfc/002_supabase_like_counter.md`](../rfc/002_supabase_like_counter.md)
