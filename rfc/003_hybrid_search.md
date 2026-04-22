@@ -492,7 +492,115 @@ node scripts/index-content.js
 # Or in CI (GitHub Actions) on every push to main
 ```
 
-### 6.4 Re-indexing Strategy
+### 6.4 Automatic Embedding Generation (Alternative)
+
+Instead of generating embeddings in the Node.js script, you can insert chunks with `embedding = NULL` and let the database trigger an Edge Function to fill them in automatically.
+
+**Architecture:**
+```
+Indexing Script          Postgres                    Edge Function
+     │                      │                             │
+     │ INSERT chunk_text    │                             │
+     │ (embedding = NULL)   │                             │
+     │─────────────────────>│                             │
+     │                      │ cron.schedule()             │
+     │                      │ or INSERT trigger           │
+     │                      │────────────────────────────>│
+     │                      │  POST /generate-embeddings  │
+     │                      │                             │
+     │                      │                      OpenAI API
+     │                      │                             │
+     │                      │ UPDATE embedding            │
+     │                      │<────────────────────────────│
+```
+
+**Option A: Cron-based (Recommended)**
+
+Run a cron job every minute to process pending chunks:
+
+```sql
+-- Schedule embedding worker (requires pg_cron extension)
+select cron.schedule(
+  'generate-embeddings',
+  '* * * * *',
+  $$
+    select net.http_post(
+      url := 'https://<project>.supabase.co/functions/v1/generate-embeddings',
+      headers := '{"Content-Type": "application/json", "Authorization": "Bearer <anon-key>"}'::jsonb,
+      body := '{}'
+    );
+  $$
+);
+```
+
+The Edge Function `generate-embeddings`:
+1. Queries `document_chunks` where `embedding IS NULL` (limit ~10)
+2. Calls OpenAI API to generate embeddings in batch
+3. Updates each chunk row with its embedding
+
+```typescript
+// supabase/functions/generate-embeddings/index.ts (simplified)
+const { data: chunks } = await supabase
+  .from('document_chunks')
+  .select('id, chunk_text')
+  .is('embedding', null)
+  .limit(10);
+
+if (!chunks || chunks.length === 0) return new Response('No pending chunks');
+
+const embeddings = await openai.embeddings.create({
+  model: 'text-embedding-3-small',
+  input: chunks.map(c => c.chunk_text),
+});
+
+for (let i = 0; i < chunks.length; i++) {
+  await supabase
+    .from('document_chunks')
+    .update({ embedding: embeddings.data[i].embedding })
+    .eq('id', chunks[i].id);
+}
+```
+
+**Option B: Trigger-based (Near Real-Time)**
+
+Fire immediately on insert:
+
+```sql
+create or replace function public.trigger_generate_embedding()
+returns trigger
+language plpgsql
+as $$
+begin
+  perform net.http_post(
+    url := 'https://<project>.supabase.co/functions/v1/generate-embeddings',
+    headers := '{"Content-Type": "application/json", "Authorization": "Bearer <anon-key>"}'::jsonb,
+    body := jsonb_build_object('chunk_id', new.id)
+  );
+  return new;
+end;
+$$;
+
+create trigger on_chunk_insert
+  after insert on public.document_chunks
+  for each row
+  when (new.embedding is null)
+  execute function public.trigger_generate_embedding();
+```
+
+**Trade-offs:**
+
+| Approach | Latency | Reliability | Complexity | Best For |
+|----------|---------|-------------|------------|----------|
+| Inline (script) | Immediate | High (synchronous) | Low | Static sites with CI-based indexing |
+| Cron | ~1 min | High (retryable batch) | Medium | Production, frequent updates |
+| Trigger | ~1 sec | Medium (HTTP from trigger) | Medium | Near real-time requirements |
+
+For this static site, **inline generation in the script** is simplest. Use cron/trigger when:
+- Content is updated via non-CI means (CMS, admin UI)
+- Multiple writers insert chunks and embedding generation should not block them
+- Embeddings need to be regenerated on `chunk_text` updates without re-running the full script
+
+### 6.5 Re-indexing Strategy
 
 | Trigger | Action |
 |---------|--------|
@@ -796,7 +904,6 @@ Add Pagefind UI to pages. Later migrate to Supabase without user-facing changes.
 | Image alt-text indexing | Medium | Search figure captions and diagrams |
 | Local embedding model (no OpenAI dependency) | Medium | Remove external API dependency |
 | Real-time re-index via GitHub Actions | Low | Always up-to-date after push |
-| Automatic embedding generation via trigger | Medium | No manual script needed on inserts |
 
 ---
 
