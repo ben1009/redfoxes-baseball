@@ -223,6 +223,7 @@ with
     join public.documents d on c.document_id = d.id
     where c.chunk_text &@~ query_text
        or c.heading &@~ query_text
+    order by pgroonga_score(c.tableoid, c.ctid) desc
     limit 20
   ),
   -- Vector search on chunks
@@ -318,6 +319,7 @@ as $$
       join public.documents d on c.document_id = d.id
       where c.chunk_text &@~ query_text
          or c.heading &@~ query_text
+      order by pgroonga_score(c.tableoid, c.ctid) desc
       limit greatest(match_limit * 2, 20)
     ),
     vec_results as (
@@ -563,7 +565,7 @@ select cron.schedule(
   $$
     select net.http_post(
       url := 'https://<project>.supabase.co/functions/v1/generate-embeddings',
-      headers := '{"Content-Type": "application/json", "Authorization": "Bearer <anon-key>"}'::jsonb,
+      headers := '{"Content-Type": "application/json", "X-Internal-Secret": "<internal-secret>"}'::jsonb,
       body := '{}'
     );
   $$
@@ -613,7 +615,7 @@ as $$
 begin
   perform net.http_post(
     url := 'https://<project>.supabase.co/functions/v1/generate-embeddings',
-    headers := '{"Content-Type": "application/json", "Authorization": "Bearer <anon-key>"}'::jsonb,
+    headers := '{"Content-Type": "application/json", "X-Internal-Secret": "<internal-secret>"}'::jsonb,
     body := jsonb_build_object('chunk_id', new.id)
   );
   return new;
@@ -791,7 +793,7 @@ For this project, `text-embedding-3-small` offers the best cost/quality ratio.
 
 | Threat | Risk | Mitigation |
 |--------|------|------------|
-| Embedding API key exposure | High | Only the indexing script and `generate-embeddings` Edge Function hold the OpenAI key; never sent to browser. Search queries do NOT call OpenAI. |
+| Embedding API key exposure | High | OpenAI key lives only in Edge Functions and indexing script; never exposed to browser. `site-search` Edge Function calls OpenAI for query embedding (1 request per search). `generate-embeddings` calls OpenAI for content embedding (batch, internal). |
 | SQL injection via search query | Low | Use parameterized SQL function; query is passed as text parameter only |
 | Search result enumeration | Low | Limit to 10 results; no pagination for now |
 | DDoS / expensive embedding calls | Medium | IP-based rate limiting (same Redis/Upstash as sponsor-likes) |
