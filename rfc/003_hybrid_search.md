@@ -751,7 +751,7 @@ For this project, `text-embedding-3-small` offers the best cost/quality ratio.
 
 | Threat | Risk | Mitigation |
 |--------|------|------------|
-| Embedding API key exposure | High | Edge Function holds OpenAI key in secrets; never sent to browser |
+| Embedding API key exposure | High | Only the indexing script and `generate-embeddings` Edge Function hold the OpenAI key; never sent to browser. Search queries do NOT call OpenAI. |
 | SQL injection via search query | Low | Use parameterized SQL function; query is passed as text parameter only |
 | Search result enumeration | Low | Limit to 10 results; no pagination for now |
 | DDoS / expensive embedding calls | Medium | IP-based rate limiting (same Redis/Upstash as sponsor-likes) |
@@ -774,9 +774,14 @@ Reuse the existing Upstash Redis setup:
 
 Same concern as the like counter: Supabase hosted regions do not include mainland China. Nearest regions are Singapore / Tokyo / Seoul.
 
-- Search queries require two round-trips: browser → Supabase Edge Function → Postgres
-- Embedding generation adds a third hop (Edge Function → OpenAI)
-- For acceptable latency, consider caching embeddings in Postgres (already done) and using a fast Edge Function region
+**Search queries** (browser → Supabase Edge Function → Postgres) do NOT call OpenAI. Latency depends on Supabase region choice.
+
+**Indexing / embedding generation** requires OpenAI API access. For users in mainland China:
+- Run the indexing script from CI/CD (GitHub Actions) which has unrestricted internet access
+- Or run locally with VPN/proxy during development
+- Once embeddings are stored in Postgres, no further OpenAI calls are needed until content changes
+
+The `generate-embeddings` Edge Function (if using automatic embedding) runs on Supabase's edge infrastructure, which can reach OpenAI without mainland network restrictions.
 
 ### 11.2 Cost Estimate
 
@@ -784,7 +789,7 @@ Assuming ~50 chunks × 1536 dims, re-indexed monthly:
 
 | Item | Estimate |
 |------|----------|
-| Embedding API | ~$0.001/month (negligible) |
+| Embedding API (indexing only) | ~$0.001/month (negligible) |
 | Supabase Database | Within free tier (few MB) |
 | Edge Function invocations | Free tier: 500K/month (more than enough) |
 | Upstash Redis | Shared with sponsor-likes; negligible additional usage |
