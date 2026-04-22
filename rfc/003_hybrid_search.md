@@ -109,8 +109,8 @@ A normalized design separates page metadata (URL, title, category, tags) from ch
 ```sql
 create table public.documents (
   id          bigint generated always as identity primary key,
-  url         text not null unique,              -- e.g. 'u10_rules.html#early-end'
-  page_path   text not null,                     -- e.g. 'u10_rules.html'
+  url         text not null unique,              -- e.g. 'https://ben1009.github.io/redfoxes-baseball/u10_rules.html'
+  page_path   text not null,                     -- e.g. 'u10_rules.html' (relative, used for navigation)
   title       text not null,                     -- e.g. '猛虎杯 U10 竞赛章程'
   category    text,                              -- 'rules' | 'analysis' | 'sponsor' | 'review'
   tags        text[],                            -- ['U10', '猛虎杯', '投手']
@@ -160,6 +160,10 @@ create extension if not exists vector;
 
 -- Full-text search for CJK languages (Supabase officially supports PGroonga)
 create extension if not exists pgroonga;
+
+-- Required only for automatic embedding via cron/trigger (Section 6.4)
+create extension if not exists pg_cron;
+create extension if not exists pg_net;
 ```
 
 **Why PGroonga over native Postgres FTS?**
@@ -270,6 +274,8 @@ limit 10;
 | Weighted sum (`α·fts + β·vec`) | Simple to explain | Requires tuning α/β; scores have different scales |
 
 For a small content corpus (~50 chunks), RRF is more robust and requires no calibration.
+
+> **Note on `pgroonga_score`**: In rare cases PGroonga may return zero scores for valid matches. If observed in testing, adjust the `order by` clause to `pgroonga_score(c.tableoid, c.ctid) + 1` or blend with `ts_rank_cd` as a tie-breaker.
 
 ### 5.3 SQL Function Wrapper
 
@@ -641,6 +647,7 @@ GET /functions/v1/site-search?q={query}
       "heading": "提前结束比赛条件",
       "excerpt": "...比赛进行至第三局或之后，双方比分相差 15 分及以上时...",
       "url": "u10_rules.html#early-end",
+      "_note": "Constructed by Edge Function as: page_path + '#' + section_id"
       "score": 0.0312
     }
   ]
@@ -823,6 +830,9 @@ Applies:
 
 ```bash
 supabase functions deploy site-search --no-verify-jwt
+
+# If using automatic embedding (Section 6.4)
+supabase functions deploy generate-embeddings --no-verify-jwt
 ```
 
 Required secrets (in addition to existing ones):
@@ -921,3 +931,5 @@ Add Pagefind UI to pages. Later migrate to Supabase without user-facing changes.
 | 2026-04-22 | Replaced `zhparser` with PGroonga for reliable Chinese full-text search on hosted Supabase |
 | 2026-04-22 | Added Pagefind as Phase 0 quick alternative |
 | 2026-04-22 | Added category/tags fields and page-level metadata support |
+| 2026-04-22 | Added automatic embedding generation strategies (inline, cron, trigger) |
+| 2026-04-22 | Clarified OpenAI is indexing-only; expanded China availability guidance |
