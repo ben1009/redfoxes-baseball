@@ -24,12 +24,17 @@ jobs:
         node-version: '20'
         
     - name: Install dependencies
+      env:
+        PUPPETEER_SKIP_DOWNLOAD: 'true'
       run: npm install
 
-    - name: Install Chrome for Puppeteer
-      run: npx puppeteer browsers install chrome@stable
+    - name: Install Chromium
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y chromium-browser
 
     - name: Run tests
       env:
         TEST_PASSWORD: ${{ secrets.TEST_PASSWORD || '1972' }}
+        PUPPETEER_EXECUTABLE_PATH: /usr/bin/chromium-browser
       run: npm test
