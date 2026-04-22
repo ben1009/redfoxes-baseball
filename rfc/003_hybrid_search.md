@@ -109,7 +109,7 @@ A normalized design separates page metadata (URL, title, category, tags) from ch
 ```sql
 create table public.documents (
   id          bigint generated always as identity primary key,
-  url         text not null unique,              -- e.g. 'https://ben1009.github.io/redfoxes-baseball/u10_rules.html'
+  url         text not null unique,              -- e.g. 'u10_rules.html' (relative path, same as page_path)
   page_path   text not null unique,              -- e.g. 'u10_rules.html' (relative, used for navigation and upsert)
   title       text not null,                     -- e.g. '猛虎杯 U10 竞赛章程'
   category    text,                              -- 'rules' | 'analysis' | 'sponsor' | 'review'
@@ -238,6 +238,7 @@ with
       row_number() over (order by c.embedding <=> query_embedding) as vec_rank
     from public.document_chunks c
     join public.documents d on c.document_id = d.id
+    where c.embedding is not null
     order by c.embedding <=> query_embedding
     limit 20
   ),
@@ -331,6 +332,7 @@ as $$
         row_number() over (order by c.embedding <=> query_embedding) as vec_rank
       from public.document_chunks c
       join public.documents d on c.document_id = d.id
+      where c.embedding is not null
       order by c.embedding <=> query_embedding
       limit greatest(match_limit * 2, 20)
     ),
@@ -457,7 +459,7 @@ async function index() {
       .from('documents')
       .upsert({
         page_path: page.path,
-        url: page.path,
+        url: `https://ben1009.github.io/redfoxes-baseball/${page.path}`,
         title: page.title,
         category: page.category,
         tags: page.tags || [],
@@ -486,7 +488,7 @@ async function index() {
       heading: c.heading,
       chunk_text: c.body,
       embedding: embeddings.data[i].embedding,
-      token_count: embeddings.usage.total_tokens / chunks.length,
+      token_count: null,  /* OpenAI returns total batch tokens; per-chunk count requires tiktoken if needed */
     }));
 
     const { error: insertErr } = await supabase
@@ -575,6 +577,9 @@ The Edge Function `generate-embeddings`:
 
 ```typescript
 // supabase/functions/generate-embeddings/index.ts (simplified)
+// NOTE: Deploy with --no-verify-jwt; protect with X-Internal-Secret header
+const INTERNAL_SECRET = Deno.env.get("INTERNAL_SECRET_KEY")!;
+
 const { data: chunks } = await supabase
   .from('document_chunks')
   .select('id, chunk_text')
@@ -675,8 +680,7 @@ GET /functions/v1/site-search?q={query}
       "section_id": "early-end",
       "heading": "提前结束比赛条件",
       "excerpt": "...比赛进行至第三局或之后，双方比分相差 15 分及以上时...",
-      "url": "u10_rules.html#early-end",
-      "_note": "Constructed by Edge Function as: page_path + '#' + section_id"
+      "url": "u10_rules.html#early-end",  /* Edge Function constructs this as page_path + '#' + section_id */
       "score": 0.0312
     }
   ]
