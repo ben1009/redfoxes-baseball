@@ -29,6 +29,14 @@ describe('Video Autopause Feature', () => {
 
     beforeAll(async () => {
         try {
+            // Fast-fail if no browser executable is available (e.g. CI without Chrome)
+            puppeteer.executablePath();
+        } catch (err) {
+            browserLaunchError = new Error('No browser executable found; skipping Puppeteer tests');
+            return;
+        }
+
+        try {
             browser = await puppeteer.launch({
                 headless: 'new',
                 pipe: true,

@@ -28,13 +28,8 @@ jobs:
         PUPPETEER_SKIP_DOWNLOAD: 'true'
       run: npm install
 
-    - name: Install Chromium
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y chromium-browser
-
     - name: Run tests
       env:
         TEST_PASSWORD: ${{ secrets.TEST_PASSWORD || '1972' }}
-        PUPPETEER_EXECUTABLE_PATH: /usr/bin/chromium-browser
+        PUPPETEER_SKIP_DOWNLOAD: 'true'
       run: npm test
