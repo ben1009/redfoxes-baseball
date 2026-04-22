@@ -110,7 +110,7 @@ A normalized design separates page metadata (URL, title, category, tags) from ch
 create table public.documents (
   id          bigint generated always as identity primary key,
   url         text not null unique,              -- e.g. 'https://ben1009.github.io/redfoxes-baseball/u10_rules.html'
-  page_path   text not null,                     -- e.g. 'u10_rules.html' (relative, used for navigation)
+  page_path   text not null unique,              -- e.g. 'u10_rules.html' (relative, used for navigation and upsert)
   title       text not null,                     -- e.g. '猛虎杯 U10 竞赛章程'
   category    text,                              -- 'rules' | 'analysis' | 'sponsor' | 'review'
   tags        text[],                            -- ['U10', '猛虎杯', '投手']
@@ -299,6 +299,8 @@ returns table (
 )
 language sql
 stable
+security definer
+set search_path = public
 as $$
   with
     fts_results as (
@@ -354,9 +356,32 @@ as $$
   limit match_limit;
 $$;
 
+-- Enable RLS on all search tables
+alter table public.documents enable row level security;
+alter table public.document_chunks enable row level security;
+
 -- Expose for service_role only (Edge Function)
 revoke execute on function public.hybrid_search(text, vector(1536), int) from public;
 grant execute on function public.hybrid_search(text, vector(1536), int) to service_role;
+
+-- Auto-update updated_at trigger
+create or replace function public.set_updated_at()
+returns trigger
+language plpgsql
+as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+create trigger documents_updated_at
+  before update on public.documents
+  for each row execute function public.set_updated_at();
+
+create trigger document_chunks_updated_at
+  before update on public.document_chunks
+  for each row execute function public.set_updated_at();
 ```
 
 ### 5.4 Fallback: Native Postgres FTS (No PGroonga)
@@ -375,13 +400,13 @@ fts_results as (
     c.chunk_text as body,
     row_number() over (
       order by ts_rank_cd(
-        to_tsvector('simple', c.heading || ' ' || c.chunk_text),
+        to_tsvector('simple', coalesce(c.heading, '') || ' ' || c.chunk_text),
         plainto_tsquery('simple', query_text)
       ) desc
     ) as fts_rank
   from public.document_chunks c
   join public.documents d on c.document_id = d.id
-  where to_tsvector('simple', c.heading || ' ' || c.chunk_text)
+  where to_tsvector('simple', coalesce(c.heading, '') || ' ' || c.chunk_text)
         @@ plainto_tsquery('simple', query_text)
   limit greatest(match_limit * 2, 20)
 )
@@ -446,25 +471,29 @@ async function index() {
     // Delete old chunks for this document
     await supabase.from('document_chunks').delete().eq('document_id', doc.id);
 
-    // Insert new chunks with embeddings
-    for (let i = 0; i < chunks.length; i++) {
-      const chunk = chunks[i];
-      const embeddingText = `${chunk.heading || ''}\n${chunk.body}`;
-      const embedding = await openai.embeddings.create({
-        model: 'text-embedding-3-small',
-        input: embeddingText,
-      });
+    // Generate embeddings in batch for all chunks of this page
+    const embeddingTexts = chunks.map(c => `${c.heading || ''}\n${c.body}`);
+    const embeddings = await openai.embeddings.create({
+      model: 'text-embedding-3-small',
+      input: embeddingTexts,  // Batch: up to 2048 inputs per request
+    });
 
-      await supabase.from('document_chunks').insert({
-        document_id: doc.id,
-        chunk_index: i,
-        section_id: chunk.section_id,
-        heading: chunk.heading,
-        chunk_text: chunk.body,
-        embedding: embedding.data[0].embedding,
-        token_count: embedding.usage.total_tokens,
-      });
-    }
+    // Insert all chunks in a single batch transaction
+    const chunkRows = chunks.map((c, i) => ({
+      document_id: doc.id,
+      chunk_index: i,
+      section_id: c.section_id,
+      heading: c.heading,
+      chunk_text: c.body,
+      embedding: embeddings.data[i].embedding,
+      token_count: embeddings.usage.total_tokens / chunks.length,
+    }));
+
+    const { error: insertErr } = await supabase
+      .from('document_chunks')
+      .insert(chunkRows);
+
+    if (insertErr) throw insertErr;
   }
 }
 ```
@@ -614,7 +643,7 @@ For this static site, **inline generation in the script** is simplest. Use cron/
 | Manual content refresh | Run `node scripts/index-content.js` locally |
 | Schema migration | Full re-index required |
 
-Since content is static and changes infrequently, a "delete old chunks + re-insert new chunks" strategy per page is acceptable and simpler than granular diff tracking.
+Since content is static and changes infrequently, a "delete old chunks + batch insert new chunks" strategy per page is acceptable and simpler than granular diff tracking. If the script fails mid-page, re-running it is safe because the delete already happened and the next run will re-insert all chunks.
 
 ---
 
