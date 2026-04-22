@@ -218,13 +218,13 @@ with
       c.section_id,
       c.heading,
       c.chunk_text as body,
-      row_number() over (order by pgroonga_score(c.tableoid, c.ctid) desc) as fts_rank
+      row_number() over (order by pgroonga_score(c.tableoid, c.ctid) desc, c.id asc) as fts_rank
     from public.document_chunks c
     join public.documents d on c.document_id = d.id
     where c.chunk_text &@~ query_text
        or c.heading &@~ query_text
     order by pgroonga_score(c.tableoid, c.ctid) desc
-    limit 20
+    limit greatest(10 * 2, 20)  /* same as match_limit * 2 in the function below */
   ),
   -- Vector search on chunks
   vec_results as (
@@ -236,12 +236,12 @@ with
       c.section_id,
       c.heading,
       c.chunk_text as body,
-      row_number() over (order by c.embedding <=> query_embedding) as vec_rank
+      row_number() over (order by c.embedding <=> query_embedding, c.id asc) as vec_rank
     from public.document_chunks c
     join public.documents d on c.document_id = d.id
     where c.embedding is not null
     order by c.embedding <=> query_embedding
-    limit 20
+    limit greatest(10 * 2, 20)
   ),
   -- Combine and score with RRF
   combined as (
@@ -372,6 +372,7 @@ grant execute on function public.hybrid_search(text, vector(1536), int) to servi
 create or replace function public.set_updated_at()
 returns trigger
 language plpgsql
+set search_path = public
 as $$
 begin
   new.updated_at = now();
@@ -454,11 +455,13 @@ async function extractChunks(html, pagePath, pageTitle) {
 async function index() {
   // Cleanup: remove documents that are no longer in PAGES
   const currentPaths = PAGES.map(p => p.path);
-  const { error: delErr } = await supabase
-    .from('documents')
-    .delete()
-    .not('page_path', 'in', currentPaths);
-  if (delErr) console.warn('Cleanup warning:', delErr);
+  if (currentPaths.length > 0) {
+    const { error: delErr } = await supabase
+      .from('documents')
+      .delete()
+      .not('page_path', 'in', currentPaths);
+    if (delErr) console.warn('Cleanup warning:', delErr);
+  }
 
   for (const page of PAGES) {
     const html = fs.readFileSync(page.path, 'utf-8');
@@ -617,7 +620,7 @@ for (let i = 0; i < chunks.length; i++) {
 
 **Option B: Trigger-based (Near Real-Time)**
 
-Fire immediately on insert:
+Fire immediately on insert. Note: if the HTTP call fails, the chunk remains with `embedding = NULL` until the next cron run or manual re-index. For this reason, **Option A (cron) is preferred** for reliability.
 
 ```sql
 create or replace function public.trigger_generate_embedding()
@@ -681,6 +684,8 @@ GET /functions/v1/site-search?q={query}
 2. Generate embedding for query via OpenAI API
 3. Call public.hybrid_search(query_text, query_embedding, 10)
 4. Format and return results with CORS headers
+
+**OpenAI embedding failure fallback:** If the embedding API fails (rate limit, timeout, error), fall back to FTS-only search by calling `public.hybrid_search(query_text, NULL, 10)`. The SQL function handles `NULL` embedding by returning only FTS results with RRF scores derived from `fts_rank` alone.
 ```
 
 ### 7.3 Response Format
@@ -839,7 +844,7 @@ The `generate-embeddings` Edge Function (if using automatic embedding) runs on S
 
 ### 11.2 Cost Estimate
 
-Assuming ~50 chunks × 1536 dims, re-indexed monthly:
+Assuming ~70 chunks × 1536 dims, re-indexed monthly:
 
 | Item | Estimate |
 |------|----------|
@@ -876,6 +881,8 @@ Applies:
 ### 12.2 Edge Function Deploy
 
 ```bash
+# --no-verify-jwt because this is a public search endpoint;
+# authentication is handled via CORS whitelist + rate limiting instead.
 supabase functions deploy site-search --no-verify-jwt
 
 # If using automatic embedding (Section 6.4)
