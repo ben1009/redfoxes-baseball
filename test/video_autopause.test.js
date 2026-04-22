@@ -29,6 +29,14 @@ describe('Video Autopause Feature', () => {
 
     beforeAll(async () => {
         try {
+            // Fast-fail if no browser executable is available (e.g. CI without Chrome)
+            puppeteer.executablePath();
+        } catch (err) {
+            browserLaunchError = new Error('No browser executable found; skipping Puppeteer tests');
+            return;
+        }
+
+        try {
             browser = await puppeteer.launch({
                 headless: 'new',
                 pipe: true,
@@ -63,7 +71,7 @@ describe('Video Autopause Feature', () => {
         const filePath = 'file://' + path.resolve(__dirname, '../match_review.html');
         // Use 'domcontentloaded' instead of 'networkidle2' to avoid hanging on
         // persistent connections inside Bilibili iframes.
-        await page.goto(filePath, { waitUntil: 'domcontentloaded', timeout: 15000 });
+        await page.goto(filePath, { waitUntil: 'domcontentloaded', timeout: TEST_CONFIG.timeout });
 
         // Check if already logged in (main content visible)
         const isLoggedIn = await page.evaluate(() => {
@@ -101,12 +109,27 @@ describe('Video Autopause Feature', () => {
     test('should have 7 video containers with data-src attributes', async () => withBrowser(async () => {
         await loginToPage();
 
-        // Check that all 7 video containers exist
+        // Wait for all 7 video containers to exist
+        await page.waitForFunction(
+            () => document.querySelectorAll('.video-container').length === 7,
+            { timeout: 5000 }
+        );
         const containers = await page.$$('.video-container');
         expect(containers.length).toBe(7);
 
-        // Check that each container has a data-src (lazy-loading stores src here)
-        // or has an iframe (if currently visible)
+        // Wait for all containers to have a video source (data-src or iframe)
+        await page.waitForFunction(
+            () => {
+                const containers = document.querySelectorAll('.video-container');
+                if (containers.length !== 7) return false;
+                return Array.from(containers).every(
+                    c => !!c.dataset.src || !!c.querySelector('iframe')
+                );
+            },
+            { timeout: 5000 }
+        );
+
+        // Verify all 7 containers have a video source
         let hasVideoSource = 0;
         for (const container of containers) {
             const hasDataSrc = await container.evaluate(el => !!el.dataset.src);

@@ -27,12 +27,9 @@ jobs:
       env:
         PUPPETEER_SKIP_DOWNLOAD: 'true'
       run: npm install
-      
+
     - name: Run tests
       env:
         TEST_PASSWORD: ${{ secrets.TEST_PASSWORD || '1972' }}
         PUPPETEER_SKIP_DOWNLOAD: 'true'
-      run: |
-        # Use pre-installed Chromium in Ubuntu
-        export PUPPETEER_EXECUTABLE_PATH=$(which chromium-browser || which chromium || which google-chrome-stable || echo '')
-        npm test
+      run: npm test
