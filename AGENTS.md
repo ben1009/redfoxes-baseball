@@ -264,6 +264,12 @@ The old Worker remains in `workers/` for reference and rollback:
 - Intended for casual access control only
 - Session persists via sessionStorage (cleared on tab close)
 
+### Supabase Edge Function
+- CORS is restricted to an explicit `ALLOWED_ORIGINS` whitelist (production GitHub Pages + common local dev ports)
+- IP-based rate limiting prefers infrastructure-set headers (`cf-connecting-ip`, `x-real-ip`) over `X-Forwarded-For` to prevent spoofing
+- Internal errors are logged server-side; clients receive generic `"Internal server error"` messages
+- Write-oriented SQL functions are revoked from `anon`/`public` and granted only to `service_role`
+
 ---
 
 ## Testing Checklist

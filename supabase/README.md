@@ -27,12 +27,15 @@ https://ohwiimchzlesczdvasbh.supabase.co/functions/v1/sponsor-likes
 
 Set these on the Supabase project before deploying the function:
 
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
 - `UPSTASH_REDIS_REST_URL`
 - `UPSTASH_REDIS_REST_TOKEN`
 
 Notes:
 - The hosted Edge Function runtime provides the Supabase project context automatically.
 - Do not expose the service role key in the frontend.
+- CORS is restricted to an explicit `ALLOWED_ORIGINS` whitelist. Update it if you change the production domain or need additional local dev ports.
 
 ## Local Development
 

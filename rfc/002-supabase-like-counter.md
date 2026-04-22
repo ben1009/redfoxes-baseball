@@ -228,6 +228,7 @@ The browser-side design can stay almost identical to the current RFC:
 - The current UI contract `{ count, rateLimited }` can be preserved
 - Existing `isProcessing` click lock should remain
 - Existing fallback behavior can remain unchanged
+- `postAction()` should not call `updateUI()` internally; the click handler updates UI uniformly after receiving the result
 
 This means the frontend migration cost is relatively low. Most complexity is in the backend architecture.
 
@@ -340,6 +341,8 @@ If the project chooses Supabase later, a safe migration path would be:
 - Verify UI does not toggle when `rateLimited: true`
 - Verify rapid-click protection still limits changes to at most one successful transition
 - Verify localStorage fallback still works when fetch fails
+- Verify no animation fires during fallback paths (API failure or `apiFailed` early-return)
+- Static analysis: CORS whitelist, IP header priority, error sanitization, allowed origins
 
 ### 12.2 Manual Checklist
 
@@ -376,3 +379,4 @@ For a single anonymous global like counter on a static site, Supabase is viable 
 | Date | Change |
 |------|--------|
 | 2026-04-21 | Initial Supabase alternative RFC drafted for architecture comparison |
+| 2026-04-22 | Security hardening: CORS whitelist, IP anti-spoofing, error sanitization; frontend `updateUI()` cleanup; test coverage expanded |
