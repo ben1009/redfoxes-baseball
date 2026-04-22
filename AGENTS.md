@@ -109,7 +109,7 @@ redfoxes-baseball/
 │   └── style (CSS embedded with CSS variables)
 ├── body
 │   ├── header (Team logo, name, motto)
-│   ├── nav class="nav-grid" (3 navigation cards)
+│   ├── nav class="nav-grid" (6 navigation cards)
 │   └── footer (Copyright)
 ```
 

@@ -40,7 +40,7 @@ redfoxes-baseball/
 ├── supabase/                  # Supabase Edge Function + SQL migration for like counter
 │   ├── functions/
 │   ├── migrations/
-│   └── readme.md
+│   └── README.md
 ├── img/                       # Static image assets
 │   ├── baseball_field_bg.svg  # Aerial baseball field background
 │   ├── *.png                  # Decorative icons for pages
