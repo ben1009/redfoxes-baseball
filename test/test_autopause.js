@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * @fileoverview Standalone test for video autopause functionality
- * Usage: node test/test-autopause.js
+ * Usage: node test/test_autopause.js
  */
 
 const puppeteer = require('puppeteer');

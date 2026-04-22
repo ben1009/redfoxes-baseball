@@ -40,7 +40,7 @@ A global "like" (点赞) feature on the sponsor page (`sponsor_me.html`) that al
 | Component | File | Responsibility |
 |-----------|------|----------------|
 | Frontend Widget | `sponsor_me.html` (inline) | UI rendering, click handling, localStorage fallback |
-| Worker API | `workers/sponsor-likes.js` | Request routing, rate limiting, CORS |
+| Worker API | `workers/sponsor_likes.js` | Request routing, rate limiting, CORS |
 | Durable Object | `LikeCounter` | Atomic count storage (single-threaded, no race conditions) |
 | KV Store | Cloudflare KV | Rate limit timestamp storage |
 | Config | `workers/wrangler.toml` | Worker deployment configuration |

@@ -9,7 +9,7 @@
 
 This RFC describes a **Supabase-based alternative** for the sponsor page (`sponsor_me.html`) global like counter.
 
-It is intended as a comparison against the current Cloudflare Worker + Durable Object design in [`001-like-counter.md`](./001-like-counter.md), not as an automatic replacement recommendation.
+It is intended as a comparison against the current Cloudflare Worker + Durable Object design in [`001_like_counter.md`](./001_like_counter.md), not as an automatic replacement recommendation.
 
 ### Goals
 
