@@ -112,9 +112,9 @@ create table public.documents (
   url         text not null,                     -- e.g. 'https://ben1009.github.io/redfoxes-baseball/u10_rules.html'
   page_path   text not null unique,              -- e.g. 'u10_rules.html' (relative, used for navigation and upsert)
   title       text not null,                     -- e.g. '猛虎杯 U10 竞赛章程'
-  category    text,                              -- 'rules' | 'analysis' | 'sponsor' | 'review'
+  category    text,                              -- 'hub' | 'rules' | 'analysis' | 'sponsor' | 'review'
   tags        text[],                            -- ['U10', '猛虎杯', '投手']
-  summary     text,                              -- Optional short description
+  summary     text,                              -- Optional short description (v1: leave NULL)
   content     text not null,                     -- Full page text (for page-level search)
   updated_at  timestamptz not null default now()
 );
@@ -135,7 +135,7 @@ create table public.document_chunks (
   heading     text,                              -- Section heading text
   chunk_text  text not null,                     -- Chunked paragraph text
   embedding   vector(1536),                      -- Semantic vector
-  token_count int,                               -- For embedding cost tracking
+  token_count int,                               -- Optional: embedding cost tracking (v1: leave NULL)
   updated_at  timestamptz not null default now(),
   unique(document_id, chunk_index)               -- Required for upsert idempotency
 );
@@ -335,6 +335,7 @@ as $$
       from public.document_chunks c
       join public.documents d on c.document_id = d.id
       where c.embedding is not null
+        and query_embedding is not null  -- skip vector search when OpenAI fallback (NULL embedding)
       order by c.embedding <=> query_embedding
       limit greatest(match_limit * 2, 20)
     ),
@@ -527,6 +528,7 @@ For each HTML file:
      - Start new chunk
      - Set heading = textContent of heading element
      - Set section_id = id attribute (if present) or slugified heading
+     - Fallback: if no id and no heading, use `section-{chunk_index}`
   4. Accumulate <p>, <li>, <td> text into chunk.chunk_text
   5. If chunk_text exceeds 800 Chinese characters:
      - Flush current chunk
@@ -685,7 +687,7 @@ GET /functions/v1/site-search?q={query}
 3. Call public.hybrid_search(query_text, query_embedding, 10)
 4. Format and return results with CORS headers
 
-**OpenAI embedding failure fallback:** If the embedding API fails (rate limit, timeout, error), fall back to FTS-only search by calling `public.hybrid_search(query_text, NULL, 10)`. The SQL function handles `NULL` embedding by returning only FTS results with RRF scores derived from `fts_rank` alone.
+**OpenAI embedding failure fallback:** If the embedding API fails (rate limit, timeout, error), fall back to FTS-only search by calling `public.hybrid_search(query_text, NULL, 10)`. The SQL function skips the vector CTE when `query_embedding IS NULL`, so RRF scores come from `fts_rank` alone.
 ```
 
 ### 7.3 Response Format
@@ -699,7 +701,7 @@ GET /functions/v1/site-search?q={query}
       "section_id": "early-end",
       "heading": "提前结束比赛条件",
       "excerpt": "...比赛进行至第三局或之后，双方比分相差 15 分及以上时...",
-      "url": "u10_rules.html#early-end",  /* Edge Function constructs this as page_path + '#' + section_id */
+      "url": "u10_rules.html#early-end",  /* Relative URL: frontend resolves against window.location.origin */
       "score": 0.0312
     }
   ]
@@ -951,6 +953,22 @@ If immediate results are needed without backend work:
 npx pagefind --source . --glob "*.html"
 ```
 Add Pagefind UI to pages. Later migrate to Supabase without user-facing changes.
+
+---
+
+## 15. RLS Policies (Optional but Recommended)
+
+For defense-in-depth and future direct Supabase client access, add read-only policies:
+
+```sql
+create policy "Allow anonymous read on documents"
+  on public.documents for select to anon using (true);
+
+create policy "Allow anonymous read on document_chunks"
+  on public.document_chunks for select to anon using (true);
+```
+
+The Edge Function uses `service_role` which bypasses RLS, so these policies are not strictly required for the current architecture.
 
 ### Phase 1: Supabase Schema
 
