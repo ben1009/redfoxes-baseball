@@ -14,12 +14,15 @@ function getCorsHeaders(request: Request) {
   const origin = request.headers.get("origin");
   const allowedOrigin = ALLOWED_ORIGINS.includes(origin || "")
     ? origin
-    : ALLOWED_ORIGINS[0];
-  return {
-    "Access-Control-Allow-Origin": allowedOrigin || ALLOWED_ORIGINS[0],
+    : null;
+  const headers: Record<string, string> = {
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
   };
+  if (allowedOrigin) {
+    headers["Access-Control-Allow-Origin"] = allowedOrigin;
+  }
+  return headers;
 }
 
 const RATE_LIMIT_SECONDS = 5;
@@ -63,8 +66,11 @@ function getRequestIp(request: Request) {
   if (realIp) return realIp.trim();
 
   // X-Forwarded-For is a chain: client, proxy1, proxy2, ...
-  // The first element can be spoofed by the client, so we use the
-  // last element (closest trusted proxy) to avoid rate-limit bypass.
+  // The first element is the original client but can be spoofed;
+  // the last element is the closest trusted proxy and is safe.
+  // In production (Cloudflare/Supabase) we never reach here because
+  // cf-connecting-ip / x-real-ip are present. For local dev we
+  // trade granularity for safety to prevent trivial rate-limit bypass.
   const forwardedFor = request.headers.get("x-forwarded-for");
   if (forwardedFor) {
     const ips = forwardedFor

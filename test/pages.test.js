@@ -1231,6 +1231,8 @@ describe('Supabase Edge Function Security', () => {
         );
         expect(ts).toContain('ALLOWED_ORIGINS');
         expect(ts).not.toContain('"Access-Control-Allow-Origin": "*"');
+        // Unauthorized origins should not fall back to the first allowed origin
+        expect(ts).not.toContain('ALLOWED_ORIGINS[0]');
     });
 
     test('should prefer infrastructure IP headers to avoid spoofing', () => {
