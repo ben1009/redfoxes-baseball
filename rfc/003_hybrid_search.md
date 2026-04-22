@@ -799,8 +799,8 @@ For this project, `text-embedding-3-small` offers the best cost/quality ratio.
 Reuse the existing Upstash Redis setup:
 
 - Key: `rate_search:{ip}`
-- Window: 1 second between queries
-- Burst: 5 queries per minute
+- Window: no delay between queries
+- Burst: 30 queries per minute
 
 ---
 
