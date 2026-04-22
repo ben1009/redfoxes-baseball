@@ -72,7 +72,7 @@ redfoxes-baseball/
 └── img/                       # Static image assets
     ├── baseball-field-bg.svg  # Aerial baseball field background
     ├── schedule.jpg                  # U10 tournament schedule (猛虎杯)
-    ├── u10_pony_tianjin_schedule.png # U10 PONY Tianjin division schedule
+    ├── pony_u10_tianjin_schedule.png # U10 PONY Tianjin division schedule
     ├── venue_map.jpg                 # Venue map
     ├── groupstage_data.png           # Groupstage match statistics
     ├── finalstage_data.png           # Finalstage match statistics
