@@ -20,7 +20,7 @@ https://ohwiimchzlesczdvasbh.supabase.co/functions/v1/sponsor-likes
 Browser (sponsor_me.html)
     │ GET /               │ POST /like          │ POST /unlike
     ▼                     ▼                     ▼
-Cloudflare Worker (sponsor-likes.js)
+Cloudflare Worker (sponsor_likes.js)
     │ (rate limiting via KV)
     ▼
 Durable Object (LikeCounter)
@@ -51,7 +51,7 @@ The frontend uses `rateLimited` to decide whether to toggle the local UI state.
 
 | File | Purpose |
 |------|---------|
-| `sponsor-likes.js` | Worker script — handles API requests, KV reads/writes, rate limiting |
+| `sponsor_likes.js` | Worker script — handles API requests, KV reads/writes, rate limiting |
 | `wrangler.toml` | Deployment config — account ID, KV namespace binding |
 
 ## Legacy Deployment
@@ -112,5 +112,5 @@ More than enough for a youth baseball team site.
 
 ## Design Documents
 
-- Legacy Cloudflare design: [`rfc/001-like-counter.md`](../rfc/001-like-counter.md)
-- Active Supabase design and implementation: [`../supabase/README.md`](../supabase/README.md) and [`rfc/002-supabase-like-counter.md`](../rfc/002-supabase-like-counter.md)
+- Legacy Cloudflare design: [`rfc/001_like_counter.md`](../rfc/001_like_counter.md)
+- Active Supabase design and implementation: [`../supabase/README.md`](../supabase/README.md) and [`rfc/002_supabase_like_counter.md`](../rfc/002_supabase_like_counter.md)

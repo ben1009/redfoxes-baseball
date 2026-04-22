@@ -5,8 +5,8 @@
   "main": "index.html",
   "scripts": {
     "test": "jest --passWithNoTests",
-    "test:video": "jest test/video-autopause.test.js --verbose",
-    "test:standalone": "node test/test-autopause.js"
+    "test:video": "jest test/video_autopause.test.js --verbose",
+    "test:standalone": "node test/test_autopause.js"
   },
   "repository": {
     "type": "git",

@@ -602,7 +602,7 @@ describe('Page Structure and Navigation Tests', () => {
         }));
 
         test('should show sponsor qr code and CTA copy', async () => withBrowser(async () => {
-            const qrImage = await page.$('img[src*="sponsor_me.PNG"]');
+            const qrImage = await page.$('img[src*="sponsor_me.png"]');
             expect(qrImage).not.toBeNull();
 
             const qrCaption = await page.$('.qr-caption');
@@ -1197,8 +1197,8 @@ describe('File Existence Tests', () => {
         'tigercup_groupstage.html',
         'tigercup_finalstage.html',
         'sponsor_me.html',
-        'site-analytics.js',
-        'image-modal.js',
+        'site_analytics.js',
+        'image_modal.js',
         'baseball_floats.css',
         'baseball_floats.js',
         'rules_style.css',
@@ -1206,7 +1206,7 @@ describe('File Existence Tests', () => {
         'img/finalstage_data.png',
         'img/tigercup_final_ranking.jpg',
         'img/pony_u10_tianjin_schedule.png',
-        'workers/sponsor-likes.js',
+        'workers/sponsor_likes.js',
         'workers/wrangler.toml',
         'workers/README.md',
         'supabase/functions/sponsor-likes/index.ts',
@@ -1276,8 +1276,8 @@ describe('Supabase Edge Function Security', () => {
 });
 
 describe('Shared Script Coverage', () => {
-    test('site-analytics.js should define the shared analytics bootstrap', () => {
-        const js = fs.readFileSync(path.resolve(__dirname, '..', 'site-analytics.js'), 'utf8');
+    test('site_analytics.js should define the shared analytics bootstrap', () => {
+        const js = fs.readFileSync(path.resolve(__dirname, '..', 'site_analytics.js'), 'utf8');
 
         expect(js).toContain('window.dataLayer = window.dataLayer || [];');
         expect(js).toContain('function gtag()');
@@ -1285,8 +1285,8 @@ describe('Shared Script Coverage', () => {
         expect(js).toContain("gtag('config', 'G-QJ6EXQH8SW');");
     });
 
-    test('image-modal.js should support both standard and sponsor modal variants', () => {
-        const js = fs.readFileSync(path.resolve(__dirname, '..', 'image-modal.js'), 'utf8');
+    test('image_modal.js should support both standard and sponsor modal variants', () => {
+        const js = fs.readFileSync(path.resolve(__dirname, '..', 'image_modal.js'), 'utf8');
 
         expect(js).toContain("const modal = document.getElementById('imageModal');");
         expect(js).toContain("const zoomableSelector = '[data-zoomable], .image-container img';");
@@ -1315,7 +1315,7 @@ describe('Shared Script Coverage', () => {
 
         pages.forEach((file) => {
             const html = fs.readFileSync(path.resolve(__dirname, '..', file), 'utf8');
-            expect(html).toContain('src="site-analytics.js"');
+            expect(html).toContain('src="site_analytics.js"');
             expect(html).not.toContain("function gtag(){dataLayer.push(arguments);}");
         });
     });
@@ -1331,7 +1331,7 @@ describe('Shared Script Coverage', () => {
 
         modalPages.forEach((file) => {
             const html = fs.readFileSync(path.resolve(__dirname, '..', file), 'utf8');
-            expect(html).toContain('src="image-modal.js"');
+            expect(html).toContain('src="image_modal.js"');
         });
     });
 
@@ -1625,19 +1625,19 @@ describe('Baseball Field Theme Consistency', () => {
     // getEffectiveContent is defined at module scope above
 
     test('baseball field background SVG should exist', () => {
-        expect(fs.existsSync(path.resolve(__dirname, '../img/baseball-field-bg.svg'))).toBe(true);
+        expect(fs.existsSync(path.resolve(__dirname, '../img/baseball_field_bg.svg'))).toBe(true);
     });
 
     test('all themed pages should reference the baseball field background SVG', () => {
         themedPages.forEach((file) => {
             const content = getEffectiveContent(file);
-            expect(content).toContain("img/baseball-field-bg.svg");
+            expect(content).toContain("img/baseball_field_bg.svg");
         });
     });
 
     test('sponsor page should not use the baseball field background', () => {
         const html = fs.readFileSync(path.resolve(__dirname, '../sponsor_me.html'), 'utf8');
-        expect(html).not.toContain("baseball-field-bg.svg");
+        expect(html).not.toContain("baseball_field_bg.svg");
     });
 
     test('all themed pages should share the index-style color system', () => {

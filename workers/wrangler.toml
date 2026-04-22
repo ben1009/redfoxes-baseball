@@ -2,7 +2,7 @@
 # Fill in the values below, then run: npx wrangler deploy
 
 name = "redfoxes-sponsor-likes"
-main = "sponsor-likes.js"
+main = "sponsor_likes.js"
 compatibility_date = "2026-04-20"
 
 # Replace with your Cloudflare Account ID (found on the right sidebar of your CF dashboard)

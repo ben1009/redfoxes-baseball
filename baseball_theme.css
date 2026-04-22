@@ -82,7 +82,7 @@ body {
     position: relative;
     background-color: #5CBA32;
     background-image:
-        url('img/baseball-field-bg.svg'),
+        url('img/baseball_field_bg.svg'),
         repeating-linear-gradient(90deg, #5CBA32 0vh, #5CBA32 3.25vh, #52A52F 3.25vh, #52A52F 6.5vh);
     background-position: center center, center center;
     background-repeat: no-repeat, repeat;

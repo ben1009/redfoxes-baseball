@@ -1,7 +1,7 @@
 # AGENTS.md - Red Foxes Baseball Team Website
 
 > This file provides essential context for AI coding agents working on this project.
-> Last updated: 2026-04-21
+> Last updated: 2026-04-22
 
 ---
 
@@ -50,9 +50,9 @@ redfoxes-baseball/
 ├── tigercup_groupstage.html   # Groupstage performance analysis
 ├── tigercup_finalstage.html   # Finalstage performance analysis
 ├── sponsor_me.html            # Sponsor page (independent theme, global like widget)
-├── site-analytics.js          # Shared Google Analytics bootstrap
-├── image-modal.js             # Shared lightbox behavior for zoomable images
-├── baseball-theme.css         # Shared baseball field theme CSS
+├── site_analytics.js          # Shared Google Analytics bootstrap
+├── image_modal.js             # Shared lightbox behavior for zoomable images
+├── baseball_theme.css         # Shared baseball field theme CSS
 ├── rules_style.css            # Shared rules page styling
 ├── u10_rules.js               # Legacy compatibility stub for older U10 modal script references
 ├── supabase/                  # Supabase backend for global like counter
@@ -61,16 +61,17 @@ redfoxes-baseball/
 │   ├── migrations/            # SQL schema + function setup
 │   └── README.md              # Deployment and secret guide
 ├── workers/                   # Legacy Cloudflare Worker implementation
-│   ├── sponsor-likes.js       # Legacy Worker script
+│   ├── sponsor_likes.js       # Legacy Worker script
 │   ├── wrangler.toml          # Legacy deployment config
 │   └── README.md              # Legacy setup guide
 ├── README.md                  # Project documentation
 ├── AGENTS.md                  # This file
 ├── rfc/
-│   └── 001-like-counter.md    # Like feature architecture design (RFC)
+│   ├── 001_like_counter.md    # Like feature architecture design (RFC)
+│   └── 002_supabase_like_counter.md # Active Supabase like counter design (RFC)
 ├── LICENSE                    # CC BY-NC-SA 4.0 License
 └── img/                       # Static image assets
-    ├── baseball-field-bg.svg  # Aerial baseball field background
+    ├── baseball_field_bg.svg  # Aerial baseball field background
     ├── schedule.jpg                  # U10 tournament schedule (猛虎杯)
     ├── pony_u10_tianjin_schedule.png # U10 PONY Tianjin division schedule
     ├── venue_map.jpg                 # Venue map
@@ -82,15 +83,15 @@ redfoxes-baseball/
 ### File Organization Notes
 
 - **index.html**: Navigation hub with card-based layout
-- **match_review.html**: Password protected; links shared `baseball-theme.css` plus inline page-specific styles
-- **u10_rules.html** / **pony_u10_rules.html**: Link `baseball-theme.css` + `rules_style.css`; both include schedule images with lightbox support
-- **tigercup_groupstage.html** / **tigercup_finalstage.html**: Link `baseball-theme.css` plus inline page-specific styles
+- **match_review.html**: Password protected; links shared `baseball_theme.css` plus inline page-specific styles
+- **u10_rules.html** / **pony_u10_rules.html**: Link `baseball_theme.css` + `rules_style.css`; both include schedule images with lightbox support
+- **tigercup_groupstage.html** / **tigercup_finalstage.html**: Link `baseball_theme.css` plus inline page-specific styles
 - **sponsor_me.html**: Independent styling, does not use baseball field background or floating assets
 - **supabase/**: Edge Function and SQL migration for the active global like counter backend
 - **workers/**: Legacy Cloudflare implementation retained for reference and rollback
-- **baseball-theme.css**: Shared theme variables, body background, resets, and common animations
-- **site-analytics.js**: Centralized GA initialization used by all HTML pages
-- **image-modal.js**: Shared lightbox behavior used by rules (both U10 and PONY), report, and sponsor pages
+- **baseball_theme.css**: Shared theme variables, body background, resets, and common animations
+- **site_analytics.js**: Centralized GA initialization used by all HTML pages
+- **image_modal.js**: Shared lightbox behavior used by rules (both U10 and PONY), report, and sponsor pages
 - No build process or bundling required
 - No framework dependencies
 
@@ -108,7 +109,7 @@ redfoxes-baseball/
 │   └── style (CSS embedded with CSS variables)
 ├── body
 │   ├── header (Team logo, name, motto)
-│   ├── nav class="nav-grid" (3 navigation cards)
+│   ├── nav class="nav-grid" (6 navigation cards)
 │   └── footer (Copyright)
 ```
 
@@ -130,7 +131,7 @@ Single-file architecture with embedded CSS and JavaScript.
 
 ### CSS Architecture
 
-Uses a shared `baseball-theme.css` with CSS custom properties (variables) for the baseball field theme:
+Uses a shared `baseball_theme.css` with CSS custom properties (variables) for the baseball field theme:
 - --grass-vibrant: #4caf50 (Field green)
 - --dirt-orange: #e67e22 (Infield dirt)
 - --dirt-dark-orange: #d35400 (Dirt shadow)
@@ -145,7 +146,7 @@ Uses a shared `baseball-theme.css` with CSS custom properties (variables) for th
 - --color-gemini: #4285f4 (Gemini blue)
 - --color-chatgpt: #10a37f (ChatGPT green)
 
-All themed pages link `baseball-theme.css` for the shared background (`img/baseball-field-bg.svg`), resets, and common animations. Page-specific styles remain inline in each HTML file.
+All themed pages link `baseball_theme.css` for the shared background (`img/baseball_field_bg.svg`), resets, and common animations. Page-specific styles remain inline in each HTML file.
 
 ### Key CSS Classes
 
@@ -180,15 +181,15 @@ sponsor_me.html:
 
 ### JavaScript Components
 
-site-analytics.js:
+site_analytics.js:
 - Shared Google Analytics bootstrap (`gtag` + config)
 
-image-modal.js:
+image_modal.js:
 - Shared image lightbox/modal behavior
 - Supports both report/rules modals and sponsor page zoom modal
 
 u10_rules.js:
-- Backward-compatibility stub; shared lightbox behavior now lives in `image-modal.js`
+- Backward-compatibility stub; shared lightbox behavior now lives in `image_modal.js`
 
 match_review.html:
 - Password verification (SHA-256)
@@ -198,7 +199,7 @@ sponsor_me.html:
 - Global like counter powered by Supabase Edge Function
 - localStorage fallback when the API is unreachable or unconfigured
 - IP-based rate limiting (5-second cooldown) via Upstash Redis
-- See `rfc/002-supabase-like-counter.md` for the active architecture
+- See `rfc/002_supabase_like_counter.md` for the active architecture
 
 **Password**: 4-digit year (SHA-256 hashed: "1972")
 **Hint**: "张锦新 哪年开始接触从事棒球运动？"
@@ -337,7 +338,7 @@ Update index.html navigation grid with a new nav-card element.
 3. Update hint text in password overlay
 
 ### Change Color Theme
-Modify CSS variables in `baseball-theme.css`. If a page needs an override (e.g. a different border radius), keep the override in that page's inline `:root`.
+Modify CSS variables in `baseball_theme.css`. If a page needs an override (e.g. a different border radius), keep the override in that page's inline `:root`.
 
 ### Update Google Analytics ID
 Replace G-QJ6EXQH8SW in script src and gtag config.

@@ -29,9 +29,9 @@ redfoxes-baseball/
 ├── tigercup_groupstage.html   # Groupstage performance analysis with multi-AI insights
 ├── tigercup_finalstage.html   # Finalstage performance analysis with multi-AI insights
 ├── sponsor_me.html            # Sponsor support page
-├── site-analytics.js          # Shared Google Analytics bootstrap
-├── image-modal.js             # Shared lightbox behavior across pages
-├── baseball-theme.css         # Shared baseball field theme stylesheet
+├── site_analytics.js          # Shared Google Analytics bootstrap
+├── image_modal.js             # Shared lightbox behavior across pages
+├── baseball_theme.css         # Shared baseball field theme stylesheet
 ├── rules_style.css            # Shared rules page styling
 ├── u10_rules.js               # Legacy compatibility stub for older U10 modal references
 ├── baseball_floats.css/js     # Floating baseball background animation
@@ -42,7 +42,7 @@ redfoxes-baseball/
 │   ├── migrations/
 │   └── README.md
 ├── img/                       # Static image assets
-│   ├── baseball-field-bg.svg  # Aerial baseball field background
+│   ├── baseball_field_bg.svg  # Aerial baseball field background
 │   ├── *.png                  # Decorative icons for pages
 │   ├── schedule.jpg           # U10 tournament schedule
 │   ├── venue_map.jpg          # Venue map
@@ -158,15 +158,15 @@ The match review page (`match_review.html`) requires a password to enter:
 - 🦊 SVG Emoji Favicon
 
 ### Theme Architecture
-All themed pages share a unified **Baseball Field Theme** via `baseball-theme.css`:
-- Aerial baseball field background (`img/baseball-field-bg.svg`) with mowing-stripe fallback
+All themed pages share a unified **Baseball Field Theme** via `baseball_theme.css`:
+- Aerial baseball field background (`img/baseball_field_bg.svg`) with mowing-stripe fallback
 - Scoreboard-style headers with dirt-orange accents
 - Leather-cream card styling with baseball-stitch dashed borders
 - Shared CSS custom properties for consistent colors across pages
 
 ### Shared JavaScript
-- `site-analytics.js` centralizes the Google Analytics bootstrap used by every page
-- `image-modal.js` centralizes lightbox behavior for rules, report, and sponsor pages
+- `site_analytics.js` centralizes the Google Analytics bootstrap used by every page
+- `image_modal.js` centralizes lightbox behavior for rules, report, and sponsor pages
 
 ## 📊 Analytics
 
