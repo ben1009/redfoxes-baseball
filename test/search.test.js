@@ -157,9 +157,12 @@ describe('Search UI Tests', () => {
         test('close button exists and clicking it closes modal', async () => withBrowser(async () => {
             // Open modal
             await page.keyboard.down('Control');
-            await page.keyboard.press('KeyK');
-            await page.keyboard.up('Control');
-            await page.waitForSelector('#searchModal', { visible: true });
+            try {
+                await page.keyboard.press('KeyK');
+                await page.waitForSelector('#searchModal', { visible: true });
+            } finally {
+                await page.keyboard.up('Control');
+            }
 
             const closeBtn = await page.$('.search-close-btn');
             expect(closeBtn).not.toBeNull();
@@ -178,9 +181,12 @@ describe('Search UI Tests', () => {
 
                 // Open modal
                 await page.keyboard.down('Control');
-                await page.keyboard.press('KeyK');
-                await page.keyboard.up('Control');
-                await page.waitForSelector('#searchModal', { visible: true });
+                try {
+                    await page.keyboard.press('KeyK');
+                    await page.waitForSelector('#searchModal', { visible: true });
+                } finally {
+                    await page.keyboard.up('Control');
+                }
 
                 const closeBtn = await page.$('.search-close-btn');
                 expect(closeBtn).not.toBeNull();
