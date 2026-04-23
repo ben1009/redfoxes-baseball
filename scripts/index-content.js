@@ -189,33 +189,41 @@ function truncateEmbedding(embedding, targetDim) {
 
 async function generateEmbeddings(apiKey, texts) {
   const url = `${GEMINI_URL}?key=${apiKey}`;
-  const body = {
-    requests: texts.map(text => ({
-      model: `models/${GEMINI_MODEL}`,
-      content: {
-        parts: [{ text }],
-      },
-      outputDimensionality: TARGET_DIM,
-    })),
-  };
+  const BATCH_SIZE = 100; // Gemini batchEmbedContents limit
+  const allEmbeddings = [];
 
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
+  for (let i = 0; i < texts.length; i += BATCH_SIZE) {
+    const batch = texts.slice(i, i + BATCH_SIZE);
+    const body = {
+      requests: batch.map(text => ({
+        model: `models/${GEMINI_MODEL}`,
+        content: {
+          parts: [{ text }],
+        },
+        outputDimensionality: TARGET_DIM,
+      })),
+    };
 
-  if (!response.ok) {
-    const err = await response.text();
-    throw new Error(`Gemini API error: ${response.status} ${err}`);
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      const err = await response.text();
+      throw new Error(`Gemini API error: ${response.status} ${err}`);
+    }
+
+    const data = await response.json();
+    if (!data.embeddings || !Array.isArray(data.embeddings)) {
+      throw new Error('Invalid Gemini API response: missing embeddings array');
+    }
+
+    allEmbeddings.push(...data.embeddings.map(e => truncateEmbedding(e.values, TARGET_DIM)));
   }
 
-  const data = await response.json();
-  if (!data.embeddings || !Array.isArray(data.embeddings)) {
-    throw new Error('Invalid Gemini API response: missing embeddings array');
-  }
-
-  return data.embeddings.map(e => truncateEmbedding(e.values, TARGET_DIM));
+  return allEmbeddings;
 }
 
 async function index() {

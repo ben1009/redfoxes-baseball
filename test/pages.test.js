@@ -1323,13 +1323,16 @@ describe('Supabase Edge Function Security', () => {
         expect(ts).not.toContain('if (current === 1)');
     });
 
-    test('site-search function should use first IP in X-Forwarded-For', () => {
+    test('site-search function should use last IP in X-Forwarded-For to avoid spoofing', () => {
         const ts = fs.readFileSync(
             path.resolve(__dirname, '..', 'supabase/functions/site-search/index.ts'),
             'utf8'
         );
-        expect(ts).toContain('return ips[0]');
-        expect(ts).not.toContain('return ips[ips.length - 1]');
+        // First elements in X-Forwarded-For can be client-spoofed.
+        // Use the last element (most recent proxy) as the safest fallback
+        // after checking trusted infrastructure headers (cf-connecting-ip, x-real-ip).
+        expect(ts).toContain('return ips[ips.length - 1]');
+        expect(ts).not.toContain('return ips[0]');
     });
 
     test('site-search function should request outputDimensionality from Gemini', () => {

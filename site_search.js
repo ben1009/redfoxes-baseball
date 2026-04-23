@@ -350,12 +350,13 @@
 
   async function performSearch(query) {
     if (abortController) abortController.abort();
-    abortController = new AbortController();
+    const currentController = new AbortController();
+    abortController = currentController;
 
     try {
       const res = await fetch(
         `${API_URL}?q=${encodeURIComponent(query)}`,
-        { signal: abortController.signal }
+        { signal: currentController.signal }
       );
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
@@ -366,7 +367,11 @@
         '<div class="search-error">搜索服务暂时不可用，请稍后再试</div>';
     } finally {
       setSpinner(false);
-      abortController = null;
+      // Only clear if this request's controller is still the active one.
+      // Prevents an older (slower) request from wiping out a newer one.
+      if (abortController === currentController) {
+        abortController = null;
+      }
     }
   }
 
@@ -425,8 +430,11 @@
 
   function highlightTerms(text, terms) {
     if (!terms.length) return text;
+    // Sort by length descending so longer phrases match before shorter
+    // substrings (e.g. "baseball" before "base").
+    const sortedTerms = [...terms].sort((a, b) => b.length - a.length);
     const pattern = new RegExp(
-      '(' + terms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')',
+      '(' + sortedTerms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')',
       'gi'
     );
     return text.replace(pattern, '<mark>$1</mark>');
@@ -465,6 +473,10 @@
 
   // ============ Global Shortcuts ============
   document.addEventListener('keydown', (e) => {
+    // Skip shortcuts when user is typing in an input, textarea, or contenteditable
+    if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName) || e.target.isContentEditable) {
+      return;
+    }
     if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
       e.preventDefault();
       openModal();

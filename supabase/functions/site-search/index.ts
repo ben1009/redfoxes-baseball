@@ -73,10 +73,10 @@ function getRequestIp(request: Request) {
       .map((ip) => ip.trim())
       .filter(Boolean);
     if (ips.length > 0) {
-      // The first element is the original client IP; the last is the
-      // most recent proxy.  Use the first to avoid rate-limiting by
-      // proxy IP instead of the real user.
-      return ips[0];
+      // Use the last element (most recent proxy) rather than the first,
+      // because the first elements can be spoofed by the client.
+      // cf-connecting-ip and x-real-ip are checked first and are preferred.
+      return ips[ips.length - 1];
     }
   }
 
