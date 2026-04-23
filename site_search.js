@@ -137,6 +137,13 @@
 .search-input::placeholder {
   color: #a09078;
 }
+.search-input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+.search-input::-moz-search-clear-button {
+  appearance: none;
+}
 .search-spinner {
   width: 18px;
   height: 18px;
@@ -350,6 +357,7 @@
     if (!modal) return;
     modal.hidden = true;
     activeIndex = -1;
+    setSpinner(false);
     if (abortController) {
       abortController.abort();
       abortController = null;

@@ -154,6 +154,54 @@ describe('Search UI Tests', () => {
             expect(modalClosed).toBe(true);
         }));
 
+        test('close button exists and clicking it closes modal', async () => withBrowser(async () => {
+            // Open modal
+            await page.keyboard.down('Control');
+            try {
+                await page.keyboard.press('KeyK');
+                await page.waitForSelector('#searchModal', { visible: true });
+            } finally {
+                await page.keyboard.up('Control');
+            }
+
+            const closeBtn = await page.$('.search-close-btn');
+            expect(closeBtn).not.toBeNull();
+
+            await closeBtn.click();
+            await page.waitForSelector('#searchModal', { hidden: true });
+
+            const modalClosed = await page.$eval('#searchModal', el => el.hidden).catch(() => false);
+            expect(modalClosed).toBe(true);
+        }));
+
+        test('close button is visible on mobile viewport', async () => withBrowser(async () => {
+            try {
+                // Switch to mobile viewport
+                await page.setViewport({ width: 375, height: 667 });
+
+                // Open modal
+                await page.keyboard.down('Control');
+                try {
+                    await page.keyboard.press('KeyK');
+                    await page.waitForSelector('#searchModal', { visible: true });
+                } finally {
+                    await page.keyboard.up('Control');
+                }
+
+                const closeBtn = await page.$('.search-close-btn');
+                expect(closeBtn).not.toBeNull();
+
+                const isVisible = await closeBtn.evaluate(el => {
+                    const style = window.getComputedStyle(el);
+                    return style.display !== 'none' && style.visibility !== 'hidden';
+                });
+                expect(isVisible).toBe(true);
+            } finally {
+                // Restore desktop viewport
+                await page.setViewport(TEST_CONFIG.viewport);
+            }
+        }));
+
         test('search input is focused when modal opens', async () => withBrowser(async () => {
             await page.keyboard.down('Control');
             await page.keyboard.press('KeyK');
@@ -296,6 +344,229 @@ describe('Search UI Tests', () => {
 
             const aborted = await page.evaluate(() => window._searchFetchAborted);
             expect(aborted).toBe(true);
+        }));
+    });
+
+    describe('Keyboard Shortcut Safety', () => {
+        beforeEach(async () => {
+            if (!browserLaunchError) {
+                await page.goto(PAGE_PATHS.index, { waitUntil: 'domcontentloaded' });
+                await page.waitForTimeout(100);
+            }
+        });
+
+        test('Ctrl+K does not open modal when input is focused', async () => withBrowser(async () => {
+            // Create and focus a temporary input element
+            await page.evaluate(() => {
+                const input = document.createElement('input');
+                input.id = '_testInput';
+                document.body.appendChild(input);
+                input.focus();
+            });
+
+            await page.keyboard.down('Control');
+            try {
+                await page.keyboard.press('KeyK');
+            } finally {
+                await page.keyboard.up('Control');
+            }
+            await page.waitForTimeout(100);
+
+            const modalHidden = await page.$eval('#searchModal', el => el.hidden).catch(() => true);
+            expect(modalHidden).toBe(true);
+
+            // Cleanup
+            await page.evaluate(() => {
+                const el = document.getElementById('_testInput');
+                if (el) el.remove();
+            });
+        }));
+
+        test('Ctrl+K does not open modal when textarea is focused', async () => withBrowser(async () => {
+            await page.evaluate(() => {
+                const textarea = document.createElement('textarea');
+                textarea.id = '_testTextarea';
+                document.body.appendChild(textarea);
+                textarea.focus();
+            });
+
+            await page.keyboard.down('Control');
+            try {
+                await page.keyboard.press('KeyK');
+            } finally {
+                await page.keyboard.up('Control');
+            }
+            await page.waitForTimeout(100);
+
+            const modalHidden = await page.$eval('#searchModal', el => el.hidden).catch(() => true);
+            expect(modalHidden).toBe(true);
+
+            await page.evaluate(() => {
+                const el = document.getElementById('_testTextarea');
+                if (el) el.remove();
+            });
+        }));
+    });
+
+    describe('Spinner Behavior', () => {
+        beforeEach(async () => {
+            if (!browserLaunchError) {
+                await page.goto(PAGE_PATHS.index, { waitUntil: 'domcontentloaded' });
+                await page.waitForTimeout(100);
+            }
+        });
+
+        test('closing modal clears spinner even when request is in flight', async () => withBrowser(async () => {
+            await page.evaluate(() => {
+                window._searchFetchStarted = false;
+                const origFetch = window.fetch;
+                window.fetch = async (url, options) => {
+                    if (String(url).includes('site-search')) {
+                        window._searchFetchStarted = true;
+                        // Slow fetch that never resolves during the test
+                        return new Promise(() => {});
+                    }
+                    return origFetch(url, options);
+                };
+            });
+
+            // Open modal
+            await page.keyboard.down('Control');
+            try {
+                await page.keyboard.press('KeyK');
+            } finally {
+                await page.keyboard.up('Control');
+            }
+            await page.waitForTimeout(100);
+
+            const input = await page.$('.search-input');
+            await input.type('test');
+            await page.waitForTimeout(300);
+
+            // Verify spinner is active
+            const spinnerActiveBefore = await page.evaluate(() => {
+                const spinner = document.querySelector('.search-spinner');
+                return spinner && spinner.classList.contains('active');
+            });
+            expect(spinnerActiveBefore).toBe(true);
+
+            // Close modal via close button
+            await page.click('.search-close-btn');
+            await page.waitForTimeout(200);
+
+            // Verify spinner is cleared
+            const spinnerActiveAfter = await page.evaluate(() => {
+                const spinner = document.querySelector('.search-spinner');
+                return spinner && spinner.classList.contains('active');
+            });
+            expect(spinnerActiveAfter).toBe(false);
+        }));
+    });
+
+    describe('Search Input Styling', () => {
+        test('native search cancel button is hidden', async () => withBrowser(async () => {
+            await page.goto(PAGE_PATHS.index, { waitUntil: 'domcontentloaded' });
+            await page.waitForTimeout(100);
+
+            const hasHiddenCancel = await page.evaluate(() => {
+                // The search styles are injected as a <style> tag by site_search.js.
+                // Verify the injected CSS contains the cancel-button hiding rule.
+                const styles = Array.from(document.querySelectorAll('style'));
+                for (const style of styles) {
+                    const text = style.textContent || '';
+                    if (text.includes('search-cancel-button') && text.includes('-webkit-appearance: none')) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+            expect(hasHiddenCancel).toBe(true);
+        }));
+    });
+
+    describe('Keyboard Navigation in Results', () => {
+        beforeEach(async () => {
+            if (!browserLaunchError) {
+                await page.goto(PAGE_PATHS.index, { waitUntil: 'domcontentloaded' });
+                await page.waitForTimeout(100);
+            }
+        });
+
+        test('ArrowDown and ArrowUp navigate results', async () => withBrowser(async () => {
+            await page.evaluate(() => {
+                window._mockSearchResponse = {
+                    results: [
+                        { page_path: 'a.html', page_title: 'A', section_id: 'a', heading: 'A', excerpt: 'aaa', url: 'a.html#a', score: 0.1 },
+                        { page_path: 'b.html', page_title: 'B', section_id: 'b', heading: 'B', excerpt: 'bbb', url: 'b.html#b', score: 0.09 },
+                        { page_path: 'c.html', page_title: 'C', section_id: 'c', heading: 'C', excerpt: 'ccc', url: 'c.html#c', score: 0.08 },
+                    ]
+                };
+                const origFetch = window.fetch;
+                window.fetch = async (url) => {
+                    if (String(url).includes('site-search')) {
+                        return { ok: true, json: async () => window._mockSearchResponse };
+                    }
+                    return origFetch(url);
+                };
+            });
+
+            await page.keyboard.down('Control');
+            try {
+                await page.keyboard.press('KeyK');
+            } finally {
+                await page.keyboard.up('Control');
+            }
+            await page.waitForTimeout(100);
+
+            const input = await page.$('.search-input');
+            await input.type('test');
+            await page.waitForTimeout(350);
+
+            const items = await page.$$('.search-result');
+            expect(items.length).toBe(3);
+
+            // No item should be active initially
+            const activeBefore = await page.$('.search-result.active');
+            expect(activeBefore).toBeNull();
+
+            // Press ArrowDown
+            await page.keyboard.press('ArrowDown');
+            await page.waitForTimeout(50);
+
+            const activeIndex0 = await page.evaluate(() => {
+                const items = document.querySelectorAll('.search-result');
+                for (let i = 0; i < items.length; i++) {
+                    if (items[i].classList.contains('active')) return i;
+                }
+                return -1;
+            });
+            expect(activeIndex0).toBe(0);
+
+            // Press ArrowDown again
+            await page.keyboard.press('ArrowDown');
+            await page.waitForTimeout(50);
+
+            const activeIndex1 = await page.evaluate(() => {
+                const items = document.querySelectorAll('.search-result');
+                for (let i = 0; i < items.length; i++) {
+                    if (items[i].classList.contains('active')) return i;
+                }
+                return -1;
+            });
+            expect(activeIndex1).toBe(1);
+
+            // Press ArrowUp
+            await page.keyboard.press('ArrowUp');
+            await page.waitForTimeout(50);
+
+            const activeIndex2 = await page.evaluate(() => {
+                const items = document.querySelectorAll('.search-result');
+                for (let i = 0; i < items.length; i++) {
+                    if (items[i].classList.contains('active')) return i;
+                }
+                return -1;
+            });
+            expect(activeIndex2).toBe(0);
         }));
     });
 });
