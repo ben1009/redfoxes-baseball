@@ -1299,6 +1299,17 @@ describe('Supabase Edge Function Security', () => {
         // Must fall back to FTS-only when embedding API fails
         expect(ts).toContain('falling back to FTS-only search');
     });
+
+    test('site-search function should omit hash when section_id is empty', () => {
+        const ts = fs.readFileSync(
+            path.resolve(__dirname, '..', 'supabase/functions/site-search/index.ts'),
+            'utf8'
+        );
+        // URL construction must guard against empty section_ids
+        expect(ts).toContain('const hash = sectionId ? `#${sectionId}` : ""');
+        expect(ts).toContain('`${row.page_path}${hash}`');
+        expect(ts).not.toContain('`${row.page_path}#${row.section_id}`');
+    });
 });
 
 describe('Shared Script Coverage', () => {

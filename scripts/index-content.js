@@ -310,7 +310,16 @@ async function index() {
   console.log('Indexing complete.');
 }
 
-index().catch(err => {
-  console.error('Indexing failed:', err.message);
-  process.exit(1);
-});
+if (require.main === module) {
+  index().catch(err => {
+    console.error('Indexing failed:', err.message);
+    process.exit(1);
+  });
+}
+
+module.exports = {
+  extractChunks,
+  slugify,
+  PAGES,
+  MAX_CHUNK_LENGTH,
+};
