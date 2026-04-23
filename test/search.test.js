@@ -159,39 +159,41 @@ describe('Search UI Tests', () => {
             await page.keyboard.down('Control');
             await page.keyboard.press('KeyK');
             await page.keyboard.up('Control');
-            await page.waitForTimeout(100);
+            await page.waitForSelector('#searchModal', { visible: true });
 
             const closeBtn = await page.$('.search-close-btn');
             expect(closeBtn).not.toBeNull();
 
             await closeBtn.click();
-            await page.waitForTimeout(100);
+            await page.waitForSelector('#searchModal', { hidden: true });
 
             const modalClosed = await page.$eval('#searchModal', el => el.hidden).catch(() => false);
             expect(modalClosed).toBe(true);
         }));
 
         test('close button is visible on mobile viewport', async () => withBrowser(async () => {
-            // Switch to mobile viewport
-            await page.setViewport({ width: 375, height: 667 });
+            try {
+                // Switch to mobile viewport
+                await page.setViewport({ width: 375, height: 667 });
 
-            // Open modal
-            await page.keyboard.down('Control');
-            await page.keyboard.press('KeyK');
-            await page.keyboard.up('Control');
-            await page.waitForTimeout(100);
+                // Open modal
+                await page.keyboard.down('Control');
+                await page.keyboard.press('KeyK');
+                await page.keyboard.up('Control');
+                await page.waitForSelector('#searchModal', { visible: true });
 
-            const closeBtn = await page.$('.search-close-btn');
-            expect(closeBtn).not.toBeNull();
+                const closeBtn = await page.$('.search-close-btn');
+                expect(closeBtn).not.toBeNull();
 
-            const isVisible = await closeBtn.evaluate(el => {
-                const style = window.getComputedStyle(el);
-                return style.display !== 'none' && style.visibility !== 'hidden';
-            });
-            expect(isVisible).toBe(true);
-
-            // Restore desktop viewport
-            await page.setViewport(TEST_CONFIG.viewport);
+                const isVisible = await closeBtn.evaluate(el => {
+                    const style = window.getComputedStyle(el);
+                    return style.display !== 'none' && style.visibility !== 'hidden';
+                });
+                expect(isVisible).toBe(true);
+            } finally {
+                // Restore desktop viewport
+                await page.setViewport(TEST_CONFIG.viewport);
+            }
         }));
 
         test('search input is focused when modal opens', async () => withBrowser(async () => {
