@@ -239,15 +239,19 @@ Deno.serve(async (request) => {
       throw new Error(error.message);
     }
 
-    const results = (data || []).map((row: Record<string, unknown>) => ({
-      page_path: row.page_path,
-      page_title: row.page_title,
-      section_id: row.section_id,
-      heading: row.heading,
-      excerpt: buildExcerpt(String(row.body || ""), query),
-      url: `${row.page_path}#${row.section_id}`,
-      score: row.rrf_score,
-    }));
+    const results = (data || []).map((row: Record<string, unknown>) => {
+      const sectionId = String(row.section_id || "");
+      const hash = sectionId ? `#${sectionId}` : "";
+      return {
+        page_path: row.page_path,
+        page_title: row.page_title,
+        section_id: sectionId,
+        heading: row.heading,
+        excerpt: buildExcerpt(String(row.body || ""), query),
+        url: `${row.page_path}${hash}`,
+        score: row.rrf_score,
+      };
+    });
 
     return jsonResponse({ results }, 200, corsHeaders);
   } catch (error) {

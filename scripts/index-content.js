@@ -45,6 +45,11 @@ function slugify(text) {
 function extractChunks(html, pagePath) {
   const $ = cheerio.load(html);
 
+  // Collect all real anchor IDs in the document so we only emit section_ids
+  // that actually exist as clickable hash targets.
+  const validIds = new Set();
+  $('[id]').each((_, el) => validIds.add($(el).attr('id')));
+
   // Remove non-content elements
   $('script, style, nav, footer, iframe, .search-modal, .search-backdrop').remove();
 
@@ -64,7 +69,23 @@ function extractChunks(html, pagePath) {
     const $el = $(el);
     const id = $el.attr('id') || '';
     const headingText = $el.text().trim();
-    const sectionId = id || slugify(headingText) || `section-${chunkIndex}`;
+
+    // For headings inside a section with an id, use the section's id so the
+    // anchor link actually jumps to the right place on the page.
+    let sectionId = id;
+    if (!sectionId && ['h1', 'h2', 'h3'].includes(el.name?.toLowerCase())) {
+      const parentSection = $el.closest('section[id]');
+      if (parentSection.length > 0) {
+        sectionId = parentSection.attr('id');
+      }
+    }
+
+    // Only keep sectionIds that are real anchors in the document.
+    // Synthetic fallbacks (e.g. section-N or slugified headings without
+    // matching ids) are cleared so the Edge Function omits the hash.
+    if (sectionId && !validIds.has(sectionId)) {
+      sectionId = '';
+    }
 
     currentChunk = {
       section_id: sectionId,
@@ -76,7 +97,7 @@ function extractChunks(html, pagePath) {
   function appendText(text) {
     if (!currentChunk) {
       currentChunk = {
-        section_id: `section-${chunkIndex}`,
+        section_id: '',
         heading: '',
         body: '',
       };
@@ -90,7 +111,7 @@ function extractChunks(html, pagePath) {
       flushChunk();
       chunkIndex++;
       currentChunk = {
-        section_id: `section-${chunkIndex}`,
+        section_id: '',
         heading: heading ? `${heading} (续)` : '',
         body: overflow,
       };
@@ -108,7 +129,7 @@ function extractChunks(html, pagePath) {
     if (node.type === 'tag') {
       const tagName = node.name.toLowerCase();
 
-      if (['h1', 'h2', 'h3', 'section'].includes(tagName)) {
+      if (['h1', 'h2', 'h3'].includes(tagName)) {
         startNewChunk(node);
         // Continue into children to collect any inline text
         const children = node.children.slice().reverse();
@@ -118,7 +139,16 @@ function extractChunks(html, pagePath) {
         continue;
       }
 
-      if (['p', 'li', 'td', 'th', 'div', 'article', 'aside'].includes(tagName)) {
+      // Sections just recurse; their id is picked up by headings inside them
+      if (tagName === 'section') {
+        const children = node.children.slice().reverse();
+        for (const child of children) {
+          walker.unshift(child);
+        }
+        continue;
+      }
+
+      if (['p', 'li', 'td', 'th', 'article', 'aside'].includes(tagName)) {
         const text = $(node).text().trim();
         if (text) {
           appendText(text);
@@ -141,21 +171,15 @@ function extractChunks(html, pagePath) {
 
   flushChunk();
 
-  // Deduplicate section_ids and assign chunk_index
-  const seenIds = new Set();
-  return chunks.map((c, i) => {
-    let sid = c.section_id;
-    if (seenIds.has(sid)) {
-      sid = `${sid}-${i}`;
-    }
-    seenIds.add(sid);
-    return {
-      chunk_index: i,
-      section_id: sid,
-      heading: c.heading,
-      body: c.body.trim(),
-    };
-  }).filter(c => c.body.length > 0);
+  // Multiple headings inside the same section legitimately share the same
+  // section_id (the section's anchor). Keep them as-is so search results
+  // link to the correct page fragment.
+  return chunks.map((c, i) => ({
+    chunk_index: i,
+    section_id: c.section_id,
+    heading: c.heading,
+    body: c.body.trim(),
+  })).filter(c => c.body.length > 0);
 }
 
 function truncateEmbedding(embedding, targetDim) {
