@@ -122,6 +122,17 @@ describe('Indexer Chunk Extraction', () => {
         });
     });
 
+    describe('heading text deduplication', () => {
+        it('should not duplicate heading text in the body', () => {
+            const html = fs.readFileSync(path.resolve(__dirname, '../u10_rules.html'), 'utf-8');
+            const chunks = extractChunks(html, 'u10_rules.html');
+            const venueChunk = chunks.find(c => c.section_id === 'venue');
+            expect(venueChunk).toBeDefined();
+            // The heading text should appear in heading, not duplicated in body
+            expect(venueChunk.body).not.toContain(venueChunk.heading);
+        });
+    });
+
     describe('PAGES config', () => {
         it('should list exactly 7 pages', () => {
             expect(PAGES).toHaveLength(7);
@@ -138,6 +149,13 @@ describe('Indexer Chunk Extraction', () => {
                 'tigercup_finalstage.html',
                 'sponsor_me.html',
             ]));
+        });
+    });
+
+    describe('indexer script source', () => {
+        it('should request outputDimensionality from Gemini batch API', () => {
+            const src = fs.readFileSync(path.resolve(__dirname, '../scripts/index-content.js'), 'utf-8');
+            expect(src).toContain('outputDimensionality: TARGET_DIM');
         });
     });
 });

@@ -131,11 +131,9 @@ function extractChunks(html, pagePath) {
 
       if (['h1', 'h2', 'h3'].includes(tagName)) {
         startNewChunk(node);
-        // Continue into children to collect any inline text
-        const children = node.children.slice().reverse();
-        for (const child of children) {
-          walker.unshift(child);
-        }
+        // Heading text is already captured by $el.text() in startNewChunk.
+        // Do NOT recurse into children, otherwise the same text is appended
+        // to body and ends up duplicated in the search index.
         continue;
       }
 
@@ -197,6 +195,7 @@ async function generateEmbeddings(apiKey, texts) {
       content: {
         parts: [{ text }],
       },
+      outputDimensionality: TARGET_DIM,
     })),
   };
 
@@ -230,6 +229,9 @@ async function index() {
 
   // Cleanup: remove documents no longer in PAGES
   const currentPaths = PAGES.map(p => p.path);
+  // PostgREST requires the IN list to be wrapped in parentheses.
+  // Supabase JS v2 does not auto-wrap arrays for .not(...'in'...),
+  // so we build the parenthesised string manually.
   const { error: delErr } = await supabase
     .from('documents')
     .delete()
@@ -253,6 +255,17 @@ async function index() {
 
     console.log(`Indexing ${page.path}: ${chunks.length} chunks`);
 
+    // Generate embeddings BEFORE touching the database so that if the
+    // Gemini API fails we leave the existing index intact.
+    const embeddingTexts = chunks.map(c => `${c.heading || ''}\n${c.body}`);
+    let embeddings;
+    try {
+      embeddings = await generateEmbeddings(geminiApiKey, embeddingTexts);
+    } catch (err) {
+      console.error(`Failed to generate embeddings for ${page.path}:`, err.message);
+      continue;
+    }
+
     // Upsert document
     const { data: doc, error: docErr } = await supabase
       .from('documents')
@@ -272,7 +285,9 @@ async function index() {
       continue;
     }
 
-    // Delete old chunks
+    // Delete old chunks then insert new ones (best-effort atomicity).
+    // The embeddings were already generated successfully above, so the
+    // window where chunks are missing is as small as possible.
     const { error: delChunkErr } = await supabase
       .from('document_chunks')
       .delete()
@@ -281,11 +296,6 @@ async function index() {
       console.error(`Failed to delete old chunks for ${page.path}:`, delChunkErr.message);
     }
 
-    // Generate embeddings via Gemini API
-    const embeddingTexts = chunks.map(c => `${c.heading || ''}\n${c.body}`);
-    const embeddings = await generateEmbeddings(geminiApiKey, embeddingTexts);
-
-    // Insert chunks
     const chunkRows = chunks.map((c, i) => ({
       document_id: doc.id,
       chunk_index: c.chunk_index,

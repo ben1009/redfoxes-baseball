@@ -248,5 +248,54 @@ describe('Search UI Tests', () => {
             const empty = await page.$('.search-empty');
             expect(empty).not.toBeNull();
         }));
+
+        test('clearing input aborts pending request and hides spinner', async () => withBrowser(async () => {
+            await page.evaluate(() => {
+                window._searchFetchStarted = false;
+                window._searchFetchAborted = false;
+                const origFetch = window.fetch;
+                window.fetch = async (url, options) => {
+                    if (String(url).includes('site-search')) {
+                        window._searchFetchStarted = true;
+                        return new Promise((resolve, reject) => {
+                            const timer = setTimeout(() => {
+                                resolve({ ok: true, json: async () => ({ results: [] }) });
+                            }, 500);
+                            if (options && options.signal) {
+                                options.signal.addEventListener('abort', () => {
+                                    window._searchFetchAborted = true;
+                                    clearTimeout(timer);
+                                    reject(new DOMException('Aborted', 'AbortError'));
+                                });
+                            }
+                        });
+                    }
+                    return origFetch(url, options);
+                };
+            });
+
+            await page.keyboard.down('Control');
+            await page.keyboard.press('KeyK');
+            await page.keyboard.up('Control');
+            await page.waitForTimeout(100);
+
+            const input = await page.$('.search-input');
+            await input.type('test');
+            // Wait for debounce to fire and the slow fetch to start
+            await page.waitForTimeout(300);
+
+            // Clear input while the slow fetch is in flight
+            await input.evaluate(el => { el.value = ''; el.dispatchEvent(new Event('input')); });
+            await page.waitForTimeout(100);
+
+            const spinnerActive = await page.evaluate(() => {
+                const spinner = document.querySelector('.search-spinner');
+                return spinner && spinner.classList.contains('active');
+            });
+            expect(spinnerActive).toBe(false);
+
+            const aborted = await page.evaluate(() => window._searchFetchAborted);
+            expect(aborted).toBe(true);
+        }));
     });
 });

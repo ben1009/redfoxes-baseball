@@ -331,6 +331,11 @@
     if (!query) {
       resultsContainer.innerHTML = '';
       activeIndex = -1;
+      setSpinner(false);
+      if (abortController) {
+        abortController.abort();
+        abortController = null;
+      }
       return;
     }
 

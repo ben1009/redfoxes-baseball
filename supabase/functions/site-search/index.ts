@@ -73,7 +73,10 @@ function getRequestIp(request: Request) {
       .map((ip) => ip.trim())
       .filter(Boolean);
     if (ips.length > 0) {
-      return ips[ips.length - 1];
+      // The first element is the original client IP; the last is the
+      // most recent proxy.  Use the first to avoid rate-limiting by
+      // proxy IP instead of the real user.
+      return ips[0];
     }
   }
 
@@ -116,10 +119,22 @@ async function isRateLimited(request: Request) {
   const windowSeconds = 60;
   const maxQueries = 30;
 
-  const current = await redisCommand(["incr", key]);
-  if (current === 1) {
-    await redisCommand(["expire", key, windowSeconds.toString()]);
+  // Atomically initialise the counter with TTL on first creation.
+  // This avoids the race condition where incr succeeds but expire
+  // never runs (e.g. process crash), leaving a permanent key.
+  const initialized = await redisCommand([
+    "set",
+    key,
+    "1",
+    "nx",
+    "ex",
+    windowSeconds.toString(),
+  ]);
+  if (initialized === "OK") {
+    return false;
   }
+
+  const current = await redisCommand(["incr", key]);
   return current > maxQueries;
 }
 
@@ -148,6 +163,7 @@ async function generateEmbedding(query: string): Promise<number[] | null> {
         content: {
           parts: [{ text: query }],
         },
+        outputDimensionality: TARGET_DIM,
       }),
     });
 

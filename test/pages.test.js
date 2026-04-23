@@ -1310,6 +1310,35 @@ describe('Supabase Edge Function Security', () => {
         expect(ts).toContain('`${row.page_path}${hash}`');
         expect(ts).not.toContain('`${row.page_path}#${row.section_id}`');
     });
+
+    test('site-search function should use atomic SET NX EX for rate limiting', () => {
+        const ts = fs.readFileSync(
+            path.resolve(__dirname, '..', 'supabase/functions/site-search/index.ts'),
+            'utf8'
+        );
+        expect(ts).toContain('"set"');
+        expect(ts).toContain('"nx"');
+        expect(ts).toContain('"ex"');
+        expect(ts).toContain('if (initialized === "OK")');
+        expect(ts).not.toContain('if (current === 1)');
+    });
+
+    test('site-search function should use first IP in X-Forwarded-For', () => {
+        const ts = fs.readFileSync(
+            path.resolve(__dirname, '..', 'supabase/functions/site-search/index.ts'),
+            'utf8'
+        );
+        expect(ts).toContain('return ips[0]');
+        expect(ts).not.toContain('return ips[ips.length - 1]');
+    });
+
+    test('site-search function should request outputDimensionality from Gemini', () => {
+        const ts = fs.readFileSync(
+            path.resolve(__dirname, '..', 'supabase/functions/site-search/index.ts'),
+            'utf8'
+        );
+        expect(ts).toContain('outputDimensionality: TARGET_DIM');
+    });
 });
 
 describe('Shared Script Coverage', () => {
