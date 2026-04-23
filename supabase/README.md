@@ -105,4 +105,4 @@ Requires environment variables:
 - `SUPABASE_SERVICE_ROLE_KEY`
 - `GEMINI_API_KEY`
 
-The script parses all HTML pages, extracts section-level chunks, generates Gemini `gemini-embedding-2` embeddings (3072-dim, truncated to 1536), and upserts into Supabase.
+The script parses 6 public HTML pages (excludes password-protected `match_review.html`), extracts section-level chunks, generates Gemini `gemini-embedding-2` embeddings via `batchEmbedContents` with `outputDimensionality: 1536`, and upserts into Supabase.

@@ -317,6 +317,7 @@
     if (!modal) return;
     modal.hidden = true;
     activeIndex = -1;
+    setSpinner(false);
     if (abortController) {
       abortController.abort();
       abortController = null;

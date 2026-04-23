@@ -91,8 +91,8 @@ as $$
         row_number() over (order by pgroonga_score(c.tableoid, c.ctid) desc, c.id asc) as fts_rank
       from public.document_chunks c
       join public.documents d on c.document_id = d.id
-      where c.chunk_text &@~ query_text
-         or c.heading &@~ query_text
+      where c.chunk_text &@~ pgroonga_escape(query_text)
+         or c.heading &@~ pgroonga_escape(query_text)
       order by pgroonga_score(c.tableoid, c.ctid) desc
       limit greatest(match_limit * 2, 20)
     ),

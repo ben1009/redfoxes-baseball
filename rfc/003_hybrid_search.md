@@ -11,7 +11,7 @@ A site-wide search feature that lets visitors quickly find content across all pa
 
 ### Goals
 
-- **Search every page**: index.html, match_review.html, u10_rules.html, pony_u10_rules.html, tigercup_groupstage.html, tigercup_finalstage.html, sponsor_me.html
+- **Search every public page**: index.html, u10_rules.html, pony_u10_rules.html, tigercup_groupstage.html, tigercup_finalstage.html, sponsor_me.html (`match_review.html` is excluded because it has client-side password protection)
 - **Hybrid ranking**: keyword matches boost exact hits; vector matches catch paraphrases and semantic intent
 - **Section-level granularity**: results link directly to headings/anchors, not just whole pages
 - **Low latency**: < 300 ms for typical queries from APAC
@@ -66,7 +66,7 @@ Add the generated `pagefind/` to the GitHub Pages build and include the Pagefind
 │                 │                            │ │  - hnsw vector index     │ │
 └─────────────────┘                            │ └──────────────────────────┘ │
                                                │ ┌──────────────────────────┐ │
-                                               │ │ Embedding API (OpenAI    │ │
+                                               │ │ Embedding API (Gemini    │ │
                                                │ │  or local model)         │ │
                                                │ └──────────────────────────┘ │
                                                └──────────────────────────────┘
@@ -89,7 +89,7 @@ Add the generated `pagefind/` to the GitHub Pages build and include the Pagefind
 | Edge Function | `supabase/functions/site-search/index.ts` | Public API: receives query, generates query embedding, runs hybrid search, returns ranked results |
 | Database | `public.documents` + `public.document_chunks` | Normalized schema: pages in `documents`, sections with embeddings in `document_chunks` |
 | Frontend Widget | Inline in `index.html` + shared JS | Search input modal, results rendering, keyboard shortcuts |
-| Embedding Provider | OpenAI API or self-hosted | Converts Chinese text to 1536-dim vectors (or compatible dimension) |
+| Embedding Provider | Gemini API or self-hosted | Converts Chinese text to 1536-dim vectors (or compatible dimension) |
 
 ### Why Two Tables?
 
@@ -189,7 +189,6 @@ Chunking strategy:
 | Page | Chunk Boundary | Typical Chunks |
 |------|---------------|----------------|
 | index.html | Each nav-card (title + description) | ~6 |
-| match_review.html | Each video card (title + analysis text) | ~7 |
 | u10_rules.html / pony_u10_rules.html | Each `<section>` or `<h2>` block | ~15 |
 | tigercup_groupstage.html / finalstage.html | Each AI analysis card or subsection | ~10 |
 | sponsor_me.html | Each offer/sticker card | ~6 |
@@ -335,7 +334,7 @@ as $$
       from public.document_chunks c
       join public.documents d on c.document_id = d.id
       where c.embedding is not null
-        and query_embedding is not null  -- skip vector search when OpenAI fallback (NULL embedding)
+        and query_embedding is not null  -- skip vector search when Gemini fallback (NULL embedding)
       order by c.embedding <=> query_embedding
       limit greatest(match_limit * 2, 20)
     ),
@@ -433,14 +432,13 @@ create index chunks_fts_fallback_idx on public.document_chunks
 A Node.js script that runs locally (or in CI) to populate the search index.
 
 ```javascript
-// Pseudocode — actual implementation uses node-html-parser or cheerio
 const fs = require('fs');
 const { createClient } = require('@supabase/supabase-js');
-const { OpenAI } = require('openai');
+const cheerio = require('cheerio');
 
 const PAGES = [
   { path: 'index.html', title: '烈光少棒赤狐队 | 首页', category: 'hub' },
-  { path: 'match_review.html', title: '烈光 vs 飞雪 友谊赛复盘', category: 'review' },
+  // match_review.html is excluded because it is password-protected
   { path: 'u10_rules.html', title: '猛虎杯 U10 竞赛章程', category: 'rules', tags: ['U10', '猛虎杯'] },
   { path: 'pony_u10_rules.html', title: 'PONY U10 竞赛规则', category: 'rules', tags: ['PONY', 'U10'] },
   { path: 'tigercup_groupstage.html', title: '猛虎杯小组赛数据分析', category: 'analysis', tags: ['猛虎杯'] },
@@ -448,72 +446,86 @@ const PAGES = [
   { path: 'sponsor_me.html', title: '赞助赤狐', category: 'sponsor' },
 ];
 
-async function extractChunks(html, pagePath, pageTitle) {
-  // Parse HTML into sections based on headings and sections
-  // Return array of { section_id, heading, body }
+const GEMINI_MODEL = 'gemini-embedding-2';
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:batchEmbedContents`;
+const TARGET_DIM = 1536;
+
+async function generateEmbeddings(apiKey, texts) {
+  const url = `${GEMINI_URL}?key=${apiKey}`;
+  const BATCH_SIZE = 100; // Gemini batchEmbedContents limit
+  const allEmbeddings = [];
+
+  for (let i = 0; i < texts.length; i += BATCH_SIZE) {
+    const batch = texts.slice(i, i + BATCH_SIZE);
+    const body = {
+      requests: batch.map(text => ({
+        model: `models/${GEMINI_MODEL}`,
+        content: { parts: [{ text }] },
+        outputDimensionality: TARGET_DIM,
+      })),
+    };
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const data = await response.json();
+    allEmbeddings.push(...data.embeddings.map(e => e.values));
+  }
+  return allEmbeddings;
 }
 
 async function index() {
   // Cleanup: remove documents that are no longer in PAGES
   const currentPaths = PAGES.map(p => p.path);
-  if (currentPaths.length > 0) {
-    const { error: delErr } = await supabase
-      .from('documents')
-      .delete()
-      .not('page_path', 'in', currentPaths);
-    if (delErr) console.warn('Cleanup warning:', delErr);
-  }
+  const inList = '(' + currentPaths.map(p => '"' + p.replace(/"/g, '""') + '"').join(',') + ')';
+  const { error: delErr } = await supabase
+    .from('documents')
+    .delete()
+    .not('page_path', 'in', inList);
+  if (delErr) console.warn('Cleanup warning:', delErr);
 
   for (const page of PAGES) {
     const html = fs.readFileSync(page.path, 'utf-8');
-    const chunks = await extractChunks(html, page.path, page.title);
+    const chunks = extractChunks(html, page.path, page.title);
+
+    // Generate embeddings BEFORE deleting old chunks.
+    // If this fails, the existing index remains intact.
+    const embeddingTexts = chunks.map(c => `${c.heading || ''}\n${c.body}`);
+    let embeddings;
+    try {
+      embeddings = await generateEmbeddings(apiKey, embeddingTexts);
+    } catch (e) {
+      console.error(`Embedding failed for ${page.path}:`, e.message);
+      continue;
+    }
 
     // Upsert document (page-level)
     const { data: doc, error: docErr } = await supabase
       .from('documents')
-      .upsert({
-        page_path: page.path,
-        url: `https://ben1009.github.io/redfoxes-baseball/${page.path}`,
-        title: page.title,
-        category: page.category,
-        tags: page.tags || [],
-        content: chunks.map(c => (c.heading || '') + '\n' + c.body).join('\n\n'),
-      }, { onConflict: 'page_path' })
+      .upsert({ ... }, { onConflict: 'page_path' })
       .select('id')
       .single();
+    if (docErr) { console.error(...); continue; }
 
-    if (docErr) throw docErr;
-
-    // Delete old chunks for this document.
-    // NOTE: This is not atomic with the subsequent insert. If the script crashes
-    // here, the document will have no chunks until re-indexed. For atomic
-    // replacement, wrap delete+insert in a stored procedure (RPC) called via
-    // supabase.rpc('replace_chunks', { doc_id, chunk_rows }).
+    // Delete old chunks then insert new ones (best-effort atomicity).
+    // The embeddings were already generated successfully above.
     await supabase.from('document_chunks').delete().eq('document_id', doc.id);
 
-    // Generate embeddings in batch for all chunks of this page
-    const embeddingTexts = chunks.map(c => `${c.heading || ''}\n${c.body}`);
-    const embeddings = await openai.embeddings.create({
-      model: 'text-embedding-3-small',
-      input: embeddingTexts,  // Batch: up to 2048 inputs per request
-    });
-
-    // Insert all chunks in a single batch transaction
     const chunkRows = chunks.map((c, i) => ({
       document_id: doc.id,
-      chunk_index: i,
+      chunk_index: c.chunk_index,
       section_id: c.section_id,
       heading: c.heading,
       chunk_text: c.body,
-      embedding: embeddings.data[i].embedding,
-      token_count: null,  /* OpenAI returns total batch tokens; per-chunk count requires tiktoken if needed */
+      embedding: embeddings[i],
+      token_count: null,
     }));
 
     const { error: insertErr } = await supabase
       .from('document_chunks')
       .insert(chunkRows);
-
-    if (insertErr) throw insertErr;
+    if (insertErr) console.error(...);
   }
 }
 ```
@@ -523,27 +535,28 @@ async function index() {
 ```
 For each HTML file:
   1. Remove scripts, styles, nav, footer
-  2. Iterate through DOM in document order
-  3. On <h1>, <h2>, <h3> or <section>:
+  2. Collect all real anchor IDs (elements with [id] attribute) for validation
+  3. Iterate through DOM in document order
+  4. On <h1>, <h2>, <h3>:
      - Start new chunk
      - Set heading = textContent of heading element
-     - Set section_id = id attribute (if present) or slugified heading
-     - Fallback: if no id and no heading, use `section-{chunk_index}`
-  4. Accumulate <p>, <li>, <td> text into chunk.chunk_text
-  5. If chunk_text exceeds 800 Chinese characters:
+     - Set section_id = id attribute if it exists in the validIds set
+     - Do NOT recurse into heading children after capturing heading text
+  5. Accumulate <p>, <li>, <td> text into chunk.chunk_text
+  6. If chunk_text exceeds 800 Chinese characters:
      - Flush current chunk
      - Continue with same heading + " (续)"
-  6. On next heading/section, flush and start new chunk
+  7. On next heading/section, flush and start new chunk
 ```
 
 ### 6.3 Running the Indexer
 
 ```bash
 # One-time setup
-npm install --save-dev cheerio @supabase/supabase-js openai
+npm install --save-dev cheerio @supabase/supabase-js
 
 # Run manually after content updates
-node scripts/index-content.js
+SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... GEMINI_API_KEY=... node scripts/index-content.js
 
 # Or in CI (GitHub Actions) on every push to main
 ```
@@ -564,7 +577,7 @@ Indexing Script          Postgres                    Edge Function
      │                      │────────────────────────────>│
      │                      │  POST /generate-embeddings  │
      │                      │                             │
-     │                      │                      OpenAI API
+     │                      │                      Gemini API
      │                      │                             │
      │                      │ UPDATE embedding            │
      │                      │<────────────────────────────│
@@ -591,7 +604,7 @@ select cron.schedule(
 
 The Edge Function `generate-embeddings`:
 1. Queries `document_chunks` where `embedding IS NULL` (limit ~10)
-2. Calls OpenAI API to generate embeddings in batch
+2. Calls Gemini API to generate embeddings in batch
 3. Updates each chunk row with its embedding
 
 ```typescript
@@ -608,7 +621,7 @@ const { data: chunks } = await supabase
 if (!chunks || chunks.length === 0) return new Response('No pending chunks');
 
 const embeddings = await openai.embeddings.create({
-  model: 'text-embedding-3-small',
+  model: 'gemini-embedding-2',
   input: chunks.map(c => c.chunk_text),
 });
 
@@ -683,11 +696,13 @@ GET /functions/v1/site-search?q={query}
 
 ```
 1. Validate query (non-empty, max 200 chars)
-2. Generate embedding for query via OpenAI API
-3. Call public.hybrid_search(query_text, query_embedding, 10)
-4. Format and return results with CORS headers
+2. Check rate limit (atomic Redis SET NX EX + INCR)
+3. Extract client IP (cf-connecting-ip → x-real-ip → X-Forwarded-For last element)
+4. Generate embedding for query via Gemini API with outputDimensionality: 1536
+5. Call public.hybrid_search(query_text, query_embedding, 10)
+6. Format and return results with CORS headers
 
-**OpenAI embedding failure fallback:** If the embedding API fails (rate limit, timeout, error), fall back to FTS-only search by calling `public.hybrid_search(query_text, NULL, 10)`. The SQL function skips the vector CTE when `query_embedding IS NULL`, so RRF scores come from `fts_rank` alone.
+**Gemini embedding failure fallback:** If the embedding API fails (rate limit, timeout, error), fall back to FTS-only search by calling `public.hybrid_search(query_text, NULL, 10)`. The SQL function skips the vector CTE when `query_embedding IS NULL`, so RRF scores come from `fts_rank` alone.
 ```
 
 ### 7.3 Response Format
@@ -713,7 +728,7 @@ GET /functions/v1/site-search?q={query}
 Same pattern as the existing `sponsor-likes` Edge Function:
 
 - Restrict `Access-Control-Allow-Origin` to production domain + local dev ports
-- Do not expose OpenAI API key or Supabase service role key to browser
+- Do not expose Gemini API key or Supabase service role key to browser
 - Sanitize query input (strip HTML, limit length)
 - Return generic error messages on internal failures
 
@@ -776,12 +791,17 @@ Each result card shows:
 
 ```javascript
 document.addEventListener('keydown', (e) => {
+  // Skip shortcuts when user is typing in an input, textarea, or contenteditable
+  if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName) || e.target.isContentEditable) {
+    return;
+  }
   if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
     e.preventDefault();
-    openSearchModal();
+    openModal();
   }
-  if (e.key === 'Escape') {
-    closeSearchModal();
+  if (e.key === 'Escape' && modal && !modal.hidden) {
+    e.preventDefault();
+    closeModal();
   }
 });
 ```
@@ -794,16 +814,15 @@ document.addEventListener('keydown', (e) => {
 
 | Model | Dimension | Chinese Quality | Cost | Recommendation |
 |-------|-----------|-----------------|------|----------------|
-| `text-embedding-3-small` | 1536 | Good | Very low | **Primary choice** |
-| `text-embedding-3-large` | 3072 | Better | Low | If higher precision needed |
-| Local (e.g. bge-large-zh) | 1024 | Excellent | Free (infra only) | If OpenAI is unavailable |
+| `gemini-embedding-2` | 3072 (configurable) | Good | Free tier sufficient | **Primary choice** |
+| `text-embedding-3-small` | 1536 | Good | Very low | Alternative |
 
-For this project, `text-embedding-3-small` offers the best cost/quality ratio.
+For this project, `gemini-embedding-2` is used with `outputDimensionality: 1536` to produce vectors that match the schema without manual truncation.
 
 ### 9.2 Chinese Text Handling
 
 - **Keyword search**: Use PGroonga (`&@~` operator) which has built-in CJK tokenization. No additional parser configuration needed.
-- **Semantic search**: OpenAI embedding models handle Simplified Chinese natively.
+- **Semantic search**: Gemini embedding models handle Simplified Chinese natively.
 - **Fallback**: If PGroonga is unavailable, use `to_tsvector('simple', ...)` which indexes every character individually. Less precise for multi-character words but functional.
 
 ---
@@ -812,7 +831,7 @@ For this project, `text-embedding-3-small` offers the best cost/quality ratio.
 
 | Threat | Risk | Mitigation |
 |--------|------|------------|
-| Embedding API key exposure | High | OpenAI key lives only in Edge Functions and indexing script; never exposed to browser. `site-search` Edge Function calls OpenAI for query embedding (1 request per search). `generate-embeddings` calls OpenAI for content embedding (batch, internal). |
+| Embedding API key exposure | High | Gemini key lives only in Edge Functions and indexing script; never exposed to browser. `site-search` Edge Function calls Gemini for query embedding (1 request per search). |
 | SQL injection via search query | Low | Use parameterized SQL function; query is passed as text parameter only |
 | Search result enumeration | Low | Limit to 10 results; no pagination for now |
 | DDoS / expensive embedding calls | Medium | IP-based rate limiting (same Redis/Upstash as sponsor-likes) |
@@ -821,11 +840,13 @@ For this project, `text-embedding-3-small` offers the best cost/quality ratio.
 
 ### Rate Limiting
 
-Reuse the existing Upstash Redis setup:
+Reuse the existing Upstash Redis setup with atomic operations:
 
 - Key: `rate_search:{ip}`
-- Window: no delay between queries
+- Window: 60 seconds
 - Burst: 30 queries per minute
+- **Atomic initialization**: `SET rate_search:{ip} 1 NX EX 60` — if the key did not exist, create it with TTL and allow the request. If the key already existed, `INCR` it and check against the limit. This eliminates the race condition between `INCR` and `EXPIRE` that could leave a permanent key without TTL.
+- **IP extraction order**: `cf-connecting-ip` → `x-real-ip` → `X-Forwarded-For` last element (most recent proxy). The first element of `X-Forwarded-For` is never used because it can be client-spoofed.
 
 ---
 
@@ -835,14 +856,12 @@ Reuse the existing Upstash Redis setup:
 
 Same concern as the like counter: Supabase hosted regions do not include mainland China. Nearest regions are Singapore / Tokyo / Seoul.
 
-**Search queries** (browser → Supabase Edge Function → Postgres) require a query embedding from OpenAI on every search (see Section 7.2). The actual hybrid search (FTS + vector + RRF) runs entirely in Postgres and does not call OpenAI. Latency depends on Supabase region choice plus OpenAI embedding latency (~100–300 ms).
+**Search queries** (browser → Supabase Edge Function → Postgres) require a query embedding from Gemini on every search (see Section 7.2). The actual hybrid search (FTS + vector + RRF) runs entirely in Postgres and does not call Gemini. Latency depends on Supabase region choice plus Gemini embedding latency (~100–300 ms).
 
-**Indexing / embedding generation** also requires OpenAI API access. For users in mainland China:
+**Indexing / embedding generation** also requires Gemini API access. For users in mainland China:
 - Run the indexing script from CI/CD (GitHub Actions) which has unrestricted internet access
 - Or run locally with VPN/proxy during development
 - Search embedding generation happens on Supabase Edge infrastructure (no mainland network restrictions)
-
-The `generate-embeddings` Edge Function (if using automatic embedding) runs on Supabase's edge infrastructure, which can reach OpenAI without mainland network restrictions.
 
 ### 11.2 Cost Estimate
 
@@ -902,9 +921,7 @@ node scripts/index-content.js
 
 ### 12.4 Frontend Integration
 
-Add the search trigger and modal markup + JS to:
-- `index.html` (primary entry point)
-- Optionally all pages via a shared script (similar to `site_analytics.js`)
+Include `site_search.js` on every page (similar to `site_analytics.js`). The script is self-contained and auto-injects its own trigger, modal, and CSS.
 
 ---
 
@@ -914,18 +931,21 @@ Add the search trigger and modal markup + JS to:
 
 - **Index script**: Verify all HTML pages produce at least one chunk; verify chunk body is non-empty
 - **SQL function**: Test with known queries against seeded data; verify RRF ordering
-- **Edge Function**: Mock OpenAI embedding response; verify response shape and CORS headers
+- **Edge Function**: Mock Gemini embedding response; verify response shape and CORS headers
 - **Frontend**: Puppeteer tests for modal open/close, keyboard navigation, result click
 
 ### 13.2 Manual Checklist
 
 - [ ] `Cmd+K` opens search modal on all integrated pages
+- [ ] `Ctrl+K` does NOT open modal when focused on input/textarea/select
 - [ ] Search "提前结束" returns `u10_rules.html#early-end` as top result
 - [ ] Search "进攻很强" (paraphrase) returns groupstage analysis via vector match
 - [ ] Search "赞助" returns sponsor page results
 - [ ] Empty query shows appropriate state
 - [ ] Keyboard navigation (↑↓EnterEsc) works correctly
 - [ ] Mobile: search modal renders full-width, touch-friendly
+- [ ] Debounced search aborts stale requests (no result overwrite)
+- [ ] Spinner shows during fetch and hides only when the active request completes
 - [ ] Rate limiting prevents rapid repeated queries
 - [ ] Works from target user networks in China (acceptable latency)
 
@@ -937,7 +957,7 @@ Sample benchmark queries to verify hybrid search quality:
 |-------|---------------------|-----|
 | "提前结束比赛" | u10_rules.html#early-end | Exact keyword match |
 | "15分差距" | u10_rules.html#early-end | Semantic paraphrase |
-| "飞雪友谊赛" | match_review.html | Multi-keyword across heading |
+| "飞雪友谊赛" | index.html | Multi-keyword across heading |
 | "攻强守弱" | tigercup_groupstage.html#summary | Exact phrase from analysis |
 | "防守失误多" | tigercup_groupstage.html#gemini | Semantic match (not exact phrase) |
 | "扫码赞助" | sponsor_me.html | Intent-based match |
@@ -975,9 +995,9 @@ The Edge Function uses `service_role` which bypasses RLS, so these policies are 
 1. Add `pgvector` + `pgroonga` extensions and schema to Supabase
 2. Implement and deploy `site-search` Edge Function
 3. Run indexing script to populate `documents` and `document_chunks`
-4. Add search UI to `index.html` nav bar
+4. Include `site_search.js` on all pages (it auto-injects its own trigger and modal)
 5. Test benchmark queries and tune if needed
-6. Roll out to remaining pages by including shared search script
+6. Verify `match_review.html` is NOT indexed (password protection)
 
 ---
 
@@ -989,7 +1009,7 @@ The Edge Function uses `service_role` which bypasses RLS, so these policies are 
 | Search analytics (popular queries) | Low | Understand what visitors look for |
 | Filter by page type/category | Low | Narrow to rules, analysis, or videos |
 | Image alt-text indexing | Medium | Search figure captions and diagrams |
-| Local embedding model (no OpenAI dependency) | Medium | Remove external API dependency |
+| Local embedding model (no Gemini dependency) | Medium | Remove external API dependency |
 | Real-time re-index via GitHub Actions | Low | Always up-to-date after push |
 
 ---
@@ -1004,5 +1024,6 @@ The Edge Function uses `service_role` which bypasses RLS, so these policies are 
 | 2026-04-22 | Added Pagefind as Phase 0 quick alternative |
 | 2026-04-22 | Added category/tags fields and page-level metadata support |
 | 2026-04-22 | Added automatic embedding generation strategies (inline, cron, trigger) |
-| 2026-04-22 | Clarified OpenAI is indexing-only; expanded China availability guidance |
+| 2026-04-22 | Initial design document |
+| 2026-04-23 | Switched to Gemini embedding-2 with outputDimensionality; excluded password-protected page; added batch size limit, atomic rate limiting, and frontend abort-controller details |
 

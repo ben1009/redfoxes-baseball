@@ -240,7 +240,7 @@ async function index() {
   const currentPaths = PAGES.map(p => p.path);
   // PostgREST requires the IN list to be wrapped in parentheses,
   // and string values must be double-quoted to handle special chars.
-  const inList = '(' + currentPaths.map(p => '"' + p + '"').join(',') + ')';
+  const inList = '(' + currentPaths.map(p => '"' + p.replace(/"/g, '""') + '"').join(',') + ')'
   const { error: delErr } = await supabase
     .from('documents')
     .delete()
@@ -303,6 +303,7 @@ async function index() {
       .eq('document_id', doc.id);
     if (delChunkErr) {
       console.error(`Failed to delete old chunks for ${page.path}:`, delChunkErr.message);
+      continue;
     }
 
     const chunkRows = chunks.map((c, i) => ({

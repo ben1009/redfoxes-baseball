@@ -354,6 +354,10 @@ The old Worker remains in `workers/` for reference and rollback:
 - Favicon displays in browser tab
 - Search trigger visible on all pages
 - `Cmd+K` opens search modal; `Esc` closes it
+- `Ctrl+K` does not open modal when typing in input/textarea/select
+- Debounced search returns results with `<mark>` highlighting
+- Keyboard navigation (↑↓Enter) works in search results
+- Abort controller prevents stale results from overwriting newer queries
 - All tests pass (npm test)
 
 ---

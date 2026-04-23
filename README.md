@@ -12,6 +12,7 @@ This is the official website for **烈光少棒赤狐队 (Red Foxes Youth Baseba
 - **Match Reviews** - Tactical analysis videos from friendship matches
 - **Tournament Information** - Rules and schedules for competitions
 - **Performance Analysis** - Data-driven player performance insights (groupstage + finalstage)
+- **Site Search** - Hybrid full-text + vector search across all public pages (Supabase Edge Function + pgvector + pgroonga)
 - **Sponsor Support** - Sponsor page with global like counter (Supabase Edge Function + Postgres + Upstash Redis)
 
 ## 🔗 Live Demo
@@ -29,6 +30,7 @@ redfoxes-baseball/
 ├── tigercup_groupstage.html   # Groupstage performance analysis with multi-AI insights
 ├── tigercup_finalstage.html   # Finalstage performance analysis with multi-AI insights
 ├── sponsor_me.html            # Sponsor support page
+├── site_search.js             # Shared hybrid search UI (modal, keyboard nav)
 ├── site_analytics.js          # Shared Google Analytics bootstrap
 ├── image_modal.js             # Shared lightbox behavior across pages
 ├── baseball_theme.css         # Shared baseball field theme stylesheet
@@ -154,7 +156,8 @@ The match review page (`match_review.html`) requires a password to enter:
 - Google Fonts (Noto Serif SC, Segoe UI)
 - Bilibili Video Embedding
 - Google Analytics 4
-- Supabase Edge Functions + Postgres + Upstash Redis (global like counter)
+- Supabase Edge Functions + Postgres + Upstash Redis (global like counter + hybrid search)
+- Gemini Embedding API (semantic search vectors)
 - 🦊 SVG Emoji Favicon
 
 ### Theme Architecture
@@ -174,7 +177,7 @@ This site uses Google Analytics 4 to track visitor engagement and improve conten
 
 ## 🧪 Testing
 
-Comprehensive test suite with **161 tests** covering:
+Comprehensive test suite with **203 tests** covering:
 - Page structure and navigation tests
 - Video autopause functionality tests
 - Cross-page link verification
@@ -183,6 +186,7 @@ Comprehensive test suite with **161 tests** covering:
 - **Baseball Theme Motion Coverage** — animation hooks and reduced-motion support
 - **Floating Baseball Behavior Coverage** — passive background animations
 - **Like Widget Coverage** — DOM presence, toggle interaction, localStorage persistence
+- **Search Modal Coverage** — trigger injection, open/close, keyboard navigation, debouncing, abort controller, highlight rendering
 - Scroll reveal and count-up asset coverage
 
 Run tests locally:
