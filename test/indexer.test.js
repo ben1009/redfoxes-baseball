@@ -134,21 +134,25 @@ describe('Indexer Chunk Extraction', () => {
     });
 
     describe('PAGES config', () => {
-        it('should list exactly 7 pages', () => {
-            expect(PAGES).toHaveLength(7);
+        it('should list exactly 6 pages', () => {
+            expect(PAGES).toHaveLength(6);
         });
 
         it('should include all expected page paths', () => {
             const paths = PAGES.map(p => p.path);
             expect(paths).toEqual(expect.arrayContaining([
                 'index.html',
-                'match_review.html',
                 'u10_rules.html',
                 'pony_u10_rules.html',
                 'tigercup_groupstage.html',
                 'tigercup_finalstage.html',
                 'sponsor_me.html',
             ]));
+        });
+
+        it('should exclude password-protected pages', () => {
+            const paths = PAGES.map(p => p.path);
+            expect(paths).not.toContain('match_review.html');
         });
     });
 

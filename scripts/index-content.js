@@ -13,7 +13,8 @@ const cheerio = require('cheerio');
 
 const PAGES = [
   { path: 'index.html', title: '烈光少棒赤狐队 | 首页', category: 'hub' },
-  { path: 'match_review.html', title: '烈光 vs 飞雪 友谊赛复盘', category: 'review' },
+  // match_review.html is excluded because it is password-protected;
+  // indexing its content would make it searchable without entering the password.
   { path: 'u10_rules.html', title: '猛虎杯 U10 竞赛章程', category: 'rules', tags: ['U10', '猛虎杯'] },
   { path: 'pony_u10_rules.html', title: 'PONY U10 竞赛规则', category: 'rules', tags: ['PONY', 'U10'] },
   { path: 'tigercup_groupstage.html', title: '猛虎杯小组赛数据分析', category: 'analysis', tags: ['猛虎杯'] },
@@ -237,13 +238,13 @@ async function index() {
 
   // Cleanup: remove documents no longer in PAGES
   const currentPaths = PAGES.map(p => p.path);
-  // PostgREST requires the IN list to be wrapped in parentheses.
-  // Supabase JS v2 does not auto-wrap arrays for .not(...'in'...),
-  // so we build the parenthesised string manually.
+  // PostgREST requires the IN list to be wrapped in parentheses,
+  // and string values must be double-quoted to handle special chars.
+  const inList = '(' + currentPaths.map(p => '"' + p + '"').join(',') + ')';
   const { error: delErr } = await supabase
     .from('documents')
     .delete()
-    .not('page_path', 'in', `(${currentPaths.join(',')})`);
+    .not('page_path', 'in', inList);
   if (delErr) console.warn('Cleanup warning:', delErr);
 
   for (const page of PAGES) {

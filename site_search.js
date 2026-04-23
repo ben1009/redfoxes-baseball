@@ -366,10 +366,11 @@
       resultsContainer.innerHTML =
         '<div class="search-error">搜索服务暂时不可用，请稍后再试</div>';
     } finally {
-      setSpinner(false);
-      // Only clear if this request's controller is still the active one.
-      // Prevents an older (slower) request from wiping out a newer one.
+      // Only hide the spinner and clear the controller if this request
+      // is still the active one. Prevents a stale (aborted) request from
+      // hiding the spinner while a newer request is still in flight.
       if (abortController === currentController) {
+        setSpinner(false);
         abortController = null;
       }
     }
