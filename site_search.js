@@ -90,6 +90,29 @@
   flex-direction: column;
   max-height: 70vh;
 }
+.search-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  z-index: 2;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  font-size: 24px;
+  line-height: 1;
+  color: #8a7a62;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.search-close-btn:hover {
+  background: rgba(0,0,0,0.06);
+  color: #5a4a32;
+}
 .search-input-wrap {
   display: flex;
   align-items: center;
@@ -197,13 +220,21 @@
 @media (max-width: 480px) {
   .search-modal {
     padding-top: 0;
-    align-items: stretch;
+    align-items: flex-end;
   }
   .search-container {
     width: 100%;
     max-width: 100%;
-    border-radius: 0;
-    max-height: 100vh;
+    border-radius: 16px 16px 0 0;
+    max-height: 85vh;
+    margin-bottom: 0;
+  }
+  .search-close-btn {
+    top: 8px;
+    right: 10px;
+  }
+  .search-close-hint {
+    display: none;
   }
   .search-footer {
     justify-content: center;
@@ -283,6 +314,7 @@
     modal.innerHTML = `
       <div class="search-backdrop"></div>
       <div class="search-container">
+        <button type="button" class="search-close-btn" aria-label="关闭搜索">×</button>
         <div class="search-input-wrap">
           <input type="search" class="search-input" placeholder="搜索内容…" autocomplete="off" autocapitalize="off">
           <div class="search-spinner"></div>
@@ -291,7 +323,7 @@
         <div class="search-footer">
           <span><kbd>↑</kbd><kbd>↓</kbd> 选择</span>
           <span><kbd>Enter</kbd> 打开</span>
-          <span><kbd>Esc</kbd> 关闭</span>
+          <span class="search-close-hint"><kbd>Esc</kbd> 关闭</span>
         </div>
       </div>
     `;
@@ -302,6 +334,7 @@
     resultsContainer = modal.querySelector('.search-results');
 
     modal.querySelector('.search-backdrop').addEventListener('click', closeModal);
+    modal.querySelector('.search-close-btn').addEventListener('click', closeModal);
     input.addEventListener('input', onInput);
     input.addEventListener('keydown', onInputKeydown);
   }
