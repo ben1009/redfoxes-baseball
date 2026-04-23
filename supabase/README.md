@@ -1,6 +1,8 @@
-# Supabase Like Counter
+# Supabase Backend
 
-This directory contains the Supabase implementation of the sponsor page global like counter.
+This directory contains the Supabase implementation for:
+1. **Sponsor Like Counter** (`sponsor-likes`) — global like widget
+2. **Site Search** (`site-search`) — hybrid full-text + vector search across all pages
 
 Live deployment:
 
@@ -13,9 +15,13 @@ https://ohwiimchzlesczdvasbh.supabase.co/functions/v1/sponsor-likes
 | File | Purpose |
 |------|---------|
 | `functions/sponsor-likes/index.ts` | Edge Function API for count reads and like/unlike actions |
-| `migrations/20260421_sponsor_likes.sql` | Postgres schema, atomic SQL function, and access control setup |
+| `functions/site-search/index.ts` | Edge Function API for hybrid search (full-text + vector) |
+| `migrations/20260421_sponsor_likes.sql` | Postgres schema for sponsor likes |
+| `migrations/20260423_hybrid_search.sql` | Postgres schema for documents, chunks, and hybrid search function |
 
 ## API
+
+### Sponsor Likes
 
 | Method | Path | Response |
 |--------|------|----------|
@@ -23,14 +29,21 @@ https://ohwiimchzlesczdvasbh.supabase.co/functions/v1/sponsor-likes
 | `POST` | `/like` | `{ "count": number }` |
 | `POST` | `/unlike` | `{ "count": number }` or `{ "count": number, "rateLimited": true }` |
 
+### Site Search
+
+| Method | Path | Query | Response |
+|--------|------|-------|----------|
+| `GET` | `/site-search` | `?q={query}` | `{ "results": [{ "page_path", "page_title", "section_id", "heading", "excerpt", "url", "score" }] }` |
+
 ## Required Secrets
 
-Set these on the Supabase project before deploying the function:
+Set these on the Supabase project before deploying the functions:
 
 - `SUPABASE_URL`
 - `SUPABASE_SERVICE_ROLE_KEY`
 - `UPSTASH_REDIS_REST_URL`
 - `UPSTASH_REDIS_REST_TOKEN`
+- `GEMINI_API_KEY` (required for `site-search`)
 
 Notes:
 - The hosted Edge Function runtime provides the Supabase project context automatically.
@@ -43,6 +56,7 @@ Notes:
 supabase start
 supabase db push
 supabase functions serve sponsor-likes --no-verify-jwt
+supabase functions serve site-search --no-verify-jwt
 ```
 
 ## Deploy
@@ -50,15 +64,15 @@ supabase functions serve sponsor-likes --no-verify-jwt
 ```bash
 supabase db push
 supabase functions deploy sponsor-likes --no-verify-jwt
+supabase functions deploy site-search --no-verify-jwt
 ```
 
-After deployment, configure the sponsor page to point at:
+After deployment, configure the pages to point at the endpoints:
 
+**Sponsor likes:**
 ```text
 https://ohwiimchzlesczdvasbh.supabase.co/functions/v1/sponsor-likes
 ```
-
-You can do that by setting:
 
 ```html
 <script>
@@ -66,4 +80,29 @@ window.REDFOXES_LIKES_API_URL = 'https://ohwiimchzlesczdvasbh.supabase.co/functi
 </script>
 ```
 
-before the inline widget script in `sponsor_me.html`.
+**Site search** (already has a default in `site_search.js`; override if needed):
+```text
+https://ohwiimchzlesczdvasbh.supabase.co/functions/v1/site-search
+```
+
+```html
+<script>
+window.REDFOXES_SEARCH_API_URL = 'https://ohwiimchzlesczdvasbh.supabase.co/functions/v1/site-search';
+</script>
+```
+
+## Indexing Content
+
+Run the indexer after deploying the schema and function:
+
+```bash
+npm install
+node scripts/index-content.js
+```
+
+Requires environment variables:
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `GEMINI_API_KEY`
+
+The script parses all HTML pages, extracts section-level chunks, generates Gemini `gemini-embedding-2` embeddings (3072-dim, truncated to 1536), and upserts into Supabase.

@@ -1209,8 +1209,12 @@ describe('File Existence Tests', () => {
         'workers/sponsor_likes.js',
         'workers/wrangler.toml',
         'workers/README.md',
+        'site_search.js',
+        'scripts/index-content.js',
         'supabase/functions/sponsor-likes/index.ts',
+        'supabase/functions/site-search/index.ts',
         'supabase/migrations/20260421_sponsor_likes.sql',
+        'supabase/migrations/20260423_hybrid_search.sql',
         'supabase/README.md',
         '.github/workflows/deploy-worker.yml'
     ];
@@ -1273,6 +1277,28 @@ describe('Supabase Edge Function Security', () => {
         expect(ts).toContain('"http://localhost:5501"');
         expect(ts).toContain('"http://127.0.0.1:5501"');
     });
+
+    test('site-search function should also use explicit CORS whitelist', () => {
+        const ts = fs.readFileSync(
+            path.resolve(__dirname, '..', 'supabase/functions/site-search/index.ts'),
+            'utf8'
+        );
+        expect(ts).toContain('ALLOWED_ORIGINS');
+        expect(ts).not.toContain('"Access-Control-Allow-Origin": "*"');
+        expect(ts).toContain('"Internal server error"');
+    });
+
+    test('site-search function should use Gemini embedding with fallback to FTS', () => {
+        const ts = fs.readFileSync(
+            path.resolve(__dirname, '..', 'supabase/functions/site-search/index.ts'),
+            'utf8'
+        );
+        expect(ts).toContain('GEMINI_API_KEY');
+        expect(ts).toContain('gemini-embedding-2');
+        expect(ts).toContain('truncateEmbedding');
+        // Must fall back to FTS-only when embedding API fails
+        expect(ts).toContain('falling back to FTS-only search');
+    });
 });
 
 describe('Shared Script Coverage', () => {
@@ -1317,6 +1343,23 @@ describe('Shared Script Coverage', () => {
             const html = fs.readFileSync(path.resolve(__dirname, '..', file), 'utf8');
             expect(html).toContain('src="site_analytics.js"');
             expect(html).not.toContain("function gtag(){dataLayer.push(arguments);}");
+        });
+    });
+
+    test('all pages should include the shared search script', () => {
+        const pages = [
+            'index.html',
+            'match_review.html',
+            'u10_rules.html',
+            'pony_u10_rules.html',
+            'tigercup_groupstage.html',
+            'tigercup_finalstage.html',
+            'sponsor_me.html'
+        ];
+
+        pages.forEach((file) => {
+            const html = fs.readFileSync(path.resolve(__dirname, '..', file), 'utf8');
+            expect(html).toContain('src="site_search.js"');
         });
     });
 
