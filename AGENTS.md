@@ -15,6 +15,7 @@ This is a **static website** for **烈光少棒赤狐队 (Red Foxes Youth Baseba
 4. **Groupstage Analysis** (`tigercup_groupstage.html`) - Multi-AI performance analysis
 5. **Finalstage Analysis** (`tigercup_finalstage.html`) - Multi-AI final match analysis
 6. **Sponsor Page** (`sponsor_me.html`) - Sponsor support with global like counter (Supabase Edge Function)
+7. **Site Search** (`site_search.js`) - Hybrid full-text + vector search across all pages (Supabase Edge Function + pgvector + pgroonga)
 
 - **Live Site**: https://ben1009.github.io/redfoxes-baseball/
 - **Language**: Chinese (Simplified)
@@ -36,6 +37,7 @@ This is a **static website** for **烈光少棒赤狐队 (Red Foxes Youth Baseba
 | Deployment | GitHub Pages |
 | Testing | Jest + Puppeteer |
 | Like Counter Backend | Supabase Edge Functions + Postgres + Upstash Redis |
+| Search Backend | Supabase Edge Functions + Postgres (pgvector + pgroonga) + Gemini Embeddings |
 
 ---
 
@@ -51,13 +53,17 @@ redfoxes-baseball/
 ├── tigercup_finalstage.html   # Finalstage performance analysis
 ├── sponsor_me.html            # Sponsor page (independent theme, global like widget)
 ├── site_analytics.js          # Shared Google Analytics bootstrap
+├── site_search.js             # Shared hybrid search UI (modal, keyboard nav)
 ├── image_modal.js             # Shared lightbox behavior for zoomable images
 ├── baseball_theme.css         # Shared baseball field theme CSS
 ├── rules_style.css            # Shared rules page styling
 ├── u10_rules.js               # Legacy compatibility stub for older U10 modal script references
-├── supabase/                  # Supabase backend for global like counter
+├── scripts/
+│   └── index-content.js       # Indexing script: HTML → chunks → embeddings → Supabase
+├── supabase/                  # Supabase backend for like counter and search
 │   ├── functions/
-│   │   └── sponsor-likes/     # Edge Function API
+│   │   ├── sponsor-likes/     # Edge Function API for likes
+│   │   └── site-search/       # Edge Function API for hybrid search
 │   ├── migrations/            # SQL schema + function setup
 │   └── README.md              # Deployment and secret guide
 ├── workers/                   # Legacy Cloudflare Worker implementation
@@ -92,6 +98,7 @@ redfoxes-baseball/
 - **baseball_theme.css**: Shared theme variables, body background, resets, and common animations
 - **site_analytics.js**: Centralized GA initialization used by all HTML pages
 - **image_modal.js**: Shared lightbox behavior used by rules (both U10 and PONY), report, and sponsor pages
+- **site_search.js**: Shared search modal with hybrid search backend; loaded by all HTML pages via `<script>` tag
 - No build process or bundling required
 - No framework dependencies
 
@@ -179,6 +186,15 @@ sponsor_me.html:
 - .like-count - Live counter display
 - .like-label - Supporting text label
 
+site_search.js (all pages):
+- #site-search-trigger - Search button injected into header/page-nav
+- #searchModal - Full-screen search modal
+- .search-input - Query input with debounce
+- .search-results - Result list container
+- .search-result - Individual result link
+- .search-result.active - Keyboard-selected item
+- .search-result-excerpt mark - Highlighted query terms
+
 ### JavaScript Components
 
 site_analytics.js:
@@ -200,6 +216,15 @@ sponsor_me.html:
 - localStorage fallback when the API is unreachable or unconfigured
 - IP-based rate limiting (5-second cooldown) via Upstash Redis
 - See `rfc/002_supabase_like_counter.md` for the active architecture
+
+site_search.js (all pages):
+- Hybrid search modal powered by Supabase Edge Function `site-search`
+- Keyboard shortcuts: `Ctrl/Cmd+K` to open, `Esc` to close, `↑↓Enter` to navigate
+- Debounced input (200ms) with fetch abort on rapid typing
+- Client-side excerpt highlighting with `<mark>` tags
+- Rate limiting: 30 queries/minute via Upstash Redis
+- Gemini embedding fallback to FTS-only if API fails
+- See `rfc/003_hybrid_search.md` for the active architecture
 
 **Password**: 4-digit year (SHA-256 hashed: "1972")
 **Hint**: "张锦新 哪年开始接触从事棒球运动？"
@@ -233,6 +258,7 @@ Tests include:
 - File existence checks
 - Like widget DOM and interaction tests
 - Image modal and lightbox coverage
+- Search modal open/close, keyboard navigation, and trigger injection
 
 ### Deployment
 
@@ -247,6 +273,20 @@ The active like counter backend lives under `supabase/`:
 - SQL migration: `supabase/migrations/20260421_sponsor_likes.sql`
 - Edge Function: `supabase/functions/sponsor-likes/index.ts`
 - Setup guide: `supabase/README.md`
+
+### Supabase Hybrid Search Deployment
+
+The hybrid search backend lives under `supabase/`:
+- SQL migration: `supabase/migrations/20260423_hybrid_search.sql`
+- Edge Function: `supabase/functions/site-search/index.ts`
+- Indexing script: `scripts/index-content.js`
+- Setup guide: `supabase/README.md`
+
+```bash
+supabase db push
+supabase functions deploy site-search --no-verify-jwt
+GEMINI_API_KEY=... node scripts/index-content.js
+```
 
 ### Legacy Cloudflare Worker Deployment
 
@@ -312,6 +352,8 @@ The old Worker remains in `workers/` for reference and rollback:
 - No console errors
 - Chinese characters display correctly
 - Favicon displays in browser tab
+- Search trigger visible on all pages
+- `Cmd+K` opens search modal; `Esc` closes it
 - All tests pass (npm test)
 
 ---
