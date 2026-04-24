@@ -3,7 +3,7 @@
  * Tests site_search.js modal, keyboard navigation, and trigger injection
  */
 
-const puppeteer = require('puppeteer');
+const { launchBrowser, closeBrowser } = require('./obscura-helper');
 const path = require('path');
 
 const TEST_CONFIG = {
@@ -36,11 +36,7 @@ describe('Search UI Tests', () => {
 
     beforeAll(async () => {
         try {
-            browser = await puppeteer.launch({
-                headless: 'new',
-                pipe: true,
-                args: ['--no-sandbox', '--disable-setuid-sandbox']
-            });
+            browser = await launchBrowser();
             page = await browser.newPage();
             await page.setViewport(TEST_CONFIG.viewport);
         } catch (error) {
@@ -50,7 +46,7 @@ describe('Search UI Tests', () => {
 
     afterAll(async () => {
         if (browser) {
-            await browser.close();
+            await closeBrowser(browser);
         }
     });
 

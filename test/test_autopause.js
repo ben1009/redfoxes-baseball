@@ -4,7 +4,7 @@
  * Usage: node test/test_autopause.js
  */
 
-const puppeteer = require('puppeteer');
+const { launchBrowser, closeBrowser } = require('./obscura-helper');
 const path = require('path');
 
 const CONFIG = {
@@ -16,11 +16,7 @@ const CONFIG = {
 async function runTest() {
     console.log('🎬 Testing video autopause functionality...\n');
     
-    const browser = await puppeteer.launch({
-        headless: 'new',
-        pipe: true,
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
-    });
+    const browser = await launchBrowser();
     
     try {
         const page = await browser.newPage();
@@ -127,7 +123,7 @@ async function runTest() {
         console.error('\n❌ Test failed:', error.message);
         process.exitCode = 1;
     } finally {
-        await browser.close();
+        await closeBrowser(browser);
     }
 }
 

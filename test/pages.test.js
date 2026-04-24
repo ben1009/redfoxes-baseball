@@ -3,7 +3,7 @@
  * Tests page structure, navigation, and content
  */
 
-const puppeteer = require('puppeteer');
+const { launchBrowser, closeBrowser } = require('./obscura-helper');
 const path = require('path');
 const fs = require('fs');
 
@@ -57,11 +57,7 @@ describe('Page Structure and Navigation Tests', () => {
 
     beforeAll(async () => {
         try {
-            browser = await puppeteer.launch({
-                headless: 'new',
-                pipe: true,
-                args: ['--no-sandbox', '--disable-setuid-sandbox']
-            });
+            browser = await launchBrowser();
             page = await browser.newPage();
             await page.setViewport(TEST_CONFIG.viewport);
         } catch (error) {
@@ -71,7 +67,7 @@ describe('Page Structure and Navigation Tests', () => {
 
     afterAll(async () => {
         if (browser) {
-            await browser.close();
+            await closeBrowser(browser);
         }
     });
 

@@ -8,3 +8,5 @@ package-lock.json
 .codex
 .vscode/
 supabase/.temp/
+obscura
+obscura-x86_64-linux.tar.gz
