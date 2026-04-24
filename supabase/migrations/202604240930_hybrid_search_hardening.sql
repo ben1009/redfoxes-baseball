@@ -35,16 +35,13 @@ as $$
     fts_results as (
       select
         c.id as chunk_id,
-        d.id as document_id,
-        d.page_path,
-        d.title as page_title,
+        c.document_id,
         c.section_id,
         c.heading,
         c.chunk_text as body,
         row_number() over (order by pgroonga_score(c.tableoid, c.ctid) desc, c.id asc) as fts_rank
       from public.document_chunks c
       cross join params p
-      join public.documents d on c.document_id = d.id
       where p.escaped_query is not null
         and (
           c.chunk_text &@~ p.escaped_query
@@ -56,16 +53,13 @@ as $$
     vec_results as (
       select
         c.id as chunk_id,
-        d.id as document_id,
-        d.page_path,
-        d.title as page_title,
+        c.document_id,
         c.section_id,
         c.heading,
         c.chunk_text as body,
         row_number() over (order by c.embedding <=> query_embedding, c.id asc) as vec_rank
       from public.document_chunks c
       cross join params p
-      join public.documents d on c.document_id = d.id
       where c.embedding is not null
         and query_embedding is not null
       order by c.embedding <=> query_embedding
@@ -75,8 +69,6 @@ as $$
       select
         coalesce(f.chunk_id, v.chunk_id) as chunk_id,
         coalesce(f.document_id, v.document_id) as document_id,
-        coalesce(f.page_path, v.page_path) as page_path,
-        coalesce(f.page_title, v.page_title) as page_title,
         coalesce(f.section_id, v.section_id) as section_id,
         coalesce(f.heading, v.heading) as heading,
         coalesce(f.body, v.body) as body,
@@ -88,14 +80,15 @@ as $$
   select
     combined.chunk_id,
     combined.document_id,
-    combined.page_path,
-    combined.page_title,
+    d.page_path,
+    d.title as page_title,
     combined.section_id,
     combined.heading,
     combined.body,
     combined.rrf_score
   from combined
   cross join params p
+  join public.documents d on d.id = combined.document_id
   order by combined.rrf_score desc
   limit p.safe_match_limit;
 $$;
