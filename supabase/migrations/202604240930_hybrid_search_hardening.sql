@@ -1,5 +1,7 @@
--- Round 5 fix: escape PGroonga query text to prevent syntax errors
--- from unbalanced parentheses or special characters in user input
+-- Harden hybrid search input handling and close anonymous table-read access.
+
+drop policy if exists "Allow anonymous read on documents" on public.documents;
+drop policy if exists "Allow anonymous read on document_chunks" on public.document_chunks;
 
 create or replace function public.hybrid_search(
   query_text text,
@@ -83,9 +85,15 @@ as $$
       from fts_results f
       full outer join vec_results v on f.chunk_id = v.chunk_id
     )
-  select combined.chunk_id, combined.document_id, combined.page_path,
-         combined.page_title, combined.section_id, combined.heading,
-         combined.body, combined.rrf_score
+  select
+    combined.chunk_id,
+    combined.document_id,
+    combined.page_path,
+    combined.page_title,
+    combined.section_id,
+    combined.heading,
+    combined.body,
+    combined.rrf_score
   from combined
   cross join params p
   order by combined.rrf_score desc
