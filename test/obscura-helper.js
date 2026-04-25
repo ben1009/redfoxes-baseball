@@ -119,9 +119,9 @@ async function closeBrowser(browser) {
 }
 
 function isBrowserAvailable() {
-    // Check for Obscura in PATH
+    // Check for Obscura in PATH (obscura doesn't have --version, use --help)
     try {
-        require('child_process').execSync('obscura --version', { stdio: 'ignore' });
+        require('child_process').execSync('obscura --help', { stdio: 'ignore' });
         return true;
     } catch (_) {}
 
