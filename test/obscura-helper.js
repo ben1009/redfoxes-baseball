@@ -56,7 +56,7 @@ function waitForCdp(port, timeout = OBSCURA_LAUNCH_TIMEOUT) {
 
 async function launchObscura(port) {
     return new Promise((resolve, reject) => {
-        const proc = spawn('obscura', ['serve', '--cdp-port', String(port)], {
+        const proc = spawn('obscura', ['serve', '--port', String(port)], {
             detached: false,
             stdio: 'ignore'
         });
@@ -81,7 +81,7 @@ async function launchBrowser(options = {}) {
         const port = await findFreePort();
         obscuraProc = await launchObscura(port);
         const browser = await puppeteer.connect({
-            browserWSEndpoint: `ws://127.0.0.1:${port}`,
+            browserWSEndpoint: `ws://127.0.0.1:${port}/devtools/browser`,
             ...options
         });
         // Tag the browser so cleanup can kill the Obscura process
