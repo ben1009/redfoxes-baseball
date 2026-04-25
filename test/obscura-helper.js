@@ -8,21 +8,14 @@ const { spawn } = require('child_process');
 const puppeteer = require('puppeteer');
 const net = require('net');
 
-const OBSCURA_DEFAULT_PORT = 9222;
 const OBSCURA_LAUNCH_TIMEOUT = 5000;
 
-function findFreePort(startPort = OBSCURA_DEFAULT_PORT) {
+function findFreePort() {
     return new Promise((resolve, reject) => {
         const server = net.createServer();
         server.unref();
-        server.on('error', (err) => {
-            if (err.code === 'EADDRINUSE') {
-                findFreePort(startPort + 1).then(resolve, reject);
-            } else {
-                reject(err);
-            }
-        });
-        server.listen(startPort, '127.0.0.1', () => {
+        server.on('error', reject);
+        server.listen(0, '127.0.0.1', () => {
             const port = server.address().port;
             server.close(() => resolve(port));
         });
@@ -65,7 +58,7 @@ async function launchObscura(port) {
     return new Promise((resolve, reject) => {
         const proc = spawn('obscura', ['serve', '--cdp-port', String(port)], {
             detached: false,
-            stdio: ['ignore', 'pipe', 'pipe']
+            stdio: 'ignore'
         });
 
         proc.on('error', (err) => {
@@ -83,9 +76,10 @@ async function launchObscura(port) {
 
 async function launchBrowser(options = {}) {
     // Try Obscura first
+    let obscuraProc;
     try {
         const port = await findFreePort();
-        const obscuraProc = await launchObscura(port);
+        obscuraProc = await launchObscura(port);
         const browser = await puppeteer.connect({
             browserWSEndpoint: `ws://127.0.0.1:${port}`,
             ...options
@@ -94,6 +88,9 @@ async function launchBrowser(options = {}) {
         browser.__obscuraProc = obscuraProc;
         return browser;
     } catch (obscuraErr) {
+        if (obscuraProc) {
+            try { obscuraProc.kill(); } catch (_) {}
+        }
         // Fall back to Puppeteer + Chrome
         const launchOpts = {
             headless: 'new',
@@ -122,6 +119,13 @@ async function closeBrowser(browser) {
 }
 
 function isBrowserAvailable() {
+    // Check for Obscura in PATH
+    try {
+        require('child_process').execSync('obscura --version', { stdio: 'ignore' });
+        return true;
+    } catch (_) {}
+
+    // Fallback to checking Puppeteer's Chrome
     try {
         puppeteer.executablePath();
         return true;
