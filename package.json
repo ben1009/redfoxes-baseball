@@ -5,9 +5,10 @@
   "main": "index.html",
   "scripts": {
     "test": "jest --passWithNoTests",
-    "test:ci": "npm run test:ci:indexer && npm run test:ci:search && npm run test:ci:video",
+    "test:ci": "npm run test:ci:indexer && npm run test:ci:search && npm run test:ci:pages && npm run test:ci:video",
     "test:ci:indexer": "jest --passWithNoTests --runInBand test/indexer.test.js",
     "test:ci:search": "jest --passWithNoTests --runInBand test/search.test.js",
+    "test:ci:pages": "jest --passWithNoTests --runInBand test/pages.test.js",
     "test:ci:video": "jest --passWithNoTests --runInBand test/video_autopause.test.js",
     "test:video": "jest test/video_autopause.test.js --verbose",
     "test:standalone": "node test/test_autopause.js",
