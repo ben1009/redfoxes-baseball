@@ -32,4 +32,4 @@ jobs:
     - name: Run tests
       env:
         TEST_PASSWORD: ${{ secrets.TEST_PASSWORD || '1972' }}
-      run: npm test
+      run: npm run test:ci
