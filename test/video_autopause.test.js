@@ -17,7 +17,6 @@ const TEST_CONFIG = {
 
 const REPO_ROOT = path.resolve(__dirname, '..');
 const MATCH_REVIEW_PATH = '/match_review.html';
-const TEST_ORIGIN_PATH = '/__test_origin.html';
 
 jest.setTimeout(TEST_CONFIG.timeout);
 
@@ -45,13 +44,6 @@ describe('Video Autopause Feature', () => {
         try {
             server = http.createServer((req, res) => {
                 const requestPath = decodeURIComponent((req.url || '/').split('?')[0]);
-
-                if (requestPath === TEST_ORIGIN_PATH) {
-                    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-                    res.end('<!DOCTYPE html><html><head></head><body></body></html>');
-                    return;
-                }
-
                 const relativePath = requestPath === '/' ? MATCH_REVIEW_PATH : requestPath;
                 const filePath = path.resolve(REPO_ROOT, '.' + relativePath);
 
@@ -128,17 +120,12 @@ describe('Video Autopause Feature', () => {
         // still resolving relative assets against the local test server.
         const html = fs.readFileSync(path.resolve(REPO_ROOT, MATCH_REVIEW_PATH.slice(1)), 'utf8')
             .replace('<head>', `<head><base href="${baseUrl}/">`);
-        await page.goto(`${baseUrl}${TEST_ORIGIN_PATH}`, {
-            waitUntil: 'domcontentloaded',
-            timeout: 5000
-        });
         await page.setContent(html, { waitUntil: 'domcontentloaded', timeout: TEST_CONFIG.timeout });
 
         // Bypass the password gate in this CI-focused smoke test so we can
         // exercise the autoplay behavior without depending on crypto/subtle
         // support from an opaque document origin.
         await page.evaluate(() => {
-            sessionStorage.setItem('baseball_auth', 'true');
             const overlay = document.getElementById('passwordOverlay');
             const mainContent = document.getElementById('mainContent');
             if (overlay) overlay.style.display = 'none';
