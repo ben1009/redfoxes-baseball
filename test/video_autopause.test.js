@@ -12,12 +12,14 @@ const TEST_CONFIG = {
     password: process.env.TEST_PASSWORD || '1972',
     viewport: { width: 1280, height: 800 },
     scrollDelay: 500,
-    timeout: 30000
+    timeout: 10000
 };
 
 const REPO_ROOT = path.resolve(__dirname, '..');
 const MATCH_REVIEW_PATH = '/match_review.html';
 const TEST_ORIGIN_PATH = '/__test_origin.html';
+
+jest.setTimeout(TEST_CONFIG.timeout);
 
 describe('Video Autopause Feature', () => {
     let browser;
@@ -89,7 +91,13 @@ describe('Video Autopause Feature', () => {
             await page.setViewportSize(TEST_CONFIG.viewport);
             page.setDefaultTimeout(5000);
             page.setDefaultNavigationTimeout(5000);
-            await page.route(/^https?:\/\//, route => route.abort());
+            await page.route(/^https?:\/\//, route => {
+                const hostname = new URL(route.request().url()).hostname;
+                if (hostname === '127.0.0.1' || hostname === 'localhost') {
+                    return route.continue();
+                }
+                return route.abort();
+            });
         } catch (error) {
             browserLaunchError = error;
         }

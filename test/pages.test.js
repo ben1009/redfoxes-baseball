@@ -10,8 +10,10 @@ const fs = require('fs');
 const TEST_CONFIG = {
     password: process.env.TEST_PASSWORD || '1972',
     viewport: { width: 1280, height: 800 },
-    timeout: 30000
+    timeout: 10000
 };
+
+jest.setTimeout(TEST_CONFIG.timeout);
 
 const PAGE_PATHS = {
     index: 'file://' + path.resolve(__dirname, '../index.html'),
