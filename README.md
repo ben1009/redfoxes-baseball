@@ -188,6 +188,7 @@ Comprehensive test suite with **161 tests** covering:
 Run tests locally:
 ```bash
 npm install
+npm run playwright:install
 npm test
 ```
 

@@ -3,7 +3,7 @@
  * Tests site_search.js modal, keyboard navigation, and trigger injection
  */
 
-const puppeteer = require('puppeteer');
+const { launchBrowser } = require('./browser');
 const path = require('path');
 
 const TEST_CONFIG = {
@@ -25,10 +25,14 @@ describe('Search UI Tests', () => {
     let browser;
     let page;
     let browserLaunchError;
+    let browserLaunchWarningShown = false;
 
     const withBrowser = async (callback) => {
         if (browserLaunchError) {
-            console.warn(`Skipping browser assertion: ${browserLaunchError.message}`);
+            if (!browserLaunchWarningShown) {
+                console.warn(`Skipping browser assertions: ${browserLaunchError.message}`);
+                browserLaunchWarningShown = true;
+            }
             return;
         }
         await callback();
@@ -36,13 +40,9 @@ describe('Search UI Tests', () => {
 
     beforeAll(async () => {
         try {
-            browser = await puppeteer.launch({
-                headless: 'new',
-                pipe: true,
-                args: ['--no-sandbox', '--disable-setuid-sandbox']
-            });
+            browser = await launchBrowser();
             page = await browser.newPage();
-            await page.setViewport(TEST_CONFIG.viewport);
+            await page.setViewportSize(TEST_CONFIG.viewport);
         } catch (error) {
             browserLaunchError = error;
         }
@@ -159,7 +159,7 @@ describe('Search UI Tests', () => {
             await page.keyboard.down('Control');
             try {
                 await page.keyboard.press('KeyK');
-                await page.waitForSelector('#searchModal', { visible: true });
+                await page.waitForSelector('#searchModal', { state: 'visible' });
             } finally {
                 await page.keyboard.up('Control');
             }
@@ -168,7 +168,7 @@ describe('Search UI Tests', () => {
             expect(closeBtn).not.toBeNull();
 
             await closeBtn.click();
-            await page.waitForSelector('#searchModal', { hidden: true });
+            await page.waitForSelector('#searchModal', { state: 'hidden' });
 
             const modalClosed = await page.$eval('#searchModal', el => el.hidden).catch(() => false);
             expect(modalClosed).toBe(true);
@@ -177,13 +177,13 @@ describe('Search UI Tests', () => {
         test('close button is visible on mobile viewport', async () => withBrowser(async () => {
             try {
                 // Switch to mobile viewport
-                await page.setViewport({ width: 375, height: 667 });
+                await page.setViewportSize({ width: 375, height: 667 });
 
                 // Open modal
                 await page.keyboard.down('Control');
                 try {
                     await page.keyboard.press('KeyK');
-                    await page.waitForSelector('#searchModal', { visible: true });
+                    await page.waitForSelector('#searchModal', { state: 'visible' });
                 } finally {
                     await page.keyboard.up('Control');
                 }
@@ -198,7 +198,7 @@ describe('Search UI Tests', () => {
                 expect(isVisible).toBe(true);
             } finally {
                 // Restore desktop viewport
-                await page.setViewport(TEST_CONFIG.viewport);
+                await page.setViewportSize(TEST_CONFIG.viewport);
             }
         }));
 

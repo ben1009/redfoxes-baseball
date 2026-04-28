@@ -24,12 +24,12 @@ jobs:
         node-version: '20'
         
     - name: Install dependencies
-      env:
-        PUPPETEER_SKIP_DOWNLOAD: 'true'
       run: npm install
+
+    - name: Install Playwright browsers
+      run: npm run playwright:install
 
     - name: Run tests
       env:
         TEST_PASSWORD: ${{ secrets.TEST_PASSWORD || '1972' }}
-        PUPPETEER_SKIP_DOWNLOAD: 'true'
       run: npm test

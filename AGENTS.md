@@ -35,7 +35,7 @@ This is a **static website** for **烈光少棒赤狐队 (Red Foxes Youth Baseba
 | Video Hosting | Bilibili iframe embedding |
 | Analytics | Google Analytics 4 (G-QJ6EXQH8SW) |
 | Deployment | GitHub Pages |
-| Testing | Jest + Puppeteer |
+| Testing | Jest + Playwright |
 | Like Counter Backend | Supabase Edge Functions + Postgres + Upstash Redis |
 | Search Backend | Supabase Edge Functions + Postgres (pgvector + pgroonga) + Gemini Embeddings |
 

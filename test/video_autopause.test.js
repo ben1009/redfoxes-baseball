@@ -3,7 +3,7 @@
  * Tests that Bilibili videos pause when scrolled out of viewport
  */
 
-const puppeteer = require('puppeteer');
+const { launchBrowser } = require('./browser');
 const path = require('path');
 
 const TEST_CONFIG = {
@@ -17,10 +17,14 @@ describe('Video Autopause Feature', () => {
     let browser;
     let page;
     let browserLaunchError;
+    let browserLaunchWarningShown = false;
 
     const withBrowser = async (callback) => {
         if (browserLaunchError) {
-            console.warn(`Skipping browser assertion: ${browserLaunchError.message}`);
+            if (!browserLaunchWarningShown) {
+                console.warn(`Skipping browser assertions: ${browserLaunchError.message}`);
+                browserLaunchWarningShown = true;
+            }
             return;
         }
 
@@ -29,21 +33,9 @@ describe('Video Autopause Feature', () => {
 
     beforeAll(async () => {
         try {
-            // Fast-fail if no browser executable is available (e.g. CI without Chrome)
-            puppeteer.executablePath();
-        } catch (err) {
-            browserLaunchError = new Error('No browser executable found; skipping Puppeteer tests');
-            return;
-        }
-
-        try {
-            browser = await puppeteer.launch({
-                headless: 'new',
-                pipe: true,
-                args: ['--no-sandbox', '--disable-setuid-sandbox']
-            });
+            browser = await launchBrowser();
             page = await browser.newPage();
-            await page.setViewport(TEST_CONFIG.viewport);
+            await page.setViewportSize(TEST_CONFIG.viewport);
         } catch (error) {
             browserLaunchError = error;
         }

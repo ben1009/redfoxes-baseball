@@ -3,7 +3,7 @@
  * Tests page structure, navigation, and content
  */
 
-const puppeteer = require('puppeteer');
+const { launchBrowser } = require('./browser');
 const path = require('path');
 const fs = require('fs');
 
@@ -45,10 +45,14 @@ describe('Page Structure and Navigation Tests', () => {
     let browser;
     let page;
     let browserLaunchError;
+    let browserLaunchWarningShown = false;
 
     const withBrowser = async (callback) => {
         if (browserLaunchError) {
-            console.warn(`Skipping browser assertion: ${browserLaunchError.message}`);
+            if (!browserLaunchWarningShown) {
+                console.warn(`Skipping browser assertions: ${browserLaunchError.message}`);
+                browserLaunchWarningShown = true;
+            }
             return;
         }
 
@@ -57,13 +61,9 @@ describe('Page Structure and Navigation Tests', () => {
 
     beforeAll(async () => {
         try {
-            browser = await puppeteer.launch({
-                headless: 'new',
-                pipe: true,
-                args: ['--no-sandbox', '--disable-setuid-sandbox']
-            });
+            browser = await launchBrowser();
             page = await browser.newPage();
-            await page.setViewport(TEST_CONFIG.viewport);
+            await page.setViewportSize(TEST_CONFIG.viewport);
         } catch (error) {
             browserLaunchError = error;
         }
