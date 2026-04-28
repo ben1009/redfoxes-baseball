@@ -111,28 +111,16 @@ describe('Video Autopause Feature', () => {
             .replace('<head>', `<head><base href="${baseUrl}/">`);
         await page.setContent(html, { waitUntil: 'domcontentloaded', timeout: TEST_CONFIG.timeout });
 
-        // Check if already logged in (main content visible)
-        const isLoggedIn = await page.evaluate(() => {
-            return document.getElementById('mainContent')?.classList.contains('visible');
+        // Bypass the password gate in this CI-focused smoke test so we can
+        // exercise the autoplay behavior without depending on crypto/subtle
+        // support from an opaque document origin.
+        await page.evaluate(() => {
+            sessionStorage.setItem('baseball_auth', 'true');
+            const overlay = document.getElementById('passwordOverlay');
+            const mainContent = document.getElementById('mainContent');
+            if (overlay) overlay.style.display = 'none';
+            if (mainContent) mainContent.classList.add('visible');
         });
-
-        if (!isLoggedIn) {
-            // Wait for password input
-            await page.waitForSelector('#passwordInput', { timeout: 5000 });
-            await new Promise(r => setTimeout(r, 100));
-
-            // Enter password
-            await page.type('#passwordInput', TEST_CONFIG.password);
-
-            // Click button via evaluate
-            await page.evaluate(() => {
-                const btn = document.querySelector('.password-btn');
-                if (btn) btn.click();
-            });
-
-            // Wait for main content
-            await page.waitForSelector('#mainContent.visible', { timeout: 5000 });
-        }
 
         // Manually trigger autopause init so we don't have to wait for the 'load'
         // event, which can be delayed by slow external iframe resources.
