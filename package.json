@@ -5,7 +5,7 @@
   "main": "index.html",
   "scripts": {
     "test": "jest --passWithNoTests",
-    "test:ci": "jest --passWithNoTests --runInBand test/indexer.test.js test/search.test.js test/video_autopause.test.js",
+    "test:ci": "jest --passWithNoTests --runInBand test/indexer.test.js test/video_autopause.test.js",
     "test:video": "jest test/video_autopause.test.js --verbose",
     "test:standalone": "node test/test_autopause.js",
     "playwright:install": "playwright install --with-deps chromium"
