@@ -11,25 +11,43 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test:
+  indexer:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
+
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20'
-        
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run indexer tests
+      run: npm run test:ci:indexer
+
+  video:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
     - name: Install dependencies
       run: npm install
 
     - name: Install Playwright browsers
       run: npm run playwright:install
 
-    - name: Run tests
+    - name: Run video tests
       env:
         TEST_PASSWORD: ${{ secrets.TEST_PASSWORD || '1972' }}
-      run: npm run test:ci
+      run: npm run test:ci:video
