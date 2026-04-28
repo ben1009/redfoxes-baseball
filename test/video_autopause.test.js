@@ -105,11 +105,11 @@ describe('Video Autopause Feature', () => {
             return;
         }
 
-        // Load the page
-        const pageUrl = `${baseUrl}${MATCH_REVIEW_PATH}`;
-        // Use 'domcontentloaded' instead of waiting for full load so the
-        // remote Bilibili iframe requests do not block the test.
-        await page.goto(pageUrl, { waitUntil: 'domcontentloaded', timeout: TEST_CONFIG.timeout });
+        // Load the page HTML directly to avoid navigation aborts in CI while
+        // still resolving relative assets against the local test server.
+        const html = fs.readFileSync(path.resolve(REPO_ROOT, MATCH_REVIEW_PATH.slice(1)), 'utf8')
+            .replace('<head>', `<head><base href="${baseUrl}/">`);
+        await page.setContent(html, { waitUntil: 'domcontentloaded', timeout: TEST_CONFIG.timeout });
 
         // Check if already logged in (main content visible)
         const isLoggedIn = await page.evaluate(() => {
