@@ -4,6 +4,8 @@
  */
 
 const { launchBrowser } = require('./browser');
+const http = require('http');
+const fs = require('fs');
 const path = require('path');
 
 const TEST_CONFIG = {
@@ -13,9 +15,14 @@ const TEST_CONFIG = {
     timeout: 30000
 };
 
+const REPO_ROOT = path.resolve(__dirname, '..');
+const MATCH_REVIEW_PATH = '/match_review.html';
+
 describe('Video Autopause Feature', () => {
     let browser;
     let page;
+    let server;
+    let baseUrl;
     let browserLaunchError;
     let browserLaunchWarningShown = false;
 
@@ -33,6 +40,42 @@ describe('Video Autopause Feature', () => {
 
     beforeAll(async () => {
         try {
+            server = http.createServer((req, res) => {
+                const requestPath = decodeURIComponent((req.url || '/').split('?')[0]);
+                const relativePath = requestPath === '/' ? MATCH_REVIEW_PATH : requestPath;
+                const filePath = path.resolve(REPO_ROOT, '.' + relativePath);
+
+                if (!filePath.startsWith(REPO_ROOT) || !fs.existsSync(filePath)) {
+                    res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+                    res.end('Not found');
+                    return;
+                }
+
+                const ext = path.extname(filePath).toLowerCase();
+                const contentType = {
+                    '.html': 'text/html; charset=utf-8',
+                    '.js': 'application/javascript; charset=utf-8',
+                    '.css': 'text/css; charset=utf-8',
+                    '.svg': 'image/svg+xml',
+                    '.png': 'image/png',
+                    '.jpg': 'image/jpeg',
+                    '.jpeg': 'image/jpeg',
+                    '.ico': 'image/x-icon'
+                }[ext] || 'application/octet-stream';
+
+                res.writeHead(200, { 'Content-Type': contentType });
+                fs.createReadStream(filePath).pipe(res);
+            });
+
+            await new Promise((resolve, reject) => {
+                server.once('error', reject);
+                server.listen(0, '127.0.0.1', () => {
+                    const address = server.address();
+                    baseUrl = `http://127.0.0.1:${address.port}`;
+                    resolve();
+                });
+            });
+
             browser = await launchBrowser();
             page = await browser.newPage();
             await page.setViewportSize(TEST_CONFIG.viewport);
@@ -44,6 +87,9 @@ describe('Video Autopause Feature', () => {
     afterAll(async () => {
         if (browser) {
             await browser.close();
+        }
+        if (server) {
+            await new Promise(resolve => server.close(resolve));
         }
     });
 
@@ -60,10 +106,10 @@ describe('Video Autopause Feature', () => {
         }
 
         // Load the page
-        const filePath = 'file://' + path.resolve(__dirname, '../match_review.html');
-        // Use 'domcontentloaded' instead of 'networkidle2' to avoid hanging on
-        // persistent connections inside Bilibili iframes.
-        await page.goto(filePath, { waitUntil: 'domcontentloaded', timeout: TEST_CONFIG.timeout });
+        const pageUrl = `${baseUrl}${MATCH_REVIEW_PATH}`;
+        // Use 'domcontentloaded' instead of waiting for full load so the
+        // remote Bilibili iframe requests do not block the test.
+        await page.goto(pageUrl, { waitUntil: 'domcontentloaded', timeout: TEST_CONFIG.timeout });
 
         // Check if already logged in (main content visible)
         const isLoggedIn = await page.evaluate(() => {
