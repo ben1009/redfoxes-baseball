@@ -17,6 +17,7 @@ const TEST_CONFIG = {
 
 const REPO_ROOT = path.resolve(__dirname, '..');
 const MATCH_REVIEW_PATH = '/match_review.html';
+const TEST_ORIGIN_PATH = '/__test_origin.html';
 
 describe('Video Autopause Feature', () => {
     let browser;
@@ -42,6 +43,13 @@ describe('Video Autopause Feature', () => {
         try {
             server = http.createServer((req, res) => {
                 const requestPath = decodeURIComponent((req.url || '/').split('?')[0]);
+
+                if (requestPath === TEST_ORIGIN_PATH) {
+                    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+                    res.end('<!DOCTYPE html><html><head></head><body></body></html>');
+                    return;
+                }
+
                 const relativePath = requestPath === '/' ? MATCH_REVIEW_PATH : requestPath;
                 const filePath = path.resolve(REPO_ROOT, '.' + relativePath);
 
@@ -79,6 +87,9 @@ describe('Video Autopause Feature', () => {
             browser = await launchBrowser();
             page = await browser.newPage();
             await page.setViewportSize(TEST_CONFIG.viewport);
+            page.setDefaultTimeout(5000);
+            page.setDefaultNavigationTimeout(5000);
+            await page.route(/^https?:\/\//, route => route.abort());
         } catch (error) {
             browserLaunchError = error;
         }
@@ -109,6 +120,10 @@ describe('Video Autopause Feature', () => {
         // still resolving relative assets against the local test server.
         const html = fs.readFileSync(path.resolve(REPO_ROOT, MATCH_REVIEW_PATH.slice(1)), 'utf8')
             .replace('<head>', `<head><base href="${baseUrl}/">`);
+        await page.goto(`${baseUrl}${TEST_ORIGIN_PATH}`, {
+            waitUntil: 'domcontentloaded',
+            timeout: 5000
+        });
         await page.setContent(html, { waitUntil: 'domcontentloaded', timeout: TEST_CONFIG.timeout });
 
         // Bypass the password gate in this CI-focused smoke test so we can
@@ -185,7 +200,11 @@ describe('Video Autopause Feature', () => {
 
         // Scroll first video into view and ensure iframe is present
         await containerHandle.evaluate(el => el.scrollIntoView({ block: 'center' }));
-        await page.waitForFunction(el => !!el.querySelector('iframe'), containerHandle);
+        await page.waitForFunction(
+            el => !!el.querySelector('iframe'),
+            containerHandle,
+            { timeout: 5000 }
+        );
 
         // Verify iframe exists before scroll
         const iframeBefore = await containerHandle.$('iframe');
@@ -197,7 +216,11 @@ describe('Video Autopause Feature', () => {
         await page.evaluate(() => {
             window.scrollTo(0, document.body.scrollHeight);
         });
-        await page.waitForFunction(el => !el.querySelector('iframe'), containerHandle);
+        await page.waitForFunction(
+            el => !el.querySelector('iframe'),
+            containerHandle,
+            { timeout: 5000 }
+        );
 
         // Verify iframe was removed
         const iframeAfterScroll = await containerHandle.$('iframe');
@@ -211,7 +234,11 @@ describe('Video Autopause Feature', () => {
         await page.evaluate(() => {
             window.scrollTo(0, 0);
         });
-        await page.waitForFunction(el => !!el.querySelector('iframe'), containerHandle);
+        await page.waitForFunction(
+            el => !!el.querySelector('iframe'),
+            containerHandle,
+            { timeout: 5000 }
+        );
 
         // Verify iframe was restored
         const iframeRestored = await containerHandle.$('iframe');
@@ -229,7 +256,11 @@ describe('Video Autopause Feature', () => {
         const containerHandle = await page.$('.video-container');
         expect(containerHandle).not.toBeNull();
         await containerHandle.evaluate(el => el.scrollIntoView({ block: 'center' }));
-        await page.waitForFunction(el => !!el.querySelector('iframe'), containerHandle);
+        await page.waitForFunction(
+            el => !!el.querySelector('iframe'),
+            containerHandle,
+            { timeout: 5000 }
+        );
 
         const firstVideo = await containerHandle.$('iframe');
         expect(firstVideo).not.toBeNull();
@@ -241,16 +272,28 @@ describe('Video Autopause Feature', () => {
         await page.evaluate(() => {
             window.scrollTo(0, document.body.scrollHeight);
         });
-        await page.waitForFunction(el => !el.querySelector('iframe'), containerHandle);
+        await page.waitForFunction(
+            el => !el.querySelector('iframe'),
+            containerHandle,
+            { timeout: 5000 }
+        );
 
         await page.evaluate(() => {
             window.scrollTo(0, 0);
         });
-        await page.waitForFunction(el => !!el.querySelector('iframe'), containerHandle);
+        await page.waitForFunction(
+            el => !!el.querySelector('iframe'),
+            containerHandle,
+            { timeout: 5000 }
+        );
 
         // Scroll back into view to restore iframe
         await containerHandle.evaluate(el => el.scrollIntoView({ block: 'center' }));
-        await page.waitForFunction(el => !!el.querySelector('iframe'), containerHandle);
+        await page.waitForFunction(
+            el => !!el.querySelector('iframe'),
+            containerHandle,
+            { timeout: 5000 }
+        );
 
         const currentVideo = await page.$('.video-container iframe');
         expect(currentVideo).not.toBeNull();

@@ -43,6 +43,9 @@ describe('Search UI Tests', () => {
             browser = await launchBrowser();
             page = await browser.newPage();
             await page.setViewportSize(TEST_CONFIG.viewport);
+            page.setDefaultTimeout(5000);
+            page.setDefaultNavigationTimeout(5000);
+            await page.route(/^https?:\/\//, route => route.abort());
         } catch (error) {
             browserLaunchError = error;
         }
@@ -420,14 +423,19 @@ describe('Search UI Tests', () => {
             await page.evaluate(() => {
                 window._searchFetchStarted = false;
                 const origFetch = window.fetch;
-                window.fetch = async (url, options) => {
-                    if (String(url).includes('site-search')) {
-                        window._searchFetchStarted = true;
-                        // Slow fetch that never resolves during the test
-                        return new Promise(() => {});
-                    }
-                    return origFetch(url, options);
-                };
+	                window.fetch = async (url, options) => {
+	                    if (String(url).includes('site-search')) {
+	                        window._searchFetchStarted = true;
+	                        return new Promise((resolve, reject) => {
+	                            if (options && options.signal) {
+	                                options.signal.addEventListener('abort', () => {
+	                                    reject(new DOMException('Aborted', 'AbortError'));
+	                                });
+	                            }
+	                        });
+	                    }
+	                    return origFetch(url, options);
+	                };
             });
 
             // Open modal

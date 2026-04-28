@@ -64,6 +64,9 @@ describe('Page Structure and Navigation Tests', () => {
             browser = await launchBrowser();
             page = await browser.newPage();
             await page.setViewportSize(TEST_CONFIG.viewport);
+            page.setDefaultTimeout(5000);
+            page.setDefaultNavigationTimeout(5000);
+            await page.route(/^https?:\/\//, route => route.abort());
         } catch (error) {
             browserLaunchError = error;
         }
