@@ -801,7 +801,7 @@ describe('Page Structure and Navigation Tests', () => {
 
         test('should not double-count on rapid clicks', async () => withBrowser(async () => {
             // Mock fetch for deterministic counting
-            await page.evaluateOnNewDocument(() => {
+            await page.addInitScript(() => {
                 window.__testLikeCount = 0;
                 const origFetch = window.fetch;
                 window.fetch = async (url, opts) => {
@@ -848,7 +848,7 @@ describe('Page Structure and Navigation Tests', () => {
 
         test('should persist liked state in localStorage', async () => withBrowser(async () => {
             // Mock fetch to avoid network/rate-limit flakiness in tests
-            await page.evaluateOnNewDocument(() => {
+            await page.addInitScript(() => {
                 window.__testLikeCount = 0;
                 const origFetch = window.fetch;
                 window.fetch = async (url, opts) => {
@@ -906,7 +906,7 @@ describe('Page Structure and Navigation Tests', () => {
 
         test('should not toggle state on rate-limited response', async () => withBrowser(async () => {
             // Mock fetch: like succeeds, unlike is rate-limited
-            await page.evaluateOnNewDocument(() => {
+            await page.addInitScript(() => {
                 window.__testLikeCount = 0;
                 const origFetch = window.fetch;
                 window.fetch = async (url, opts) => {
@@ -964,7 +964,7 @@ describe('Page Structure and Navigation Tests', () => {
 
         test('should animate only on successful like', async () => withBrowser(async () => {
             // Mock fetch: first like succeeds, second unlike is rate-limited
-            await page.evaluateOnNewDocument(() => {
+            await page.addInitScript(() => {
                 window.__testLikeCount = 0;
                 window.__actionAttempts = 0;
                 const origFetch = window.fetch;
@@ -1035,7 +1035,7 @@ describe('Page Structure and Navigation Tests', () => {
         }));
 
         test('should not animate when post falls back after API failure', async () => withBrowser(async () => {
-            await page.evaluateOnNewDocument(() => {
+            await page.addInitScript(() => {
                 window.__testLikeCount = 0;
                 window.__actionAttempts = 0;
                 const origFetch = window.fetch;
@@ -1091,7 +1091,7 @@ describe('Page Structure and Navigation Tests', () => {
         test('should not animate when apiFailed early fallback is used', async () => withBrowser(async () => {
             // Mock fetch so initial GET /count fails, forcing apiFailed = true.
             // POST would succeed, but the early-return path should skip it.
-            await page.evaluateOnNewDocument(() => {
+            await page.addInitScript(() => {
                 window.__testLikeCount = 0;
                 const origFetch = window.fetch;
                 window.fetch = async (url, opts) => {

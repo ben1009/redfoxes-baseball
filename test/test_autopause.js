@@ -92,7 +92,10 @@ async function runTest() {
         for (let attempt = 0; attempt < 3 && visibleAfter; attempt++) {
             await lastContainer.evaluate(el => el.scrollIntoView({ block: 'end' }));
             await page.mouse.wheel(0, 1600);
-            await page.waitForTimeout(750);
+            await page.waitForFunction(el => {
+                const rect = el.getBoundingClientRect();
+                return rect.bottom <= 0 || rect.top >= window.innerHeight;
+            }, firstVideo, { timeout: 1000 }).catch(() => {});
             visibleAfter = await firstVideo.evaluate(el => {
                 const rect = el.getBoundingClientRect();
                 return rect.top >= 0 && rect.bottom <= window.innerHeight;
