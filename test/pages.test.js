@@ -742,7 +742,7 @@ describe('Page Structure and Navigation Tests', () => {
             await page.waitForFunction(() => {
                 const countEl = document.querySelector('.like-count');
                 return countEl && /^\d+$/.test(countEl.textContent);
-            }, { timeout: 5000 });
+            }, undefined, { timeout: 5000 });
 
             const countText = await likeCount.evaluate(el => el.textContent);
             expect(countText).toMatch(/^\d+$/);
@@ -766,7 +766,7 @@ describe('Page Structure and Navigation Tests', () => {
             await page.waitForFunction(() => {
                 const countEl = document.querySelector('.like-count');
                 return countEl && /^\d+$/.test(countEl.textContent);
-            }, { timeout: 5000 });
+            }, undefined, { timeout: 5000 });
 
             const likeBtn = await page.$('.like-btn');
             expect(likeBtn).not.toBeNull();
@@ -780,7 +780,7 @@ describe('Page Structure and Navigation Tests', () => {
             await page.waitForFunction(() => {
                 const btn = document.querySelector('.like-btn');
                 return btn && btn.classList.contains('liked');
-            }, { timeout: 5000 });
+            }, undefined, { timeout: 5000 });
 
             isLiked = await likeBtn.evaluate(el => el.classList.contains('liked'));
             expect(isLiked).toBe(true);
@@ -793,7 +793,7 @@ describe('Page Structure and Navigation Tests', () => {
             await page.waitForFunction(() => {
                 const btn = document.querySelector('.like-btn');
                 return btn && !btn.classList.contains('liked');
-            }, { timeout: 5000 });
+            }, undefined, { timeout: 5000 });
 
             isLiked = await likeBtn.evaluate(el => el.classList.contains('liked'));
             expect(isLiked).toBe(false);
@@ -828,7 +828,7 @@ describe('Page Structure and Navigation Tests', () => {
             await page.waitForFunction(() => {
                 const countEl = document.querySelector('.like-count');
                 return countEl && /^\d+$/.test(countEl.textContent);
-            }, { timeout: 5000 });
+            }, undefined, { timeout: 5000 });
 
             const likeBtn = await page.$('.like-btn');
             const initialCount = parseInt(await page.$eval('.like-count', el => el.textContent), 10);
@@ -875,7 +875,7 @@ describe('Page Structure and Navigation Tests', () => {
             await page.waitForFunction(() => {
                 const countEl = document.querySelector('.like-count');
                 return countEl && /^\d+$/.test(countEl.textContent);
-            }, { timeout: 5000 });
+            }, undefined, { timeout: 5000 });
 
             const likeBtn = await page.$('.like-btn');
 
@@ -884,7 +884,7 @@ describe('Page Structure and Navigation Tests', () => {
             await page.waitForFunction(() => {
                 const btn = document.querySelector('.like-btn');
                 return btn && btn.classList.contains('liked');
-            }, { timeout: 5000 });
+            }, undefined, { timeout: 5000 });
 
             // Verify localStorage
             const stored = await page.evaluate(() => localStorage.getItem('sponsor_me_liked_v1'));
@@ -897,7 +897,7 @@ describe('Page Structure and Navigation Tests', () => {
             await page.waitForFunction(() => {
                 const countEl = document.querySelector('.like-count');
                 return countEl && /^\d+$/.test(countEl.textContent);
-            }, { timeout: 5000 });
+            }, undefined, { timeout: 5000 });
 
             const reloadedBtn = await page.$('.like-btn');
             const isLiked = await reloadedBtn.evaluate(el => el.classList.contains('liked'));
@@ -937,7 +937,7 @@ describe('Page Structure and Navigation Tests', () => {
             await page.waitForFunction(() => {
                 const countEl = document.querySelector('.like-count');
                 return countEl && /^\d+$/.test(countEl.textContent);
-            }, { timeout: 5000 });
+            }, undefined, { timeout: 5000 });
 
             const likeBtn = await page.$('.like-btn');
 
@@ -949,7 +949,7 @@ describe('Page Structure and Navigation Tests', () => {
             await page.waitForFunction(() => {
                 const btn = document.querySelector('.like-btn');
                 return btn && btn.classList.contains('liked');
-            }, { timeout: 5000 });
+            }, undefined, { timeout: 5000 });
             expect(await likeBtn.evaluate(el => el.classList.contains('liked'))).toBe(true);
 
             // Second click — unlike is rate-limited, should NOT toggle state
@@ -997,7 +997,7 @@ describe('Page Structure and Navigation Tests', () => {
             await page.waitForFunction(() => {
                 const countEl = document.querySelector('.like-count');
                 return countEl && /^\d+$/.test(countEl.textContent);
-            }, { timeout: 5000 });
+            }, undefined, { timeout: 5000 });
 
             const likeBtn = await page.$('.like-btn');
 
@@ -1006,7 +1006,7 @@ describe('Page Structure and Navigation Tests', () => {
             await page.waitForFunction(() => {
                 const btn = document.querySelector('.like-btn');
                 return btn && btn.classList.contains('liked');
-            }, { timeout: 5000 });
+            }, undefined, { timeout: 5000 });
 
             const hadPopAfterSuccess = await page.evaluate(() => {
                 const icon = document.querySelector('.like-icon');
@@ -1064,7 +1064,7 @@ describe('Page Structure and Navigation Tests', () => {
             await page.waitForFunction(() => {
                 const countEl = document.querySelector('.like-count');
                 return countEl && /^\d+$/.test(countEl.textContent);
-            }, { timeout: 5000 });
+            }, undefined, { timeout: 5000 });
 
             const likeBtn = await page.$('.like-btn');
 
@@ -1072,7 +1072,7 @@ describe('Page Structure and Navigation Tests', () => {
             await page.waitForFunction(() => {
                 const btn = document.querySelector('.like-btn');
                 return btn && btn.classList.contains('liked');
-            }, { timeout: 5000 });
+            }, undefined, { timeout: 5000 });
 
             const hasPopAfterFallback = await page.evaluate(() => {
                 const icon = document.querySelector('.like-icon');
@@ -1116,7 +1116,7 @@ describe('Page Structure and Navigation Tests', () => {
             await page.waitForFunction(() => {
                 const countEl = document.querySelector('.like-count');
                 return countEl && /^\d+$/.test(countEl.textContent);
-            }, { timeout: 5000 });
+            }, undefined, { timeout: 5000 });
 
             const likeBtn = await page.$('.like-btn');
 
@@ -1125,7 +1125,7 @@ describe('Page Structure and Navigation Tests', () => {
             await page.waitForFunction(() => {
                 const btn = document.querySelector('.like-btn');
                 return btn && btn.classList.contains('liked');
-            }, { timeout: 5000 });
+            }, undefined, { timeout: 5000 });
 
             const hasPopAfterApiFailedFallback = await page.evaluate(() => {
                 const icon = document.querySelector('.like-icon');

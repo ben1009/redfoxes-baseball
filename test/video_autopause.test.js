@@ -104,6 +104,7 @@ describe('Video Autopause Feature', () => {
         // Wait for all 7 video containers to exist
         await page.waitForFunction(
             () => document.querySelectorAll('.video-container').length === 7,
+            undefined,
             { timeout: 5000 }
         );
         const containers = await page.$$('.video-container');
@@ -118,6 +119,7 @@ describe('Video Autopause Feature', () => {
                     c => !!c.dataset.src || !!c.querySelector('iframe')
                 );
             },
+            undefined,
             { timeout: 5000 }
         );
 
