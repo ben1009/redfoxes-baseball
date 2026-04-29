@@ -11,25 +11,138 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test:
+  indexer:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
+
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20'
-        
+
     - name: Install dependencies
-      env:
-        PUPPETEER_SKIP_DOWNLOAD: 'true'
       run: npm install
 
-    - name: Run tests
+    - name: Run indexer tests
+      run: npm run test:ci:indexer
+
+  search:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: trigger
+            script: test:ci:search:trigger
+          - name: modal
+            script: test:ci:search:modal
+
+    name: search / ${{ matrix.name }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Install Playwright browsers
+      run: npm run playwright:install
+
+    - name: Run search tests
+      run: npm run ${{ matrix.script }}
+
+  pages:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: files
+            script: test:ci:pages:files
+            requires_browser: false
+          - name: index
+            script: test:ci:pages:index
+            requires_browser: true
+          - name: match-review
+            script: test:ci:pages:match-review
+            requires_browser: true
+          - name: u10-rules
+            script: test:ci:pages:u10-rules
+            requires_browser: true
+          - name: pony-u10-rules
+            script: test:ci:pages:pony-u10-rules
+            requires_browser: true
+          - name: groupstage
+            script: test:ci:pages:groupstage
+            requires_browser: true
+          - name: finalstage
+            script: test:ci:pages:finalstage
+            requires_browser: true
+          - name: sponsor
+            script: test:ci:pages:sponsor
+            requires_browser: true
+
+    name: pages / ${{ matrix.name }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Install Playwright browsers
+      if: ${{ matrix.requires_browser }}
+      run: npm run playwright:install
+
+    - name: Run pages tests
       env:
         TEST_PASSWORD: ${{ secrets.TEST_PASSWORD || '1972' }}
-        PUPPETEER_SKIP_DOWNLOAD: 'true'
-      run: npm test
+      run: npm run ${{ matrix.script }}
+
+  video:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: structure
+            script: test:ci:video:structure
+          - name: autopause
+            script: test:ci:video:autopause
+
+    name: video / ${{ matrix.name }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Install Playwright browsers
+      run: npm run playwright:install
+
+    - name: Run video tests
+      env:
+        TEST_PASSWORD: ${{ secrets.TEST_PASSWORD || '1972' }}
+      run: npm run ${{ matrix.script }}

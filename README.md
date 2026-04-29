@@ -174,7 +174,7 @@ This site uses Google Analytics 4 to track visitor engagement and improve conten
 
 ## 🧪 Testing
 
-Comprehensive test suite with **161 tests** covering:
+Comprehensive test suite with **158 tests** covering:
 - Page structure and navigation tests
 - Video autopause functionality tests
 - Cross-page link verification
@@ -188,6 +188,7 @@ Comprehensive test suite with **161 tests** covering:
 Run tests locally:
 ```bash
 npm install
+npm run playwright:install
 npm test
 ```
 

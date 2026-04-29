@@ -1,7 +1,7 @@
 # Like Feature Design Document (Supabase Alternative)
 
 > 点赞功能设计文档（Supabase 备选方案）— Sponsor Page Global Like Counter
-> Last updated: 2026-04-21
+> Last updated: 2026-04-29
 
 ---
 
@@ -337,7 +337,7 @@ If the project chooses Supabase later, a safe migration path would be:
 
 ### 12.1 Automated Tests
 
-- Mock `/count`, `/like`, and `/unlike` responses in Puppeteer
+- Mock `/count`, `/like`, and `/unlike` responses in Playwright
 - Verify UI does not toggle when `rateLimited: true`
 - Verify rapid-click protection still limits changes to at most one successful transition
 - Verify localStorage fallback still works when fetch fails
@@ -380,3 +380,4 @@ For a single anonymous global like counter on a static site, Supabase is viable 
 |------|--------|
 | 2026-04-21 | Initial Supabase alternative RFC drafted for architecture comparison |
 | 2026-04-22 | Security hardening: CORS whitelist, IP anti-spoofing, error sanitization; frontend `updateUI()` cleanup; test coverage expanded |
+| 2026-04-29 | Updated testing references from Puppeteer to Playwright |

@@ -3,54 +3,156 @@
  * Tests site_search.js modal, keyboard navigation, and trigger injection
  */
 
-const puppeteer = require('puppeteer');
+const { launchBrowser } = require('./browser');
+const fs = require('fs');
+const http = require('http');
 const path = require('path');
 
 const TEST_CONFIG = {
     viewport: { width: 1280, height: 800 },
-    timeout: 30000
+    timeout: 10000
 };
 
+jest.setTimeout(TEST_CONFIG.timeout);
+
 const PAGE_PATHS = {
-    index: 'file://' + path.resolve(__dirname, '../index.html'),
-    matchReview: 'file://' + path.resolve(__dirname, '../match_review.html'),
-    rules: 'file://' + path.resolve(__dirname, '../u10_rules.html'),
-    ponyRules: 'file://' + path.resolve(__dirname, '../pony_u10_rules.html'),
-    groupstage: 'file://' + path.resolve(__dirname, '../tigercup_groupstage.html'),
-    finalstage: 'file://' + path.resolve(__dirname, '../tigercup_finalstage.html'),
-    sponsor: 'file://' + path.resolve(__dirname, '../sponsor_me.html')
+    index: 'index.html',
+    matchReview: 'match_review.html',
+    rules: 'u10_rules.html',
+    ponyRules: 'pony_u10_rules.html',
+    groupstage: 'tigercup_groupstage.html',
+    finalstage: 'tigercup_finalstage.html',
+    sponsor: 'sponsor_me.html'
 };
+
+const REPO_ROOT = path.resolve(__dirname, '..');
+const SITE_SEARCH_JS = fs.readFileSync(path.resolve(REPO_ROOT, 'site_search.js'), 'utf8');
+const GTAG_STUB_JS = `window.dataLayer = window.dataLayer || [];
+window.gtag = window.gtag || function(){ dataLayer.push(arguments); };`;
+
+function contentTypeFor(filePath) {
+    if (filePath.endsWith('.html')) return 'text/html; charset=utf-8';
+    if (filePath.endsWith('.js')) return 'text/javascript; charset=utf-8';
+    if (filePath.endsWith('.css')) return 'text/css; charset=utf-8';
+    if (filePath.endsWith('.svg')) return 'image/svg+xml';
+    if (filePath.endsWith('.png')) return 'image/png';
+    if (filePath.endsWith('.jpg') || filePath.endsWith('.jpeg')) return 'image/jpeg';
+    return 'application/octet-stream';
+}
+
+function createStaticServer() {
+    return http.createServer((req, res) => {
+        const requestUrl = new URL(req.url, 'http://127.0.0.1');
+        const pathname = decodeURIComponent(requestUrl.pathname === '/' ? '/index.html' : requestUrl.pathname);
+
+        if (pathname === '/__blank.html') {
+            res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+            res.end('<!doctype html><html><head><meta charset="utf-8"></head><body></body></html>');
+            return;
+        }
+
+        const filePath = path.resolve(REPO_ROOT, pathname.slice(1));
+
+        if (!filePath.startsWith(REPO_ROOT + path.sep) && filePath !== REPO_ROOT) {
+            res.writeHead(403);
+            res.end('Forbidden');
+            return;
+        }
+
+        fs.readFile(filePath, (error, body) => {
+            if (error) {
+                res.writeHead(404);
+                res.end('Not found');
+                return;
+            }
+
+            res.writeHead(200, { 'Content-Type': contentTypeFor(filePath) });
+            res.end(body);
+        });
+    });
+}
+
+function prepareHtml(pagePath, baseUrl, injectedScripts = []) {
+    const filePath = path.resolve(REPO_ROOT, pagePath);
+    const html = fs.readFileSync(filePath, 'utf8')
+        .replace(/<script\b[^>]*src=["'][^"']+["'][^>]*><\/script>\s*/gi, '')
+        .replace('<head>', `<head><base href="${baseUrl}/"><script>${GTAG_STUB_JS}</script>`);
+
+    const injectionBlock = injectedScripts
+        .filter(Boolean)
+        .map(script => `<script>${script}</script>`)
+        .join('\n');
+
+    return html.replace('</body>', `${injectionBlock}</body>`);
+}
 
 describe('Search UI Tests', () => {
     let browser;
     let page;
+    let server;
+    let baseUrl;
     let browserLaunchError;
+    let browserLaunchWarningShown = false;
 
     const withBrowser = async (callback) => {
         if (browserLaunchError) {
-            console.warn(`Skipping browser assertion: ${browserLaunchError.message}`);
+            if (!browserLaunchWarningShown) {
+                console.warn(`Skipping browser assertions: ${browserLaunchError.message}`);
+                browserLaunchWarningShown = true;
+            }
             return;
         }
         await callback();
     };
 
+    const loadPage = async (pagePath) => {
+        // `setContent()` replaces the current document, so an extra navigation
+        // only adds a failure-prone hop in CI.
+        await page.setContent(prepareHtml(pagePath, baseUrl, [SITE_SEARCH_JS]), {
+            waitUntil: 'domcontentloaded',
+            timeout: TEST_CONFIG.timeout
+        });
+    };
+
     beforeAll(async () => {
         try {
-            browser = await puppeteer.launch({
-                headless: 'new',
-                pipe: true,
-                args: ['--no-sandbox', '--disable-setuid-sandbox']
+            server = createStaticServer();
+            await new Promise((resolve, reject) => {
+                server.once('error', reject);
+                server.listen(0, '127.0.0.1', () => {
+                    server.off('error', reject);
+                    resolve();
+                });
             });
+            baseUrl = `http://127.0.0.1:${server.address().port}`;
+
+            browser = await launchBrowser();
             page = await browser.newPage();
-            await page.setViewport(TEST_CONFIG.viewport);
+            await page.setViewportSize(TEST_CONFIG.viewport);
+            page.setDefaultTimeout(5000);
+            page.setDefaultNavigationTimeout(5000);
+            await page.route(/^https?:\/\//, async route => {
+                const hostname = new URL(route.request().url()).hostname;
+                if (hostname === '127.0.0.1' || hostname === 'localhost') {
+                    await route.continue();
+                    return;
+                }
+                await route.abort();
+            });
         } catch (error) {
             browserLaunchError = error;
         }
     }, TEST_CONFIG.timeout);
 
     afterAll(async () => {
+        if (page) {
+            await page.close({ runBeforeUnload: false }).catch(() => {});
+        }
         if (browser) {
             await browser.close();
+        }
+        if (server) {
+            await new Promise(resolve => server.close(resolve));
         }
     });
 
@@ -59,7 +161,7 @@ describe('Search UI Tests', () => {
 
         test.each(pages)('should inject search trigger on %s', async (_, url) => {
             await withBrowser(async () => {
-                await page.goto(url, { waitUntil: 'domcontentloaded' });
+                await loadPage(url);
                 // Wait a tick for deferred script
                 await page.waitForTimeout(100);
                 const trigger = await page.$('#site-search-trigger');
@@ -72,7 +174,7 @@ describe('Search UI Tests', () => {
         test('trigger should be inside nav-container on rules pages', async () => withBrowser(async () => {
             const navPages = [PAGE_PATHS.rules, PAGE_PATHS.ponyRules, PAGE_PATHS.groupstage, PAGE_PATHS.finalstage];
             for (const url of navPages) {
-                await page.goto(url, { waitUntil: 'domcontentloaded' });
+                await loadPage(url);
                 await page.waitForTimeout(100);
                 const parent = await page.$eval('#site-search-trigger', el => el.parentElement?.className);
                 expect(parent).toBe('nav-container');
@@ -82,7 +184,7 @@ describe('Search UI Tests', () => {
         test('trigger should be centered in header on index and match_review', async () => withBrowser(async () => {
             const headerPages = [PAGE_PATHS.index, PAGE_PATHS.matchReview];
             for (const url of headerPages) {
-                await page.goto(url, { waitUntil: 'domcontentloaded' });
+                await loadPage(url);
                 await page.waitForTimeout(100);
                 const wrap = await page.$('.search-trigger-header-wrap');
                 expect(wrap).not.toBeNull();
@@ -92,7 +194,7 @@ describe('Search UI Tests', () => {
         }));
 
         test('trigger should not overlap sponsor modal close button', async () => withBrowser(async () => {
-            await page.goto(PAGE_PATHS.sponsor, { waitUntil: 'domcontentloaded' });
+            await loadPage(PAGE_PATHS.sponsor);
             await page.waitForTimeout(100);
             const trigger = await page.$('#site-search-trigger');
             const box = await trigger.boundingBox();
@@ -105,7 +207,7 @@ describe('Search UI Tests', () => {
     describe('Modal Open / Close', () => {
         beforeEach(async () => {
             if (!browserLaunchError) {
-                await page.goto(PAGE_PATHS.index, { waitUntil: 'domcontentloaded' });
+                await loadPage(PAGE_PATHS.index);
                 await page.waitForTimeout(100);
             }
         });
@@ -159,7 +261,7 @@ describe('Search UI Tests', () => {
             await page.keyboard.down('Control');
             try {
                 await page.keyboard.press('KeyK');
-                await page.waitForSelector('#searchModal', { visible: true });
+                await page.waitForSelector('#searchModal', { state: 'visible' });
             } finally {
                 await page.keyboard.up('Control');
             }
@@ -168,7 +270,7 @@ describe('Search UI Tests', () => {
             expect(closeBtn).not.toBeNull();
 
             await closeBtn.click();
-            await page.waitForSelector('#searchModal', { hidden: true });
+            await page.waitForSelector('#searchModal', { state: 'hidden' });
 
             const modalClosed = await page.$eval('#searchModal', el => el.hidden).catch(() => false);
             expect(modalClosed).toBe(true);
@@ -177,13 +279,13 @@ describe('Search UI Tests', () => {
         test('close button is visible on mobile viewport', async () => withBrowser(async () => {
             try {
                 // Switch to mobile viewport
-                await page.setViewport({ width: 375, height: 667 });
+                await page.setViewportSize({ width: 375, height: 667 });
 
                 // Open modal
                 await page.keyboard.down('Control');
                 try {
                     await page.keyboard.press('KeyK');
-                    await page.waitForSelector('#searchModal', { visible: true });
+                    await page.waitForSelector('#searchModal', { state: 'visible' });
                 } finally {
                     await page.keyboard.up('Control');
                 }
@@ -198,7 +300,7 @@ describe('Search UI Tests', () => {
                 expect(isVisible).toBe(true);
             } finally {
                 // Restore desktop viewport
-                await page.setViewport(TEST_CONFIG.viewport);
+                await page.setViewportSize(TEST_CONFIG.viewport);
             }
         }));
 
@@ -218,7 +320,7 @@ describe('Search UI Tests', () => {
     describe('Search Result Rendering', () => {
         beforeEach(async () => {
             if (!browserLaunchError) {
-                await page.goto(PAGE_PATHS.index, { waitUntil: 'domcontentloaded' });
+                await loadPage(PAGE_PATHS.index);
                 await page.waitForTimeout(100);
             }
         });
@@ -350,7 +452,7 @@ describe('Search UI Tests', () => {
     describe('Keyboard Shortcut Safety', () => {
         beforeEach(async () => {
             if (!browserLaunchError) {
-                await page.goto(PAGE_PATHS.index, { waitUntil: 'domcontentloaded' });
+                await loadPage(PAGE_PATHS.index);
                 await page.waitForTimeout(100);
             }
         });
@@ -411,7 +513,7 @@ describe('Search UI Tests', () => {
     describe('Spinner Behavior', () => {
         beforeEach(async () => {
             if (!browserLaunchError) {
-                await page.goto(PAGE_PATHS.index, { waitUntil: 'domcontentloaded' });
+                await loadPage(PAGE_PATHS.index);
                 await page.waitForTimeout(100);
             }
         });
@@ -420,14 +522,23 @@ describe('Search UI Tests', () => {
             await page.evaluate(() => {
                 window._searchFetchStarted = false;
                 const origFetch = window.fetch;
-                window.fetch = async (url, options) => {
-                    if (String(url).includes('site-search')) {
-                        window._searchFetchStarted = true;
-                        // Slow fetch that never resolves during the test
-                        return new Promise(() => {});
-                    }
-                    return origFetch(url, options);
-                };
+	                window.fetch = async (url, options) => {
+	                    if (String(url).includes('site-search')) {
+	                        window._searchFetchStarted = true;
+	                        return new Promise((resolve, reject) => {
+	                            const timer = setTimeout(() => {
+	                                resolve({ ok: true, json: async () => ({ results: [] }) });
+	                            }, 1000);
+	                            if (options && options.signal) {
+	                                options.signal.addEventListener('abort', () => {
+	                                    clearTimeout(timer);
+	                                    reject(new DOMException('Aborted', 'AbortError'));
+	                                });
+	                            }
+	                        });
+	                    }
+	                    return origFetch(url, options);
+	                };
             });
 
             // Open modal
@@ -465,7 +576,7 @@ describe('Search UI Tests', () => {
 
     describe('Search Input Styling', () => {
         test('native search cancel button is hidden', async () => withBrowser(async () => {
-            await page.goto(PAGE_PATHS.index, { waitUntil: 'domcontentloaded' });
+            await loadPage(PAGE_PATHS.index);
             await page.waitForTimeout(100);
 
             const hasHiddenCancel = await page.evaluate(() => {
@@ -487,7 +598,7 @@ describe('Search UI Tests', () => {
     describe('Keyboard Navigation in Results', () => {
         beforeEach(async () => {
             if (!browserLaunchError) {
-                await page.goto(PAGE_PATHS.index, { waitUntil: 'domcontentloaded' });
+                await loadPage(PAGE_PATHS.index);
                 await page.waitForTimeout(100);
             }
         });

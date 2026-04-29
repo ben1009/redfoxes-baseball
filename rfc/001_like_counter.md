@@ -1,7 +1,7 @@
 # Like Feature Design Document
 
 > 点赞功能设计文档 — Sponsor Page Global Like Counter
-> Last updated: 2026-04-20
+> Last updated: 2026-04-29
 
 ---
 
@@ -247,16 +247,16 @@ Allows the GitHub Pages domain (or any domain) to call the Worker.
 
 ## 7. Testing Strategy
 
-### 7.1 Unit Tests (Puppeteer)
+### 7.1 Unit Tests (Playwright)
 
-See `test/pages.test.js` — Sponsor Page section:
+See `test/pages.sponsor_me.test.js` — Sponsor Page section:
 
 - **DOM presence**: Like widget, button, count, label all render
 - **Initial state**: Count is a number, button is unliked, aria-pressed is false
 - **Toggle interaction**: Click → liked, click again → unliked
 - **Rapid-click protection**: 5 rapid clicks result in count change ≤ 1
 - **Persistence**: localStorage survives page reload
-- **Mocked fetch**: Tests use `evaluateOnNewDocument` to mock Worker responses and avoid network flakiness
+- **Mocked fetch**: Tests use `addInitScript` to mock Worker responses and avoid network flakiness
 
 ### 7.2 Manual Testing Checklist
 
@@ -330,3 +330,4 @@ npx wrangler deploy
 | 2026-04-20 | Frontend state now only toggles on successful API response |
 | 2026-04-20 | Added `isProcessing` click lock to prevent rapid-fire double-counting |
 | 2026-04-20 | Migrated from KV-only to Durable Objects for atomic count operations |
+| 2026-04-29 | Updated testing references from Puppeteer to Playwright |
