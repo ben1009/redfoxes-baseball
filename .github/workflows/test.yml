@@ -31,6 +31,16 @@ jobs:
 
   search:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: trigger
+            script: test:ci:search:trigger
+          - name: modal
+            script: test:ci:search:modal
+
+    name: search / ${{ matrix.name }}
 
     steps:
     - name: Checkout code
@@ -48,7 +58,7 @@ jobs:
       run: npm run playwright:install
 
     - name: Run search tests
-      run: npm run test:ci:search
+      run: npm run ${{ matrix.script }}
 
   pages:
     runs-on: ubuntu-latest
@@ -106,6 +116,16 @@ jobs:
 
   video:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: structure
+            script: test:ci:video:structure
+          - name: autopause
+            script: test:ci:video:autopause
+
+    name: video / ${{ matrix.name }}
 
     steps:
     - name: Checkout code
@@ -125,4 +145,4 @@ jobs:
     - name: Run video tests
       env:
         TEST_PASSWORD: ${{ secrets.TEST_PASSWORD || '1972' }}
-      run: npm run test:ci:video
+      run: npm run ${{ matrix.script }}
