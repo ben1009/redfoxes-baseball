@@ -74,7 +74,7 @@ function createStaticServer() {
     });
 }
 
-function prepareHtml(pagePath, injectedScripts = []) {
+function prepareHtml(pagePath, baseUrl, injectedScripts = []) {
     const filePath = path.resolve(REPO_ROOT, pagePath);
     const html = fs.readFileSync(filePath, 'utf8')
         .replace(/<script\b[^>]*src=["'][^"']+["'][^>]*><\/script>\s*/gi, '')
@@ -129,7 +129,7 @@ describe('Page Structure and Navigation Tests', () => {
     const loadPage = async (pagePath) => {
         // `setContent()` gives us a clean document, so avoid a pre-navigation
         // that can be interrupted by Playwright in CI.
-        await page.setContent(prepareHtml(pagePath, IMAGE_MODAL_PAGES.has(pagePath) ? [IMAGE_MODAL_JS] : []), {
+        await page.setContent(prepareHtml(pagePath, baseUrl, IMAGE_MODAL_PAGES.has(pagePath) ? [IMAGE_MODAL_JS] : []), {
             waitUntil: 'domcontentloaded',
             timeout: TEST_CONFIG.timeout
         });

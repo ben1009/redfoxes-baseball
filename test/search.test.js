@@ -72,7 +72,7 @@ function createStaticServer() {
     });
 }
 
-function prepareHtml(pagePath, injectedScripts = []) {
+function prepareHtml(pagePath, baseUrl, injectedScripts = []) {
     const filePath = path.resolve(REPO_ROOT, pagePath);
     const html = fs.readFileSync(filePath, 'utf8')
         .replace(/<script\b[^>]*src=["'][^"']+["'][^>]*><\/script>\s*/gi, '')
@@ -108,7 +108,7 @@ describe('Search UI Tests', () => {
     const loadPage = async (pagePath) => {
         // `setContent()` replaces the current document, so an extra navigation
         // only adds a failure-prone hop in CI.
-        await page.setContent(prepareHtml(pagePath, [SITE_SEARCH_JS]), {
+        await page.setContent(prepareHtml(pagePath, baseUrl, [SITE_SEARCH_JS]), {
             waitUntil: 'domcontentloaded',
             timeout: TEST_CONFIG.timeout
         });
