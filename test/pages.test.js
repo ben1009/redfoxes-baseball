@@ -160,6 +160,12 @@ describe('Page Structure and Navigation Tests', () => {
                 }
                 await route.abort();
             });
+            // Start from a same-origin document once so later setContent calls
+            // keep access to browser storage APIs like localStorage.
+            await page.goto(`${baseUrl}/__blank.html`, {
+                waitUntil: 'commit',
+                timeout: TEST_CONFIG.timeout
+            });
         } catch (error) {
             browserLaunchError = error;
         }
