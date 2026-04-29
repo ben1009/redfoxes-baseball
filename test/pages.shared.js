@@ -144,11 +144,11 @@ function createPageHarness(defaultPagePath) {
                 await route.abort();
             });
 
-            // Only the sponsor suite needs an origin-preserving warmup so it can
-            // exercise localStorage behavior after subsequent setContent calls.
-            // Keep this best-effort so a slow blank-page navigation does not block
-            // every page suite in CI.
-            if (defaultPagePath === PAGE_PATHS.sponsor) {
+            // The match review and sponsor suites need an origin-preserving
+            // warmup so they can exercise secure-context APIs and localStorage
+            // after subsequent setContent calls. Keep this best-effort so a slow
+            // blank-page navigation does not block every page suite in CI.
+            if (defaultPagePath === PAGE_PATHS.matchReview || defaultPagePath === PAGE_PATHS.sponsor) {
                 await page.goto(`${baseUrl}/__blank.html`, {
                     waitUntil: 'commit',
                     timeout: 5000
