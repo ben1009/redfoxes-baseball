@@ -42,6 +42,13 @@ function createStaticServer() {
     return http.createServer((req, res) => {
         const requestUrl = new URL(req.url, 'http://127.0.0.1');
         const pathname = decodeURIComponent(requestUrl.pathname === '/' ? '/index.html' : requestUrl.pathname);
+
+        if (pathname === '/__blank.html') {
+            res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+            res.end('<!doctype html><html><head><meta charset="utf-8"></head><body></body></html>');
+            return;
+        }
+
         const filePath = path.resolve(REPO_ROOT, pathname.slice(1));
 
         if (!filePath.startsWith(REPO_ROOT + path.sep) && filePath !== REPO_ROOT) {
@@ -102,7 +109,17 @@ describe('Page Structure and Navigation Tests', () => {
     };
 
     const loadPage = async (pagePath) => {
-        await page.goto(`${baseUrl}/${pagePath}`, {
+        const filePath = path.resolve(REPO_ROOT, pagePath);
+        const html = fs.readFileSync(filePath, 'utf8').replace(
+            '<head>',
+            `<head><base href="${baseUrl}/">`
+        );
+
+        await page.goto(`${baseUrl}/__blank.html`, {
+            waitUntil: 'commit',
+            timeout: TEST_CONFIG.timeout
+        });
+        await page.setContent(html, {
             waitUntil: 'domcontentloaded',
             timeout: TEST_CONFIG.timeout
         });
