@@ -1,7 +1,7 @@
 # Hybrid Full-Text + Vector Search Design Document
 
 > 全站混合搜索设计文档 — Hybrid Search Across All Pages via Supabase
-> Last updated: 2026-04-22
+> Last updated: 2026-04-29
 
 ---
 
@@ -915,7 +915,7 @@ Add the search trigger and modal markup + JS to:
 - **Index script**: Verify all HTML pages produce at least one chunk; verify chunk body is non-empty
 - **SQL function**: Test with known queries against seeded data; verify RRF ordering
 - **Edge Function**: Mock OpenAI embedding response; verify response shape and CORS headers
-- **Frontend**: Puppeteer tests for modal open/close, keyboard navigation, result click
+- **Frontend**: Playwright tests for modal open/close, keyboard navigation, result click
 
 ### 13.2 Manual Checklist
 
@@ -1005,4 +1005,5 @@ The Edge Function uses `service_role` which bypasses RLS, so these policies are 
 | 2026-04-22 | Added category/tags fields and page-level metadata support |
 | 2026-04-22 | Added automatic embedding generation strategies (inline, cron, trigger) |
 | 2026-04-22 | Clarified OpenAI is indexing-only; expanded China availability guidance |
+| 2026-04-29 | Updated testing references from Puppeteer to Playwright |
 

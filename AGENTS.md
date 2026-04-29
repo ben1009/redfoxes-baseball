@@ -1,7 +1,7 @@
 # AGENTS.md - Red Foxes Baseball Team Website
 
 > This file provides essential context for AI coding agents working on this project.
-> Last updated: 2026-04-22
+> Last updated: 2026-04-29
 
 ---
 
@@ -72,9 +72,18 @@ redfoxes-baseball/
 │   └── README.md              # Legacy setup guide
 ├── README.md                  # Project documentation
 ├── AGENTS.md                  # This file
+├── test/
+│   ├── browser.js             # Playwright browser launcher (shared config)
+│   ├── pages.shared.js        # Shared test harness: static server, page harness
+│   ├── pages.*.test.js        # Per-page Jest + Playwright test suites
+│   ├── video_autopause.test.js # Video autopause tests
+│   ├── search.test.js         # Search modal tests
+│   ├── indexer.test.js        # Content indexer tests
+│   └── test_autopause.js      # Standalone autopause smoke test
 ├── rfc/
 │   ├── 001_like_counter.md    # Like feature architecture design (RFC)
-│   └── 002_supabase_like_counter.md # Active Supabase like counter design (RFC)
+│   ├── 002_supabase_like_counter.md # Active Supabase like counter design (RFC)
+│   └── 003_hybrid_search.md   # Hybrid search architecture design (RFC)
 ├── LICENSE                    # CC BY-NC-SA 4.0 License
 └── img/                       # Static image assets
     ├── baseball_field_bg.svg  # Aerial baseball field background
@@ -261,6 +270,13 @@ Tests include:
 - Image modal and lightbox coverage
 - Search modal open/close, keyboard navigation, and trigger injection
 
+### Testing Notes
+
+- **Playwright** is used for browser automation (migrated from Puppeteer in 2026-04)
+- The `--disable-crashpad-for-testing` Chromium flag must **not** be used — it silently breaks all network requests (`net::ERR_ABORTED`) in Playwright ≥1.59
+- `page.addInitScript()` only fires on `page.goto()` navigations, not `page.setContent()` — the test harness uses `page.goto()` with a prepared-HTML server endpoint for this reason
+- CI splits page tests into a matrix (one job per page) for faster feedback
+
 ### Deployment
 
 - Platform: GitHub Pages
@@ -355,7 +371,7 @@ The old Worker remains in `workers/` for reference and rollback:
 - Favicon displays in browser tab
 - Search trigger visible on all pages
 - `Cmd+K` opens search modal; `Esc` closes it
-- All tests pass (npm test)
+- All tests pass (`npm test` or `npm run test:ci` for the full CI matrix)
 
 ---
 
