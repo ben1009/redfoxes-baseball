@@ -5,7 +5,7 @@
   "main": "index.html",
   "scripts": {
     "test": "jest --passWithNoTests",
-    "test:ci": "npm run test:ci:indexer && npm run test:ci:search:trigger && npm run test:ci:search:modal && npm run test:ci:pages && npm run test:ci:video:structure && npm run test:ci:video:autopause",
+    "test:ci": "npm run test:ci:indexer && npm run test:ci:search:trigger && npm run test:ci:search:modal && npm run test:ci:pages:files && npm run test:ci:pages:index && npm run test:ci:pages:match-review && npm run test:ci:pages:u10-rules && npm run test:ci:pages:pony-u10-rules && npm run test:ci:pages:groupstage && npm run test:ci:pages:finalstage && npm run test:ci:pages:sponsor && npm run test:ci:video:structure && npm run test:ci:video:autopause",
     "test:ci:indexer": "jest --passWithNoTests --runInBand test/indexer.test.js",
     "test:ci:search": "npm run test:ci:search:trigger && npm run test:ci:search:modal",
     "test:ci:search:trigger": "jest --passWithNoTests --runInBand test/search.test.js -t \"Search Trigger on All Pages|Search Trigger Placement\"",
