@@ -42,13 +42,21 @@ function contentTypeFor(filePath) {
 }
 
 function createStaticServer() {
-    return http.createServer((req, res) => {
+    let preparedHtmlByPath = {};
+
+    const server = http.createServer((req, res) => {
         const requestUrl = new URL(req.url, 'http://127.0.0.1');
         const pathname = decodeURIComponent(requestUrl.pathname === '/' ? '/index.html' : requestUrl.pathname);
 
         if (pathname === '/__blank.html') {
             res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
             res.end('<!doctype html><html><head><meta charset="utf-8"></head><body></body></html>');
+            return;
+        }
+
+        if (pathname.startsWith('/__page/') && preparedHtmlByPath[pathname]) {
+            res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+            res.end(preparedHtmlByPath[pathname]);
             return;
         }
 
@@ -70,6 +78,12 @@ function createStaticServer() {
             res.end(body);
         });
     });
+
+    server.setPreparedHtml = function (pagePath, html) {
+        preparedHtmlByPath['/__page/' + pagePath] = html;
+    };
+
+    return server;
 }
 
 function prepareHtml(pagePath, baseUrl, injectedScripts = []) {
@@ -112,7 +126,9 @@ function createPageHarness(defaultPagePath) {
         }
 
         const injectedScripts = IMAGE_MODAL_PAGES.has(pagePath) ? [IMAGE_MODAL_JS] : [];
-        await page.setContent(prepareHtml(pagePath, baseUrl, injectedScripts), {
+        const html = prepareHtml(pagePath, baseUrl, injectedScripts);
+        server.setPreparedHtml(pagePath, html);
+        await page.goto(`${baseUrl}/__page/${pagePath}`, {
             waitUntil: 'domcontentloaded',
             timeout: TEST_CONFIG.timeout
         });

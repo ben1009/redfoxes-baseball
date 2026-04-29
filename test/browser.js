@@ -3,8 +3,7 @@ const { chromium } = require('playwright');
 const BROWSER_ARGS = [
     '--no-sandbox',
     '--disable-setuid-sandbox',
-    '--disable-crash-reporter',
-    '--disable-crashpad-for-testing'
+    '--disable-crash-reporter'
 ];
 
 function getChromiumExecutablePath() {
