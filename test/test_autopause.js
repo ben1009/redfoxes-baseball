@@ -6,6 +6,7 @@
 
 const { launchBrowser } = require('./browser');
 const fs = require('fs');
+const http = require('http');
 const path = require('path');
 
 const CONFIG = {
@@ -14,14 +15,66 @@ const CONFIG = {
     timeout: 10000
 };
 
+const REPO_ROOT = path.resolve(__dirname, '..');
+const MATCH_REVIEW_PATH = 'match_review.html';
+
+function contentTypeFor(filePath) {
+    if (filePath.endsWith('.html')) return 'text/html; charset=utf-8';
+    if (filePath.endsWith('.js')) return 'text/javascript; charset=utf-8';
+    if (filePath.endsWith('.css')) return 'text/css; charset=utf-8';
+    if (filePath.endsWith('.svg')) return 'image/svg+xml';
+    if (filePath.endsWith('.png')) return 'image/png';
+    if (filePath.endsWith('.jpg') || filePath.endsWith('.jpeg')) return 'image/jpeg';
+    return 'application/octet-stream';
+}
+
+function createStaticServer() {
+    return http.createServer((req, res) => {
+        const requestUrl = new URL(req.url, 'http://127.0.0.1');
+        const pathname = decodeURIComponent(requestUrl.pathname === '/' ? `/${MATCH_REVIEW_PATH}` : requestUrl.pathname);
+        const filePath = path.resolve(REPO_ROOT, pathname.slice(1));
+
+        if (!filePath.startsWith(REPO_ROOT + path.sep) && filePath !== REPO_ROOT) {
+            res.writeHead(403);
+            res.end('Forbidden');
+            return;
+        }
+
+        fs.readFile(filePath, (error, body) => {
+            if (error) {
+                res.writeHead(404);
+                res.end('Not found');
+                return;
+            }
+
+            res.writeHead(200, { 'Content-Type': contentTypeFor(filePath) });
+            res.end(body);
+        });
+    });
+}
+
 async function runTest() {
     console.log('🎬 Testing video autopause functionality...\n');
     
     let browser;
+    let server;
+    let baseUrl;
     try {
+        server = createStaticServer();
+        await new Promise((resolve, reject) => {
+            server.once('error', reject);
+            server.listen(0, '127.0.0.1', () => {
+                baseUrl = `http://127.0.0.1:${server.address().port}`;
+                resolve();
+            });
+        });
+
         browser = await launchBrowser();
     } catch (error) {
         console.warn(`Skipping standalone browser test: ${error.message}`);
+        if (server) {
+            await new Promise(resolve => server.close(resolve));
+        }
         return;
     }
     
@@ -29,10 +82,8 @@ async function runTest() {
         const page = await browser.newPage();
         await page.setViewportSize(CONFIG.viewport);
         
-        const pagePath = path.resolve(__dirname, '../match_review.html');
-        console.log('📄 Loading page:', `file://${pagePath}`);
-        const html = fs.readFileSync(pagePath, 'utf8');
-        await page.setContent(html, { waitUntil: 'load', timeout: 30000 });
+        console.log('📄 Loading page:', `${baseUrl}/${MATCH_REVIEW_PATH}`);
+        await page.goto(`${baseUrl}/${MATCH_REVIEW_PATH}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
         await page.evaluate(() => {
             const overlay = document.getElementById('passwordOverlay');
             const main = document.getElementById('mainContent');
@@ -42,9 +93,8 @@ async function runTest() {
         await page.waitForSelector('#mainContent.visible', { state: 'attached', timeout: 30000 });
         console.log('✅ Login bypassed for smoke test\n');
         
-        // Wait for iframes
-        await new Promise(r => setTimeout(r, 2000));
-        
+        await page.waitForSelector('.video-container iframe', { timeout: 30000 });
+
         // Test 1: Check video count
         console.log('Test 1: Check video count');
         const containers = await page.$$('.video-container');
@@ -144,6 +194,9 @@ async function runTest() {
     } finally {
         if (browser) {
             await browser.close();
+        }
+        if (server) {
+            await new Promise(resolve => server.close(resolve));
         }
     }
 }

@@ -106,10 +106,8 @@ describe('Search UI Tests', () => {
     };
 
     const loadPage = async (pagePath) => {
-        await page.goto(`${baseUrl}/__blank.html`, {
-            waitUntil: 'commit',
-            timeout: TEST_CONFIG.timeout
-        });
+        // `setContent()` replaces the current document, so an extra navigation
+        // only adds a failure-prone hop in CI.
         await page.setContent(prepareHtml(pagePath, [SITE_SEARCH_JS]), {
             waitUntil: 'domcontentloaded',
             timeout: TEST_CONFIG.timeout

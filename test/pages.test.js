@@ -127,10 +127,8 @@ describe('Page Structure and Navigation Tests', () => {
     };
 
     const loadPage = async (pagePath) => {
-        await page.goto(`${baseUrl}/__blank.html`, {
-            waitUntil: 'commit',
-            timeout: TEST_CONFIG.timeout
-        });
+        // `setContent()` gives us a clean document, so avoid a pre-navigation
+        // that can be interrupted by Playwright in CI.
         await page.setContent(prepareHtml(pagePath, IMAGE_MODAL_PAGES.has(pagePath) ? [IMAGE_MODAL_JS] : []), {
             waitUntil: 'domcontentloaded',
             timeout: TEST_CONFIG.timeout
