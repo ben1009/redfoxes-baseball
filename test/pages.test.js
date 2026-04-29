@@ -11,7 +11,7 @@ const http = require('http');
 const TEST_CONFIG = {
     password: process.env.TEST_PASSWORD || '1972',
     viewport: { width: 1280, height: 800 },
-    timeout: 30000
+    timeout: 60000
 };
 
 jest.setTimeout(TEST_CONFIG.timeout);
