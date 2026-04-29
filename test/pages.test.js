@@ -6,6 +6,7 @@
 const { launchBrowser } = require('./browser');
 const path = require('path');
 const fs = require('fs');
+const http = require('http');
 
 const TEST_CONFIG = {
     password: process.env.TEST_PASSWORD || '1972',
@@ -16,14 +17,51 @@ const TEST_CONFIG = {
 jest.setTimeout(TEST_CONFIG.timeout);
 
 const PAGE_PATHS = {
-    index: 'file://' + path.resolve(__dirname, '../index.html'),
-    matchReview: 'file://' + path.resolve(__dirname, '../match_review.html'),
-    rules: 'file://' + path.resolve(__dirname, '../u10_rules.html'),
-    ponyRules: 'file://' + path.resolve(__dirname, '../pony_u10_rules.html'),
-    groupstage: 'file://' + path.resolve(__dirname, '../tigercup_groupstage.html'),
-    finalstage: 'file://' + path.resolve(__dirname, '../tigercup_finalstage.html'),
-    sponsor: 'file://' + path.resolve(__dirname, '../sponsor_me.html')
+    index: 'index.html',
+    matchReview: 'match_review.html',
+    rules: 'u10_rules.html',
+    ponyRules: 'pony_u10_rules.html',
+    groupstage: 'tigercup_groupstage.html',
+    finalstage: 'tigercup_finalstage.html',
+    sponsor: 'sponsor_me.html'
 };
+
+const REPO_ROOT = path.resolve(__dirname, '..');
+
+function contentTypeFor(filePath) {
+    if (filePath.endsWith('.html')) return 'text/html; charset=utf-8';
+    if (filePath.endsWith('.js')) return 'text/javascript; charset=utf-8';
+    if (filePath.endsWith('.css')) return 'text/css; charset=utf-8';
+    if (filePath.endsWith('.svg')) return 'image/svg+xml';
+    if (filePath.endsWith('.png')) return 'image/png';
+    if (filePath.endsWith('.jpg') || filePath.endsWith('.jpeg')) return 'image/jpeg';
+    return 'application/octet-stream';
+}
+
+function createStaticServer() {
+    return http.createServer((req, res) => {
+        const requestUrl = new URL(req.url, 'http://127.0.0.1');
+        const pathname = decodeURIComponent(requestUrl.pathname === '/' ? '/index.html' : requestUrl.pathname);
+        const filePath = path.resolve(REPO_ROOT, pathname.slice(1));
+
+        if (!filePath.startsWith(REPO_ROOT + path.sep) && filePath !== REPO_ROOT) {
+            res.writeHead(403);
+            res.end('Forbidden');
+            return;
+        }
+
+        fs.readFile(filePath, (error, body) => {
+            if (error) {
+                res.writeHead(404);
+                res.end('Not found');
+                return;
+            }
+
+            res.writeHead(200, { 'Content-Type': contentTypeFor(filePath) });
+            res.end(body);
+        });
+    });
+}
 
 function getEffectiveContent(file) {
     const filePath = path.resolve(__dirname, '..', file);
@@ -46,6 +84,8 @@ function getEffectiveContent(file) {
 describe('Page Structure and Navigation Tests', () => {
     let browser;
     let page;
+    let server;
+    let baseUrl;
     let browserLaunchError;
     let browserLaunchWarningShown = false;
 
@@ -61,29 +101,59 @@ describe('Page Structure and Navigation Tests', () => {
         await callback();
     };
 
+    const loadPage = async (pagePath) => {
+        await page.goto(`${baseUrl}/${pagePath}`, {
+            waitUntil: 'domcontentloaded',
+            timeout: TEST_CONFIG.timeout
+        });
+    };
+
     beforeAll(async () => {
         try {
+            server = createStaticServer();
+            await new Promise((resolve, reject) => {
+                server.once('error', reject);
+                server.listen(0, '127.0.0.1', () => {
+                    server.off('error', reject);
+                    resolve();
+                });
+            });
+            baseUrl = `http://127.0.0.1:${server.address().port}`;
+
             browser = await launchBrowser();
             page = await browser.newPage();
             await page.setViewportSize(TEST_CONFIG.viewport);
             page.setDefaultTimeout(5000);
             page.setDefaultNavigationTimeout(5000);
-            await page.route(/^https?:\/\//, route => route.abort());
+            await page.route(/^https?:\/\//, async route => {
+                const hostname = new URL(route.request().url()).hostname;
+                if (hostname === '127.0.0.1' || hostname === 'localhost') {
+                    await route.continue();
+                    return;
+                }
+                await route.abort();
+            });
         } catch (error) {
             browserLaunchError = error;
         }
     }, TEST_CONFIG.timeout);
 
     afterAll(async () => {
+        if (page) {
+            await page.close({ runBeforeUnload: false }).catch(() => {});
+        }
         if (browser) {
             await browser.close();
+        }
+        if (server) {
+            await new Promise(resolve => server.close(resolve));
         }
     });
 
     describe('Index Page (Navigation Hub)', () => {
         beforeEach(async () => {
             if (!browserLaunchError) {
-                await page.goto(PAGE_PATHS.index, { waitUntil: 'domcontentloaded' });
+                await loadPage(PAGE_PATHS.index);
             }
         });
 
@@ -142,7 +212,7 @@ describe('Page Structure and Navigation Tests', () => {
     describe('Match Review Page (match_review.html)', () => {
         beforeEach(async () => {
             if (!browserLaunchError) {
-                await page.goto(PAGE_PATHS.matchReview, { waitUntil: 'domcontentloaded' });
+                await loadPage(PAGE_PATHS.matchReview);
             }
         });
 
@@ -237,7 +307,7 @@ describe('Page Structure and Navigation Tests', () => {
     describe('U10 Rules Page (u10_rules.html)', () => {
         beforeEach(async () => {
             if (!browserLaunchError) {
-                await page.goto(PAGE_PATHS.rules, { waitUntil: 'domcontentloaded' });
+                await loadPage(PAGE_PATHS.rules);
             }
         });
 
@@ -317,7 +387,7 @@ describe('Page Structure and Navigation Tests', () => {
     describe('PONY U10 Rules Page (pony_u10_rules.html)', () => {
         beforeEach(async () => {
             if (!browserLaunchError) {
-                await page.goto(PAGE_PATHS.ponyRules, { waitUntil: 'domcontentloaded' });
+                await loadPage(PAGE_PATHS.ponyRules);
             }
         });
 
@@ -456,7 +526,7 @@ describe('Page Structure and Navigation Tests', () => {
     describe('Groupstage Analysis Page (tigercup_groupstage.html)', () => {
         beforeEach(async () => {
             if (!browserLaunchError) {
-                await page.goto(PAGE_PATHS.groupstage, { waitUntil: 'domcontentloaded' });
+                await loadPage(PAGE_PATHS.groupstage);
             }
         });
 
@@ -520,7 +590,7 @@ describe('Page Structure and Navigation Tests', () => {
     describe('Finalstage Analysis Page (tigercup_finalstage.html)', () => {
         beforeEach(async () => {
             if (!browserLaunchError) {
-                await page.goto(PAGE_PATHS.finalstage, { waitUntil: 'domcontentloaded' });
+                await loadPage(PAGE_PATHS.finalstage);
             }
         });
 
@@ -597,7 +667,7 @@ describe('Page Structure and Navigation Tests', () => {
     describe('Sponsor Page (sponsor_me.html)', () => {
         beforeEach(async () => {
             if (!browserLaunchError) {
-                await page.goto(PAGE_PATHS.sponsor, { waitUntil: 'domcontentloaded' });
+                await loadPage(PAGE_PATHS.sponsor);
             }
         });
 
@@ -765,7 +835,7 @@ describe('Page Structure and Navigation Tests', () => {
                 localStorage.removeItem('sponsor_me_liked_v1');
                 localStorage.removeItem('sponsor_me_count_fallback');
             });
-            await page.reload({ waitUntil: 'domcontentloaded' });
+            await loadPage(PAGE_PATHS.sponsor);
 
             // Wait for widget to settle before clicking
             await page.waitForFunction(() => {
@@ -827,7 +897,7 @@ describe('Page Structure and Navigation Tests', () => {
                 localStorage.removeItem('sponsor_me_liked_v1');
                 localStorage.removeItem('sponsor_me_count_fallback');
             });
-            await page.reload({ waitUntil: 'domcontentloaded' });
+            await loadPage(PAGE_PATHS.sponsor);
 
             // Wait for widget to settle
             await page.waitForFunction(() => {
@@ -874,7 +944,7 @@ describe('Page Structure and Navigation Tests', () => {
                 localStorage.removeItem('sponsor_me_liked_v1');
                 localStorage.removeItem('sponsor_me_count_fallback');
             });
-            await page.reload({ waitUntil: 'domcontentloaded' });
+            await loadPage(PAGE_PATHS.sponsor);
 
             // Wait for widget to settle
             await page.waitForFunction(() => {
@@ -896,7 +966,7 @@ describe('Page Structure and Navigation Tests', () => {
             expect(stored).toBe('true');
 
             // Reload and verify state persists
-            await page.reload({ waitUntil: 'domcontentloaded' });
+            await loadPage(PAGE_PATHS.sponsor);
 
             // Wait for widget to settle after reload
             await page.waitForFunction(() => {
@@ -936,7 +1006,7 @@ describe('Page Structure and Navigation Tests', () => {
                 localStorage.removeItem('sponsor_me_liked_v1');
                 localStorage.removeItem('sponsor_me_count_fallback');
             });
-            await page.reload({ waitUntil: 'domcontentloaded' });
+            await loadPage(PAGE_PATHS.sponsor);
 
             // Wait for widget to settle
             await page.waitForFunction(() => {
@@ -996,7 +1066,7 @@ describe('Page Structure and Navigation Tests', () => {
                 localStorage.removeItem('sponsor_me_liked_v1');
                 localStorage.removeItem('sponsor_me_count_fallback');
             });
-            await page.reload({ waitUntil: 'domcontentloaded' });
+            await loadPage(PAGE_PATHS.sponsor);
 
             // Wait for widget to settle
             await page.waitForFunction(() => {
@@ -1064,7 +1134,7 @@ describe('Page Structure and Navigation Tests', () => {
                 localStorage.removeItem('sponsor_me_liked_v1');
                 localStorage.removeItem('sponsor_me_count_fallback');
             });
-            await page.reload({ waitUntil: 'domcontentloaded' });
+            await loadPage(PAGE_PATHS.sponsor);
 
             await page.waitForFunction(() => {
                 const countEl = document.querySelector('.like-count');
@@ -1116,7 +1186,7 @@ describe('Page Structure and Navigation Tests', () => {
                 localStorage.removeItem('sponsor_me_liked_v1');
                 localStorage.removeItem('sponsor_me_count_fallback');
             });
-            await page.reload({ waitUntil: 'domcontentloaded' });
+            await loadPage(PAGE_PATHS.sponsor);
 
             await page.waitForFunction(() => {
                 const countEl = document.querySelector('.like-count');
@@ -1149,7 +1219,7 @@ describe('Page Structure and Navigation Tests', () => {
 
     describe('Cross-Page Navigation', () => {
         test('should navigate from index to match_review page', async () => withBrowser(async () => {
-            await page.goto(PAGE_PATHS.index, { waitUntil: 'domcontentloaded' });
+            await loadPage(PAGE_PATHS.index);
             
             // Find and click the match review link
             const matchReviewLink = await page.$('a[href="match_review.html"]');
@@ -1157,35 +1227,35 @@ describe('Page Structure and Navigation Tests', () => {
         }));
 
         test('should navigate from index to u10_rules page', async () => withBrowser(async () => {
-            await page.goto(PAGE_PATHS.index, { waitUntil: 'domcontentloaded' });
+            await loadPage(PAGE_PATHS.index);
             
             const rulesLink = await page.$('a[href="u10_rules.html"]');
             expect(rulesLink).not.toBeNull();
         }));
 
         test('should navigate from index to pony_u10_rules page', async () => withBrowser(async () => {
-            await page.goto(PAGE_PATHS.index, { waitUntil: 'domcontentloaded' });
+            await loadPage(PAGE_PATHS.index);
             
             const ponyRulesLink = await page.$('a[href="pony_u10_rules.html"]');
             expect(ponyRulesLink).not.toBeNull();
         }));
 
         test('should navigate from index to groupstage page', async () => withBrowser(async () => {
-            await page.goto(PAGE_PATHS.index, { waitUntil: 'domcontentloaded' });
+            await loadPage(PAGE_PATHS.index);
             
             const groupstageLink = await page.$('a[href="tigercup_groupstage.html"]');
             expect(groupstageLink).not.toBeNull();
         }));
 
         test('should navigate from index to finalstage page', async () => withBrowser(async () => {
-            await page.goto(PAGE_PATHS.index, { waitUntil: 'domcontentloaded' });
+            await loadPage(PAGE_PATHS.index);
 
             const finalstageLink = await page.$('a[href="tigercup_finalstage.html"]');
             expect(finalstageLink).not.toBeNull();
         }));
 
         test('should navigate from index to sponsor page', async () => withBrowser(async () => {
-            await page.goto(PAGE_PATHS.index, { waitUntil: 'domcontentloaded' });
+            await loadPage(PAGE_PATHS.index);
 
             const sponsorLink = await page.$('a[href="sponsor_me.html"]');
             expect(sponsorLink).not.toBeNull();

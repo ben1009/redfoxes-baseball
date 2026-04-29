@@ -96,6 +96,9 @@ describe('Video Autopause Feature', () => {
     }, TEST_CONFIG.timeout);
 
     afterAll(async () => {
+        if (page) {
+            await page.close({ runBeforeUnload: false }).catch(() => {});
+        }
         if (browser) {
             await browser.close();
         }
