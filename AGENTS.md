@@ -248,6 +248,7 @@ npx serve .
 
 ```bash
 npm install
+npm run playwright:install
 npm test
 ```
 
