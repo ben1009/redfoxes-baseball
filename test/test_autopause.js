@@ -129,7 +129,10 @@ async function runTest() {
         
         // Bring the first video into view before testing the scroll-away behavior.
         await firstVideo.evaluate(el => el.scrollIntoView({ block: 'center' }));
-        await new Promise(r => setTimeout(r, 500));
+        await page.waitForFunction(el => {
+            const rect = el.getBoundingClientRect();
+            return rect.top >= 0 && rect.bottom <= window.innerHeight;
+        }, firstVideo, { timeout: 1000 });
         
         const visibleBefore = await firstVideo.evaluate(el => {
             const rect = el.getBoundingClientRect();
@@ -175,7 +178,10 @@ async function runTest() {
         const originalSrc = await firstVideo.evaluate(el => el.src);
         
         await page.evaluate(() => window.scrollTo(0, 0));
-        await new Promise(r => setTimeout(r, 500));
+        await page.waitForFunction(el => {
+            const rect = el.getBoundingClientRect();
+            return rect.top >= 0 && rect.bottom <= window.innerHeight;
+        }, firstVideo, { timeout: 1000 });
         
         const currentSrc = await firstVideo.evaluate(el => el.src);
         if (originalSrc !== currentSrc) {
