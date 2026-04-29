@@ -52,6 +52,36 @@ jobs:
 
   pages:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: files
+            script: test:ci:pages:files
+            requires_browser: false
+          - name: index
+            script: test:ci:pages:index
+            requires_browser: true
+          - name: match-review
+            script: test:ci:pages:match-review
+            requires_browser: true
+          - name: u10-rules
+            script: test:ci:pages:u10-rules
+            requires_browser: true
+          - name: pony-u10-rules
+            script: test:ci:pages:pony-u10-rules
+            requires_browser: true
+          - name: groupstage
+            script: test:ci:pages:groupstage
+            requires_browser: true
+          - name: finalstage
+            script: test:ci:pages:finalstage
+            requires_browser: true
+          - name: sponsor
+            script: test:ci:pages:sponsor
+            requires_browser: true
+
+    name: pages / ${{ matrix.name }}
 
     steps:
     - name: Checkout code
@@ -66,12 +96,13 @@ jobs:
       run: npm install
 
     - name: Install Playwright browsers
+      if: ${{ matrix.requires_browser }}
       run: npm run playwright:install
 
     - name: Run pages tests
       env:
         TEST_PASSWORD: ${{ secrets.TEST_PASSWORD || '1972' }}
-      run: npm run test:ci:pages
+      run: npm run ${{ matrix.script }}
 
   video:
     runs-on: ubuntu-latest
