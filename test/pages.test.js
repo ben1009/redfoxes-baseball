@@ -27,6 +27,10 @@ const PAGE_PATHS = {
 };
 
 const REPO_ROOT = path.resolve(__dirname, '..');
+const IMAGE_MODAL_JS = fs.readFileSync(path.resolve(REPO_ROOT, 'image_modal.js'), 'utf8');
+const GTAG_STUB_JS = `window.dataLayer = window.dataLayer || [];
+window.gtag = window.gtag || function(){ dataLayer.push(arguments); };`;
+const IMAGE_MODAL_PAGES = new Set(['u10_rules.html', 'pony_u10_rules.html']);
 
 function contentTypeFor(filePath) {
     if (filePath.endsWith('.html')) return 'text/html; charset=utf-8';
@@ -70,6 +74,20 @@ function createStaticServer() {
     });
 }
 
+function prepareHtml(pagePath, injectedScripts = []) {
+    const filePath = path.resolve(REPO_ROOT, pagePath);
+    const html = fs.readFileSync(filePath, 'utf8')
+        .replace(/<script\b[^>]*src=["'][^"']+["'][^>]*><\/script>\s*/gi, '')
+        .replace('<head>', `<head><base href="${baseUrl}/"><script>${GTAG_STUB_JS}</script>`);
+
+    const injectionBlock = injectedScripts
+        .filter(Boolean)
+        .map(script => `<script>${script}</script>`)
+        .join('\n');
+
+    return html.replace('</body>', `${injectionBlock}</body>`);
+}
+
 function getEffectiveContent(file) {
     const filePath = path.resolve(__dirname, '..', file);
     let content = fs.readFileSync(filePath, 'utf8');
@@ -109,17 +127,11 @@ describe('Page Structure and Navigation Tests', () => {
     };
 
     const loadPage = async (pagePath) => {
-        const filePath = path.resolve(REPO_ROOT, pagePath);
-        const html = fs.readFileSync(filePath, 'utf8').replace(
-            '<head>',
-            `<head><base href="${baseUrl}/">`
-        );
-
         await page.goto(`${baseUrl}/__blank.html`, {
             waitUntil: 'commit',
             timeout: TEST_CONFIG.timeout
         });
-        await page.setContent(html, {
+        await page.setContent(prepareHtml(pagePath, IMAGE_MODAL_PAGES.has(pagePath) ? [IMAGE_MODAL_JS] : []), {
             waitUntil: 'domcontentloaded',
             timeout: TEST_CONFIG.timeout
         });

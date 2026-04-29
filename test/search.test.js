@@ -26,6 +26,9 @@ const PAGE_PATHS = {
 };
 
 const REPO_ROOT = path.resolve(__dirname, '..');
+const SITE_SEARCH_JS = fs.readFileSync(path.resolve(REPO_ROOT, 'site_search.js'), 'utf8');
+const GTAG_STUB_JS = `window.dataLayer = window.dataLayer || [];
+window.gtag = window.gtag || function(){ dataLayer.push(arguments); };`;
 
 function contentTypeFor(filePath) {
     if (filePath.endsWith('.html')) return 'text/html; charset=utf-8';
@@ -69,6 +72,20 @@ function createStaticServer() {
     });
 }
 
+function prepareHtml(pagePath, injectedScripts = []) {
+    const filePath = path.resolve(REPO_ROOT, pagePath);
+    const html = fs.readFileSync(filePath, 'utf8')
+        .replace(/<script\b[^>]*src=["'][^"']+["'][^>]*><\/script>\s*/gi, '')
+        .replace('<head>', `<head><base href="${baseUrl}/"><script>${GTAG_STUB_JS}</script>`);
+
+    const injectionBlock = injectedScripts
+        .filter(Boolean)
+        .map(script => `<script>${script}</script>`)
+        .join('\n');
+
+    return html.replace('</body>', `${injectionBlock}</body>`);
+}
+
 describe('Search UI Tests', () => {
     let browser;
     let page;
@@ -89,17 +106,11 @@ describe('Search UI Tests', () => {
     };
 
     const loadPage = async (pagePath) => {
-        const filePath = path.resolve(REPO_ROOT, pagePath);
-        const html = fs.readFileSync(filePath, 'utf8').replace(
-            '<head>',
-            `<head><base href="${baseUrl}/">`
-        );
-
         await page.goto(`${baseUrl}/__blank.html`, {
             waitUntil: 'commit',
             timeout: TEST_CONFIG.timeout
         });
-        await page.setContent(html, {
+        await page.setContent(prepareHtml(pagePath, [SITE_SEARCH_JS]), {
             waitUntil: 'domcontentloaded',
             timeout: TEST_CONFIG.timeout
         });
