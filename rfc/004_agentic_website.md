@@ -351,7 +351,7 @@ Each page includes a `<script type="application/ld+json">` block describing its 
 </script>
 ```
 
-**u10_rules.html / pony_u10_rules.html** — SportsEvent:
+**u10_rules.html** — SportsEvent:
 ```html
 <script type="application/ld+json">
 {
@@ -359,6 +359,20 @@ Each page includes a `<script type="application/ld+json">` block describing its 
   "@type": "SportsEvent",
   "name": "猛虎杯 U10 棒球比赛",
   "description": "北京市第八届猛虎杯春季棒球比赛 U10 投手投打组",
+  "sport": "Baseball",
+  "eventStatus": "EventScheduled"
+}
+</script>
+```
+
+**pony_u10_rules.html** — SportsEvent:
+```html
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SportsEvent",
+  "name": "2026年春季PONY小马棒球联赛",
+  "description": "天津君奥棒球联赛暨PONY小马棒球联赛合作联盟赛 U10组（Bronco-10）竞赛规则",
   "sport": "Baseball",
   "eventStatus": "EventScheduled"
 }
@@ -434,10 +448,10 @@ Annotate interactive elements with machine-readable intent:
 <button class="search-trigger" data-action="open:search" aria-label="搜索">
 
 <!-- Like -->
-<button class="like-btn" data-action="sponsor:like" data-endpoint="sponsor-likes">
+<button class="like-btn" data-action="like" data-endpoint="sponsor-likes-like">
 
 <!-- Video -->
-<div class="video-container" data-action="play:video" data-video-id="BVxxxxx">
+<div class="video-container" data-action="watch_video" data-video-id="BVxxxxx">
 
 <!-- Rule section -->
 <section id="early-end" data-action="read:rules" data-topic="提前结束比赛">
@@ -515,7 +529,7 @@ For each page (`match_review.html`, `u10_rules.html`, `pony_u10_rules.html`, `ti
 
 ### After
 ```html
-<article class="video-card" id="video1" data-action="play:video" data-video-id="BVxxxxx">
+<article class="video-card" id="video1" data-action="watch_video" data-video-id="BVxxxxx">
     <h3 class="video-title">一垒有人，打者击出滚地球</h3>
     <figure class="video-container">
         <iframe src="//player.bilibili.com/..." scrolling="no" title="一垒有人滚地球战术片段"></iframe>
