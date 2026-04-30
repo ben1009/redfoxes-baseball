@@ -97,7 +97,7 @@ except for the match review page (password protected, hint provided).
 ## Pages
 
 - [首页 / Home](index.html) — Navigation hub with links to all content
-- [友谊赛战术复盘](match_review.html) — 7 tactical video clips with analysis (password: year coach started baseball)
+- [友谊赛战术复盘](match_review.html) — 7 tactical video clips with analysis (requires password, hint: year coach started baseball)
 - [猛虎杯 U10 竞赛章程](u10_rules.html) — Tournament rules and schedule
 - [PONY U10 竞赛规则](pony_u10_rules.html) — PONY league rules (Tianjin division)
 - [小组赛数据分析](tigercup_groupstage.html) — Group stage match analysis (multi-AI)
@@ -344,8 +344,7 @@ Each page includes a `<script type="application/ld+json">` block describing its 
   "subjectOf": {
     "@type": "VideoObject",
     "name": "友谊赛战术复盘视频",
-    "description": "七个战术片段的详细分析",
-    "videoCount": 7
+    "description": "七个战术片段的详细分析"
   }
 }
 </script>
@@ -442,10 +441,10 @@ Annotate interactive elements with machine-readable intent:
 
 ```html
 <!-- Navigation -->
-<a href="match_review.html" class="nav-card" data-action="navigate:review" data-target="match_review.html">
+<a href="match_review.html" class="nav-card" data-action="navigate" data-target="match_review.html">
 
 <!-- Search -->
-<button class="search-trigger" data-action="open:search" aria-label="搜索">
+<button class="search-trigger" data-action="search" aria-label="搜索">
 
 <!-- Like -->
 <button class="like-btn" data-action="like" data-endpoint="sponsor-likes-like">
@@ -454,7 +453,7 @@ Annotate interactive elements with machine-readable intent:
 <div class="video-container" data-action="watch_video" data-video-id="BVxxxxx">
 
 <!-- Rule section -->
-<section id="early-end" data-action="read:rules" data-topic="提前结束比赛">
+<section id="early-end" data-action="read_rules" data-topic="提前结束比赛">
 ```
 
 This allows agents to:
@@ -534,7 +533,7 @@ For each page (`match_review.html`, `u10_rules.html`, `pony_u10_rules.html`, `ti
     <figure class="video-container">
         <iframe src="//player.bilibili.com/..." scrolling="no" title="一垒有人滚地球战术片段"></iframe>
     </figure>
-    <section class="video-analysis" data-action="read:analysis" data-topic="滚地球处理">
+    <section class="video-analysis" data-action="read_analysis" data-topic="滚地球处理">
         <p>这是比赛中非常典型的一个局面...</p>
     </section>
 </article>
