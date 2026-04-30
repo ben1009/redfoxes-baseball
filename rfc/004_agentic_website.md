@@ -136,7 +136,7 @@ A JSON file that agents can parse programmatically to understand site topology a
 
 ```json
 {
-  "$schema": "https://ben1009.github.io/redfoxes-baseball/agent-manifest.schema.json",
+  "$schema": "./agent-manifest.schema.json",
   "site": {
     "name": "烈光少棒赤狐队",
     "name_en": "Red Foxes Youth Baseball Team",
