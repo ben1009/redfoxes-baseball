@@ -160,7 +160,7 @@ A JSON file that agents can parse programmatically to understand site topology a
       "description": "七个战术片段的详细分析与视频讲解",
       "actions": ["watch_video", "read_analysis"],
       "requires_auth": true,
-      "auth_hint": "张锦新哪年开始接触从事棒球运动？",
+      "auth_hint": "张锦新 哪年开始接触从事棒球运动？",
       "auth_type": "password_sha256",
       "content_count": 7
     },
