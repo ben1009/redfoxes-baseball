@@ -89,7 +89,7 @@ Add the generated `pagefind/` to the GitHub Pages build and include the Pagefind
 | Edge Function | `supabase/functions/site-search/index.ts` | Public API: receives query, generates query embedding, runs hybrid search, returns ranked results |
 | Database | `public.documents` + `public.document_chunks` | Normalized schema: pages in `documents`, sections with embeddings in `document_chunks` |
 | Frontend Widget | Inline in `index.html` + shared JS | Search input modal, results rendering, keyboard shortcuts |
-| Embedding Provider | Gemini API (`gemini-embedding-2`) | Converts Chinese text to 1536-dim vectors (truncated from 3072-dim) |
+| Embedding Provider | Gemini API (`gemini-embedding-2`) | Converts Chinese text to 1536-dim vectors (via output_dimensionality API parameter) |
 
 ### Why Two Tables?
 
@@ -496,6 +496,7 @@ async function index() {
     const embeddings = await callEmbeddingApi({
       model: 'gemini-embedding-2',  // or 'text-embedding-3-small' for OpenAI
       input: embeddingTexts,
+      outputDimensionality: 1536,   // preferred over manual truncation
     });
 
     // Insert all chunks in a single batch transaction
@@ -610,6 +611,7 @@ if (!chunks || chunks.length === 0) return new Response('No pending chunks');
 const embeddings = await callEmbeddingApi({
   model: 'gemini-embedding-2',  // or 'text-embedding-3-small' for OpenAI
   input: chunks.map(c => c.chunk_text),
+  outputDimensionality: 1536,   // preferred over manual truncation
 });
 
 for (let i = 0; i < chunks.length; i++) {
@@ -794,7 +796,7 @@ document.addEventListener('keydown', (e) => {
 
 | Model | Dimension | Chinese Quality | Cost | Recommendation |
 |-------|-----------|-----------------|------|----------------|
-| `gemini-embedding-2` | 3072 → 1536 truncated | Good | Very low | **Primary choice** |
+| `gemini-embedding-2` | 1536 (via output_dimensionality) | Good | Very low | **Primary choice** |
 | `text-embedding-3-small` | 1536 | Good | Very low | OpenAI alternative |
 | `text-embedding-3-large` | 3072 | Better | Low | If higher precision needed |
 | Local (e.g. bge-large-zh) | 1024 | Excellent | Free (infra only) | If external API unavailable |
