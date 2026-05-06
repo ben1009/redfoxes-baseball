@@ -1,7 +1,7 @@
 # Agentic Website Design Document
 
 > 让网站对 AI Agent 友好 — 结构化数据、语义标记与机器可读接口
-> Last updated: 2026-04-30
+> Last updated: 2026-05-06
 
 ---
 
@@ -261,43 +261,43 @@ Standard XML sitemap for search engines and agents.
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://ben1009.github.io/redfoxes-baseball/index.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://ben1009.github.io/redfoxes-baseball/match_review.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://ben1009.github.io/redfoxes-baseball/u10_rules.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://ben1009.github.io/redfoxes-baseball/pony_u10_rules.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://ben1009.github.io/redfoxes-baseball/tigercup_groupstage.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://ben1009.github.io/redfoxes-baseball/tigercup_finalstage.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://ben1009.github.io/redfoxes-baseball/sponsor_me.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <lastmod>2026-05-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -650,3 +650,4 @@ All files are static — deploy with the rest of the site via GitHub Pages:
 | Date | Change |
 |------|--------|
 | 2026-04-30 | Initial RFC draft |
+| 2026-05-06 | Updated sitemap example dates to match current deployment |

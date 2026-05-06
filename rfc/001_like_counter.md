@@ -1,13 +1,18 @@
-# Like Feature Design Document
+# Like Feature Design Document (Legacy)
 
-> 点赞功能设计文档 — Sponsor Page Global Like Counter
+> ⚠️ **Status: Legacy / Retained for Reference Only**
+>
+> The active production backend now lives under [`supabase/README.md`](../supabase/README.md) and uses Supabase Edge Functions + Postgres + Upstash Redis.
+> See [`002_supabase_like_counter.md`](./002_supabase_like_counter.md) for the current design.
+>
+> 点赞功能设计文档（Cloudflare Worker 旧版）— Sponsor Page Global Like Counter
 > Last updated: 2026-04-29
 
 ---
 
 ## 1. Overview
 
-A global "like" (点赞) feature on the sponsor page (`sponsor_me.html`) that allows visitors to show support for the Red Foxes team. The count is shared across all visitors worldwide, backed by a Cloudflare Durable Object (atomic counter) with KV for rate-limit storage, with graceful degradation to localStorage when the network is unavailable.
+A global "like" (点赞) feature on the sponsor page (`sponsor_me.html`) that allows visitors to show support for the Red Foxes team. **This document describes the original Cloudflare Worker implementation. The current production system uses Supabase.**
 
 ### Goals
 

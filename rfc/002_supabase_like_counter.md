@@ -1,15 +1,20 @@
-# Like Feature Design Document (Supabase Alternative)
+# Like Feature Design Document (Supabase)
 
-> 点赞功能设计文档（Supabase 备选方案）— Sponsor Page Global Like Counter
-> Last updated: 2026-04-29
+> ✅ **Status: Active Production Backend**
+>
+> This RFC describes the current Supabase-based implementation for the sponsor page (`sponsor_me.html`) global like counter.
+> The legacy Cloudflare Worker design is preserved in [`001_like_counter.md`](./001_like_counter.md) for reference only.
+>
+> 点赞功能设计文档（Supabase 生产方案）— Sponsor Page Global Like Counter
+> Last updated: 2026-05-06
 
 ---
 
 ## 1. Overview
 
-This RFC describes a **Supabase-based alternative** for the sponsor page (`sponsor_me.html`) global like counter.
+This RFC describes the **active Supabase-based production backend** for the sponsor page (`sponsor_me.html`) global like counter.
 
-It is intended as a comparison against the current Cloudflare Worker + Durable Object design in [`001_like_counter.md`](./001_like_counter.md), not as an automatic replacement recommendation.
+The Cloudflare Worker + Durable Object design in [`001_like_counter.md`](./001_like_counter.md) is the legacy implementation, retained for reference and rollback only.
 
 ### Goals
 
@@ -33,24 +38,19 @@ Supabase **can** implement this feature, but the architecture is less direct tha
 
 ### Short Conclusion
 
-- **Possible**: Yes
-- **Recommended for this project**: Not by default
-- **Best fit if**: The project plans to consolidate future data features into Supabase
+- **Status**: Active production backend
+- **Migration date**: 2026-04-21
+- **Reason for migration**: Consolidate backend infrastructure with the hybrid search feature (RFC 003) under a single Supabase project
 
-### Why It Is More Complex
+### Architecture Overview
 
-The current Cloudflare version gets two critical properties almost for free:
+Supabase provides all required capabilities through a layered stack:
 
-1. **Atomic counter updates** via Durable Objects
-2. **Simple IP-based cooldown storage** via KV
+1. **Supabase Edge Function** for a public browser-facing endpoint (CORS, validation)
+2. **Postgres table + SQL function** for atomic count updates (`security definer`, revoked from `anon`)
+3. **Upstash Redis** for per-IP cooldown storage (shared with the site-search Edge Function)
 
-In Supabase, these concerns are split across multiple layers:
-
-1. **Supabase Edge Function** for a public browser-facing endpoint
-2. **Postgres table + SQL function** for atomic count updates
-3. **Separate rate-limit store** for per-IP cooldowns
-
-The third item is the weak point. Supabase does not provide a built-in anonymous per-IP rate-limit primitive for this exact use case, so the practical implementation usually adds Redis/Upstash or accepts weaker controls.
+This is slightly more moving parts than the legacy Cloudflare Worker, but it consolidates all backend features (likes + search) under one project and enables future relational features.
 
 ---
 
@@ -362,15 +362,9 @@ If the project chooses Supabase later, a safe migration path would be:
 
 ## 13. Final Recommendation
 
-For this repository’s current needs, **Cloudflare remains the cleaner implementation**.
+For this repository, **Supabase is the active production backend** and consolidates both the like counter and hybrid search under a single project.
 
-Supabase becomes reasonable if one of these becomes true:
-
-- the project is already standardizing on Supabase
-- additional structured backend features are planned soon
-- the team prefers Postgres-centric operations over edge-specific infrastructure
-
-For a single anonymous global like counter on a static site, Supabase is viable but not the simplest option.
+Cloudflare remains a valid rollback option if Supabase availability becomes an issue.
 
 ---
 
@@ -381,3 +375,4 @@ For a single anonymous global like counter on a static site, Supabase is viable 
 | 2026-04-21 | Initial Supabase alternative RFC drafted for architecture comparison |
 | 2026-04-22 | Security hardening: CORS whitelist, IP anti-spoofing, error sanitization; frontend `updateUI()` cleanup; test coverage expanded |
 | 2026-04-29 | Updated testing references from Puppeteer to Playwright |
+| 2026-05-06 | Marked as active production backend; updated conclusion and status |
