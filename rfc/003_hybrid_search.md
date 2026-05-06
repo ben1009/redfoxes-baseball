@@ -615,7 +615,7 @@ const embeddings = await callEmbeddingApi({
 for (let i = 0; i < chunks.length; i++) {
   await supabase
     .from('document_chunks')
-    .update({ embedding: embeddings.data[i].embedding })
+    .update({ embedding: embeddings[i] })
     .eq('id', chunks[i].id);
 }
 ```
