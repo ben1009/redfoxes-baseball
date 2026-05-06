@@ -493,9 +493,9 @@ async function index() {
 
     // Generate embeddings in batch for all chunks of this page
     const embeddingTexts = chunks.map(c => `${c.heading || ''}\n${c.body}`);
-    const embeddings = await openai.embeddings.create({
-      model: 'text-embedding-3-small',
-      input: embeddingTexts,  // Batch: up to 2048 inputs per request
+    const embeddings = await callEmbeddingApi({
+      model: 'gemini-embedding-2',  // or 'text-embedding-3-small' for OpenAI
+      input: embeddingTexts,
     });
 
     // Insert all chunks in a single batch transaction
@@ -505,7 +505,7 @@ async function index() {
       section_id: c.section_id,
       heading: c.heading,
       chunk_text: c.body,
-      embedding: embeddings.data[i].embedding,
+      embedding: embeddings[i],  // shape depends on provider
       token_count: null  /* Gemini does not return per-chunk token counts */
     }));
 
@@ -607,8 +607,8 @@ const { data: chunks } = await supabase
 
 if (!chunks || chunks.length === 0) return new Response('No pending chunks');
 
-const embeddings = await openai.embeddings.create({
-  model: 'text-embedding-3-small',
+const embeddings = await callEmbeddingApi({
+  model: 'gemini-embedding-2',  // or 'text-embedding-3-small' for OpenAI
   input: chunks.map(c => c.chunk_text),
 });
 
@@ -799,7 +799,7 @@ document.addEventListener('keydown', (e) => {
 | `text-embedding-3-large` | 3072 | Better | Low | If higher precision needed |
 | Local (e.g. bge-large-zh) | 1024 | Excellent | Free (infra only) | If external API unavailable |
 
-For this project, `text-embedding-3-small` offers the best cost/quality ratio.
+For this project, `gemini-embedding-2` offers the best cost/quality ratio, with `text-embedding-3-small` as a viable OpenAI alternative.
 
 ### 9.2 Chinese Text Handling
 
@@ -813,7 +813,7 @@ For this project, `text-embedding-3-small` offers the best cost/quality ratio.
 
 | Threat | Risk | Mitigation |
 |--------|------|------------|
-| Embedding API key exposure | High | Gemini key lives only in Edge Functions and indexing script; never exposed to browser. `site-search` Edge Function calls Gemini for query embedding (1 request per search). |
+| Embedding API key exposure | High | Gemini key lives only in Edge Functions and indexing script; never exposed to browser. `site-search` Edge Function calls Gemini for query embedding (1 request per search). `generate-embeddings` calls Gemini for content embedding (batch, internal). |
 | SQL injection via search query | Low | Use parameterized SQL function; query is passed as text parameter only |
 | Search result enumeration | Low | Limit to 10 results; no pagination for now |
 | DDoS / expensive embedding calls | Medium | IP-based rate limiting (same Redis/Upstash as sponsor-likes) |
@@ -891,8 +891,7 @@ supabase functions deploy generate-embeddings --no-verify-jwt
 ```
 
 Required secrets (in addition to existing ones):
-- `GEMINI_API_KEY` (for query embedding generation in the Edge Function)
-- `OPENAI_API_KEY` (legacy; no longer required)
+- `GEMINI_API_KEY` (for embedding generation in the Edge Function and indexing script)
 
 ### 12.3 Initial Index
 
