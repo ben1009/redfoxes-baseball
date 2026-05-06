@@ -16,8 +16,8 @@ except for the match review page (password protected, hint provided).
 - [友谊赛战术复盘](match_review.html) — 7 tactical video clips with analysis (requires password, hint: year coach started baseball)
 - [猛虎杯 U10 竞赛章程](u10_rules.html) — Tournament rules and schedule
 - [PONY U10 竞赛规则](pony_u10_rules.html) — PONY league rules (Tianjin division)
-- [小组赛数据分析](tigercup_groupstage.html) — Group stage match analysis (multi-AI)
-- [决赛数据分析](tigercup_finalstage.html) — Final stage match analysis (multi-AI)
+- [猛虎杯小组赛数据分析](tigercup_groupstage.html) — Group stage match analysis (multi-AI)
+- [猛虎杯决赛数据分析](tigercup_finalstage.html) — Final stage match analysis (multi-AI)
 - [赞助赤狐](sponsor_me.html) — Sponsor support page with like counter
 
 ## Actions Available

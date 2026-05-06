@@ -379,14 +379,14 @@ The old Worker remains in `workers/` for reference and rollback:
 - Data image displays correctly
 - All 3 AI analysis cards are present
 - Tables render correctly on mobile
-- Navigation links work (including cross-page links to index and finalstage)
+- Navigation links work (including cross-page links to index, u10_rules, and finalstage)
 
 ### tigercup_finalstage.html
 - Data image and final ranking image display correctly
 - Match score records are present
 - All 3 AI analysis cards are present
 - Tables render correctly on mobile
-- Navigation links work (including cross-page links to index and groupstage)
+- Navigation links work (including cross-page links to index, u10_rules, and groupstage)
 
 ### General
 - Responsive layout works on mobile (320px+)

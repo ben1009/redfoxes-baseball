@@ -74,12 +74,13 @@ describe('Finalstage Analysis Page (tigercup_finalstage.html)', () => {
         expect(footerText).toContain('猛虎杯决赛');
     }));
 
-    test('should have link back to index and groupstage', async () => harness.withBrowser(async () => {
+    test('should have link back to index, rules, and groupstage', async () => harness.withBrowser(async () => {
         const navLinks = await harness.page.$$eval('.nav-link', links =>
             links.map(link => link.getAttribute('href'))
         );
 
         expect(navLinks).toContain('index.html');
+        expect(navLinks).toContain('u10_rules.html');
         expect(navLinks).toContain('tigercup_groupstage.html');
     }));
 });
