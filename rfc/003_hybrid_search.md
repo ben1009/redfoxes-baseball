@@ -541,7 +541,7 @@ For each HTML file:
 
 ```bash
 # One-time setup
-npm install --save-dev cheerio @supabase/supabase-js openai
+npm install --save-dev cheerio @supabase/supabase-js
 
 # Run manually after content updates
 node scripts/index-content.js
