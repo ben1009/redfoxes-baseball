@@ -277,8 +277,8 @@
     const targets = [
       document.querySelector('.header'),          // index.html
       navContainer,                               // rules/analysis pages (inside flex container)
+      document.querySelector('.topbar'),          // sponsor_me.html (must precede generic header)
       document.querySelector('header'),           // match_review
-      document.querySelector('.topbar'),          // sponsor_me.html
       document.querySelector('body'),             // fallback
     ];
 
