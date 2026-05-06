@@ -20,10 +20,21 @@
     <script src="scroll_reveal.js" defer></script>
     <script src="count_up.js" defer></script>
     <base target="_blank">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SportsEvent",
+      "name": "2026年春季PONY小马棒球联赛",
+      "description": "天津君奥棒球联赛暨PONY小马棒球联赛合作联盟赛 U10组（Bronco-10）竞赛规则",
+      "sport": "Baseball",
+      "eventStatus": "EventScheduled"
+    }
+    </script>
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="page-nav">
+    <nav class="page-nav" aria-label="页面导航">
         <div class="nav-container">
             <a href="index.html" class="nav-link" target="_self">🏠 首页</a>
             <a href="#schedule" class="nav-link" target="_self">📅 赛程</a>
@@ -52,7 +63,7 @@
         <!-- Main Content -->
         <main class="content">
             <!-- 烈光少棒赤狐队赛程图片 -->
-            <section id="schedule" data-reveal>
+            <section id="schedule" data-reveal data-action="read_rules">
                 <h2>烈光少棒（赤狐队）U10 PONY天津赛区赛程</h2>
                 <div class="image-container">
                     <img src="img/pony_u10_tianjin_schedule.png" alt="烈光少棒赤狐队U10 PONY天津赛区赛程表">
@@ -64,7 +75,7 @@
             </section>
 
             <!-- 场地与器材规格 -->
-            <section id="field-specs" data-reveal>
+            <section id="field-specs" data-reveal data-action="read_rules">
                 <h2>场地与器材规格</h2>
 
                 <h3>U10组场地参数</h3>
@@ -92,7 +103,7 @@
             </section>
 
             <!-- 比赛时间 -->
-            <section id="game-format" data-reveal>
+            <section id="game-format" data-reveal data-action="read_rules">
                 <h2>比赛时间与赛制</h2>
 
                 <table>
@@ -137,7 +148,7 @@
             </section>
 
             <!-- 投手规则 -->
-            <section id="pitcher-limits" data-reveal>
+            <section id="pitcher-limits" data-reveal data-action="read_rules">
                 <h2>投手限制（严格执行）</h2>
 
                 <div class="warning-box">
@@ -175,7 +186,7 @@
             </section>
 
             <!-- 教练指导 -->
-            <section id="coach-rules" data-reveal>
+            <section id="coach-rules" data-reveal data-action="read_rules">
                 <h2>教练员进场指导规则</h2>
 
                 <div class="key-metrics">
@@ -199,7 +210,7 @@
             </section>
 
             <!-- 跑垒规则 -->
-            <section id="base-running" data-reveal>
+            <section id="base-running" data-reveal data-action="read_rules">
                 <h2>盗垒与跑垒规则</h2>
 
                 <ul>
@@ -215,7 +226,7 @@
             </section>
 
             <!-- 比赛流程 -->
-            <section id="preparation" data-reveal>
+            <section id="preparation" data-reveal data-action="read_rules">
                 <h2>比赛流程与纪律</h2>
 
                 <h3>赛前准备</h3>
@@ -242,7 +253,7 @@
             </section>
 
             <!-- 天气与中断 -->
-            <section id="weather" data-reveal>
+            <section id="weather" data-reveal data-action="read_rules">
                 <h2>天气与比赛中断</h2>
 
                 <ul>
@@ -253,7 +264,7 @@
             </section>
 
             <!-- 积分规则 -->
-            <section id="scoring" data-reveal>
+            <section id="scoring" data-reveal data-action="read_rules">
                 <h2>积分与排名</h2>
 
                 <h3>积分规则</h3>
@@ -292,7 +303,7 @@
             </section>
 
             <!-- 申诉规则 -->
-            <section id="appeal" data-reveal>
+            <section id="appeal" data-reveal data-action="read_rules">
                 <h2>申诉与资格</h2>
 
                 <div class="warning-box">

@@ -1,0 +1,44 @@
+# 烈光少棒赤狐队 (Red Foxes Youth Baseball Team)
+
+> A static website for the Red Foxes youth baseball team. Language: Chinese (Simplified).
+> Live at: https://ben1009.github.io/redfoxes-baseball/
+
+## Overview
+
+This site contains match reviews, tournament rules, data analysis reports,
+and a sponsor page for the Red Foxes youth baseball team.
+All content is static HTML with embedded CSS/JS. No login required
+except for the match review page (password protected, hint provided).
+
+## Pages
+
+- [首页 / Home](index.html) — Navigation hub with links to all content
+- [友谊赛战术复盘](match_review.html) — 7 tactical video clips with analysis (requires password, hint: year coach started baseball)
+- [猛虎杯 U10 竞赛章程](u10_rules.html) — Tournament rules and schedule
+- [PONY U10 竞赛规则](pony_u10_rules.html) — PONY league rules (Tianjin division)
+- [小组赛数据分析](tigercup_groupstage.html) — Group stage match analysis (multi-AI)
+- [决赛数据分析](tigercup_finalstage.html) — Final stage match analysis (multi-AI)
+- [赞助赤狐](sponsor_me.html) — Sponsor support page with like counter
+
+## Actions Available
+
+- Search: Press Cmd/Ctrl+K on any page to open site-wide search
+- Sponsor: Visit sponsor_me.html and click the like button
+- View Rules: Navigate to u10_rules.html or pony_u10_rules.html
+- View Analysis: Navigate to tigercup_groupstage.html or tigercup_finalstage.html
+- Watch Videos: Navigate to match_review.html (password required)
+
+## Key Data
+
+- Team: 烈光少棒赤狐队 (Red Foxes Youth Baseball Team)
+- Motto: "友谊第一，比赛第二 · 烈光少棒加油"
+- Coach: 张锦新
+- Tournaments: 猛虎杯 (Tiger Cup), PONY U10
+- Password hint for match_review: "张锦新 哪年开始接触从事棒球运动？"
+
+## Technical Notes
+
+- Static site, no API server
+- Search powered by Supabase Edge Function (hybrid full-text + vector)
+- Like counter powered by Supabase Edge Function + Redis
+- All videos hosted on Bilibili (embedded iframes)

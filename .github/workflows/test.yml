@@ -146,3 +146,49 @@ jobs:
       env:
         TEST_PASSWORD: ${{ secrets.TEST_PASSWORD || '1972' }}
       run: npm run ${{ matrix.script }}
+
+  agent:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: llms
+            script: test:ci:agent:llms
+            requires_browser: false
+          - name: manifest
+            script: test:ci:agent:manifest
+            requires_browser: false
+          - name: sitemap
+            script: test:ci:agent:sitemap
+            requires_browser: false
+          - name: jsonld
+            script: test:ci:agent:jsonld
+            requires_browser: false
+          - name: semantic
+            script: test:ci:agent:semantic
+            requires_browser: false
+          - name: data-action
+            script: test:ci:agent:data-action
+            requires_browser: true
+
+    name: agent / ${{ matrix.name }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Install Playwright browsers
+      if: ${{ matrix.requires_browser }}
+      run: npm run playwright:install
+
+    - name: Run agent tests
+      run: npm run ${{ matrix.script }}

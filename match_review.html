@@ -23,7 +23,25 @@
     <link rel="stylesheet" href="baseball_theme.css">
     <script src="baseball_floats.js" defer></script>
     <script src="scroll_reveal.js" defer></script>
-    
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SportsEvent",
+      "name": "烈光 vs 飞雪 友谊赛复盘",
+      "description": "烈光少棒赤狐队与飞雪队的友谊赛战术复盘",
+      "performer": [
+        { "@type": "SportsTeam", "name": "烈光少棒赤狐队" },
+        { "@type": "SportsTeam", "name": "飞雪队" }
+      ],
+      "subjectOf": {
+        "@type": "VideoObject",
+        "name": "友谊赛战术复盘视频",
+        "description": "七个战术片段的详细分析"
+      }
+    }
+    </script>
+
     <style>
         body {
             font-family: var(--font-sans);
@@ -448,7 +466,7 @@
         <main>
             
             <!-- 片段1：三振逃的规则 -->
-            <article class="video-card" data-reveal>
+            <article class="video-card" data-reveal data-action="watch_video" data-video-id="BV1z4XhBDEd6">
                 <div class="video-header">
                     <img src="img/04_strikeout.png" alt="三振出局">
                     <span class="video-title-text">片段一：三振逃的规则解析</span>
@@ -476,7 +494,7 @@
             </article>
 
             <!-- 片段2：跑垒训练 -->
-            <article class="video-card" data-reveal>
+            <article class="video-card" data-reveal data-action="watch_video" data-video-id="BV1B8XhBmEWG">
                 <div class="video-header">
                     <img src="img/09_goforit.png" alt="冲鸭">
                     <span class="video-title-text">片段二：跑垒训练 - 玩命跑的艺术</span>
@@ -497,7 +515,7 @@
             </article>
 
             <!-- 片段3：死杀一垒 -->
-            <article class="video-card" data-reveal>
+            <article class="video-card" data-reveal data-action="watch_video" data-video-id="BV1B8XhBmEup">
                 <div class="video-header">
                     <img src="img/07_catch.png" alt="接杀">
                     <span class="video-title-text">片段三：死杀一垒战术解析</span>
@@ -520,7 +538,7 @@
             </article>
 
             <!-- 片段4：精神不集中 -->
-            <article class="video-card" data-reveal>
+            <article class="video-card" data-reveal data-action="watch_video" data-video-id="BV1B8XhBmEmW">
                 <div class="video-header">
                     <img src="img/15_steady.png" alt="稳住">
                     <span class="video-title-text">片段四：精神集中度与防守意识</span>
@@ -548,7 +566,7 @@
             </article>
 
             <!-- 片段5：接传球失误 -->
-            <article class="video-card" data-reveal>
+            <article class="video-card" data-reveal data-action="watch_video" data-video-id="BV1E8XhBUEHy">
                 <div class="video-header">
                     <img src="img/11_weak.png" alt="弱爆了">
                     <span class="video-title-text">片段五：接传球失误分析</span>
@@ -574,7 +592,7 @@
             </article>
 
             <!-- 片段6：经验问题 -->
-            <article class="video-card" data-reveal>
+            <article class="video-card" data-reveal data-action="watch_video" data-video-id="BV1B8XhBmEbo">
                 <div class="video-header">
                     <img src="img/12_awesome.png" alt="绝绝子">
                     <span class="video-title-text">片段六：经验问题 - 错失得分良机</span>
@@ -600,7 +618,7 @@
             </article>
 
             <!-- 片段7：投手低头回投手板 -->
-            <article class="video-card" data-reveal>
+            <article class="video-card" data-reveal data-action="watch_video" data-video-id="BV1z4XhBSE9T">
                 <div class="video-header">
                     <img src="img/06_goodpitch.png" alt="投出好球">
                     <span class="video-title-text">片段七：投手细节 - 回板看局面</span>

@@ -1,0 +1,115 @@
+{
+  "$schema": "./agent-manifest.schema.json",
+  "site": {
+    "name": "烈光少棒赤狐队",
+    "name_en": "Red Foxes Youth Baseball Team",
+    "url": "https://ben1009.github.io/redfoxes-baseball/",
+    "language": "zh-CN",
+    "description": "烈光少棒赤狐队官方网站，包含比赛复盘、竞赛规则、数据分析和赞助信息。"
+  },
+  "pages": [
+    {
+      "path": "index.html",
+      "title": "烈光少棒赤狐队 | 首页",
+      "type": "hub",
+      "description": "导航首页，链接到所有内容页面",
+      "actions": ["navigate"],
+      "requires_auth": false
+    },
+    {
+      "path": "match_review.html",
+      "title": "烈光 vs 飞雪 友谊赛复盘",
+      "type": "review",
+      "description": "七个战术片段的详细分析与视频讲解",
+      "actions": ["watch_video", "read_analysis"],
+      "requires_auth": true,
+      "auth_hint": "张锦新 哪年开始接触从事棒球运动？",
+      "auth_type": "password_sha256",
+      "content_count": 7
+    },
+    {
+      "path": "u10_rules.html",
+      "title": "猛虎杯 U10 竞赛章程",
+      "type": "rules",
+      "description": "北京市第八届猛虎杯春季棒球比赛 U10 投手投打组完整竞赛规程",
+      "actions": ["read_rules", "view_schedule"],
+      "requires_auth": false,
+      "tags": ["U10", "猛虎杯", "投手投打组"]
+    },
+    {
+      "path": "pony_u10_rules.html",
+      "title": "PONY U10 竞赛规则",
+      "type": "rules",
+      "description": "2026年春季PONY小马棒球联赛 U10组（Bronco-10）竞赛规则",
+      "actions": ["read_rules", "view_schedule"],
+      "requires_auth": false,
+      "tags": ["PONY", "U10", "Bronco-10", "天津赛区"]
+    },
+    {
+      "path": "tigercup_groupstage.html",
+      "title": "猛虎杯小组赛数据分析",
+      "type": "analysis",
+      "description": "小组赛球员表现数据深度分析，多AI联合评估",
+      "actions": ["read_analysis", "view_data"],
+      "requires_auth": false,
+      "tags": ["猛虎杯", "小组赛", "数据分析"],
+      "ai_sources": ["Kimi", "Gemini", "ChatGPT"]
+    },
+    {
+      "path": "tigercup_finalstage.html",
+      "title": "猛虎杯决赛数据分析",
+      "type": "analysis",
+      "description": "决赛球员表现数据深度分析，多AI联合评估",
+      "actions": ["read_analysis", "view_data"],
+      "requires_auth": false,
+      "tags": ["猛虎杯", "决赛", "数据分析"],
+      "ai_sources": ["Kimi", "Gemini", "ChatGPT"]
+    },
+    {
+      "path": "sponsor_me.html",
+      "title": "赞助赤狐",
+      "type": "sponsor",
+      "description": "支持球队训练器材、比赛日补给",
+      "actions": ["sponsor", "like"],
+      "requires_auth": false
+    }
+  ],
+  "global_actions": [
+    {
+      "name": "search",
+      "trigger": "Cmd+K or Ctrl+K",
+      "description": "Open site-wide hybrid search modal"
+    },
+    {
+      "name": "navigate",
+      "trigger": "Click nav-card or page-nav link",
+      "description": "Navigate between pages"
+    }
+  ],
+  "api_endpoints": [
+    {
+      "name": "site-search",
+      "url": "https://ohwiimchzlesczdvasbh.supabase.co/functions/v1/site-search?q={query}",
+      "method": "GET",
+      "description": "Hybrid full-text + vector search across all pages"
+    },
+    {
+      "name": "sponsor-likes-count",
+      "url": "https://ohwiimchzlesczdvasbh.supabase.co/functions/v1/sponsor-likes/count",
+      "method": "GET",
+      "description": "Read the global like counter"
+    },
+    {
+      "name": "sponsor-likes-like",
+      "url": "https://ohwiimchzlesczdvasbh.supabase.co/functions/v1/sponsor-likes/like",
+      "method": "POST",
+      "description": "Increment the global like counter"
+    },
+    {
+      "name": "sponsor-likes-unlike",
+      "url": "https://ohwiimchzlesczdvasbh.supabase.co/functions/v1/sponsor-likes/unlike",
+      "method": "POST",
+      "description": "Decrement the global like counter"
+    }
+  ]
+}

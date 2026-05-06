@@ -13,6 +13,19 @@
     <script src="site_analytics.js"></script>
     <script src="site_search.js" defer></script>
 
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "DonateAction",
+      "name": "赞助赤狐",
+      "description": "支持烈光少棒赤狐队训练器材与比赛日补给",
+      "recipient": {
+        "@type": "SportsTeam",
+        "name": "烈光少棒赤狐队"
+      }
+    }
+    </script>
+
     <style>
         :root {
             --bg: #111111;
@@ -692,13 +705,15 @@
     </div>
 
     <main class="page">
-        <div class="topbar">
-            <a class="brand" href="./index.html">
-                <span class="brand-mark">🦊</span>
-                <span>烈光少棒赤狐队</span>
-            </a>
+        <header class="topbar">
+            <nav aria-label="主导航">
+                <a class="brand" href="./index.html">
+                    <span class="brand-mark">🦊</span>
+                    <span>烈光少棒赤狐队</span>
+                </a>
+            </nav>
             <p class="topbar-note">Sponsor Me / 一次扫码，给小球员一点燃料</p>
-        </div>
+        </header>
 
         <section class="hero">
             <article class="hero-copy">
@@ -731,7 +746,7 @@
                 </div>
 
                 <div class="like-widget">
-                    <button class="like-btn" type="button" aria-pressed="false" aria-label="为赤狐队点赞">
+                    <button class="like-btn" type="button" aria-pressed="false" aria-label="为赤狐队点赞" data-action="like" data-endpoint="sponsor-likes-like">
                         <span class="like-icon" aria-hidden="true">👍</span>
                         <span class="like-count">...</span>
                     </button>

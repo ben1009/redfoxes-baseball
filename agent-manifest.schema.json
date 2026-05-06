@@ -1,0 +1,86 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "./agent-manifest.schema.json",
+  "title": "Agent Manifest",
+  "description": "Machine-readable page graph for the Red Foxes Baseball website",
+  "type": "object",
+  "required": ["site", "pages", "global_actions", "api_endpoints"],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "site": {
+      "type": "object",
+      "required": ["name", "name_en", "url", "language", "description"],
+      "properties": {
+        "name": { "type": "string" },
+        "name_en": { "type": "string" },
+        "url": { "type": "string", "format": "uri" },
+        "language": { "type": "string" },
+        "description": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "pages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "title", "type", "description", "actions", "requires_auth"],
+        "properties": {
+          "path": { "type": "string" },
+          "title": { "type": "string" },
+          "type": {
+            "type": "string",
+            "enum": ["hub", "review", "rules", "analysis", "sponsor"]
+          },
+          "description": { "type": "string" },
+          "actions": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "requires_auth": { "type": "boolean" },
+          "auth_hint": { "type": "string" },
+          "auth_type": { "type": "string" },
+          "content_count": { "type": "integer" },
+          "tags": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "ai_sources": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "global_actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "trigger", "description"],
+        "properties": {
+          "name": { "type": "string" },
+          "trigger": { "type": "string" },
+          "description": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "api_endpoints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "url", "method", "description"],
+        "properties": {
+          "name": { "type": "string" },
+          "url": { "type": "string", "format": "uri" },
+          "method": { "type": "string", "enum": ["GET", "POST", "PUT", "DELETE"] },
+          "description": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

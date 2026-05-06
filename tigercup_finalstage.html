@@ -18,7 +18,25 @@
     <script src="scroll_reveal.js" defer></script>
     <script src="count_up.js" defer></script>
     <link rel="stylesheet" href="baseball_theme.css">
-    
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "猛虎杯决赛数据分析",
+      "description": "决赛球员表现数据深度分析，多AI联合评估",
+      "author": [
+        { "@type": "Organization", "name": "Kimi" },
+        { "@type": "Organization", "name": "Gemini" },
+        { "@type": "Organization", "name": "ChatGPT" }
+      ],
+      "about": {
+        "@type": "SportsEvent",
+        "name": "猛虎杯棒球比赛"
+      }
+    }
+    </script>
+
     <style>
         /* ============================================
            Layout
@@ -676,7 +694,7 @@
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="page-nav">
+    <nav class="page-nav" aria-label="页面导航">
         <div class="nav-container">
             <a href="index.html" class="nav-link" target="_self">🏠 首页</a>
             <a href="tigercup_groupstage.html" class="nav-link" target="_self">📊 小组赛分析</a>
@@ -702,7 +720,7 @@
         <!-- Main Content -->
         <main class="content">
             <!-- 数据概览 -->
-            <section id="overview" data-reveal>
+            <section id="overview" data-reveal data-action="view_data">
                 <h2>比赛数据概览</h2>
                 <div class="image-container">
                     <img src="img/finalstage_data.png" alt="烈光少棒（赤狐队）决赛数据表">
@@ -744,7 +762,7 @@
             </section>
 
             <!-- 总结 -->
-            <section id="summary" data-reveal>
+            <section id="summary" data-reveal data-action="read_analysis">
                 <h2>三AI共识总结</h2>
                 <div class="summary-section">
                     <div class="summary-title">🎯 核心结论：核心被针对，阵容深度决定胜负</div>
@@ -774,8 +792,8 @@
             </section>
 
             <!-- Gemini 分析 -->
-            <section id="gemini" data-reveal>
-                <div class="ai-card" data-reveal>
+            <section id="gemini" data-reveal data-action="read_analysis" data-ai-source="Gemini">
+                <article class="ai-card" data-reveal>
                     <div class="ai-card-header gemini">🌟 Gemini 分析</div>
                     <div class="ai-card-content">
                         <h3>1. 进攻端：真实情况是"两极分化"与"战术保送"</h3>
@@ -840,11 +858,11 @@
                             </ol>
                         </div>
                     </div>
-                </div>
+                </article>
             </section>
             <!-- ChatGPT 分析 -->
-            <section id="chatgpt" data-reveal>
-                <div class="ai-card" data-reveal>
+            <section id="chatgpt" data-reveal data-action="read_analysis" data-ai-source="ChatGPT">
+                <article class="ai-card" data-reveal>
                     <div class="ai-card-header chatgpt">💬 ChatGPT 分析</div>
                     <div class="ai-card-content">
                         <p>这张决赛数据比前一张更有价值，因为它说明的不是"能不能打"，而是关键战里能不能按赢球方式去打。</p>
@@ -982,11 +1000,11 @@
                             <strong>一句话总结：</strong>这张决赛数据说明，你们已经不是"靠一个点赢"的队了，而是开始有"整队赢球"的雏形。下一步把防守细节再收紧，这支队伍会更可怕。
                         </div>
                     </div>
-                </div>
+                </article>
             </section>
             <!-- Kimi 分析 -->
-            <section id="kimi" data-reveal>
-                <div class="ai-card" data-reveal>
+            <section id="kimi" data-reveal data-action="read_analysis" data-ai-source="Kimi">
+                <article class="ai-card" data-reveal>
                     <div class="ai-card-header kimi">🤖 Kimi 分析</div>
                     <div class="ai-card-content">
                         <p>这是 <strong>烈光少棒（赤狐队）决赛数据</strong> 的深度分析。与小组赛相比，决赛的竞争更激烈，对手针对性更强，我会从<strong>进攻效率</strong>、<strong>防守稳定性</strong>和<strong>关键失误</strong>三个维度为您拆解：</p>
@@ -1159,7 +1177,7 @@
                             <strong>总结：</strong>这场决赛暴露出在高压下<strong>基础防守执行</strong>（牵制回位、高飞球判断）和<strong>打棒侵略性</strong>（被保送的应对）两个层面的不足。田雨稷和付昌泽的逆袭是亮点，但外野防守（尹钰桢）和二垒防守（刘景天）的漏球问题是决赛失分的关键。建议针对"牵制回位"、"高飞球判断"、"选球眼力"三个技术点进行专项训练。
                         </div>
                     </div>
-                </div>
+                </article>
             </section>
         </main>
 

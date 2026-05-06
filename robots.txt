@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Sitemap: https://ben1009.github.io/redfoxes-baseball/sitemap.xml
+
+# Agent-specific hints
+User-agent: *
+Disallow: /redfoxes-baseball/supabase/
+Disallow: /redfoxes-baseball/workers/
+Disallow: /redfoxes-baseball/scripts/
+Disallow: /redfoxes-baseball/test/
+Disallow: /redfoxes-baseball/rfc/
