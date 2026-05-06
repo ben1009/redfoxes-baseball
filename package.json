@@ -5,7 +5,7 @@
   "main": "index.html",
   "scripts": {
     "test": "jest --passWithNoTests",
-    "test:ci": "npm run test:ci:indexer && npm run test:ci:search:trigger && npm run test:ci:search:modal && npm run test:ci:pages:files && npm run test:ci:pages:index && npm run test:ci:pages:match-review && npm run test:ci:pages:u10-rules && npm run test:ci:pages:pony-u10-rules && npm run test:ci:pages:groupstage && npm run test:ci:pages:finalstage && npm run test:ci:pages:sponsor && npm run test:ci:video:structure && npm run test:ci:video:autopause",
+    "test:ci": "npm run test:ci:indexer && npm run test:ci:search:trigger && npm run test:ci:search:modal && npm run test:ci:pages:files && npm run test:ci:pages:index && npm run test:ci:pages:match-review && npm run test:ci:pages:u10-rules && npm run test:ci:pages:pony-u10-rules && npm run test:ci:pages:groupstage && npm run test:ci:pages:finalstage && npm run test:ci:pages:sponsor && npm run test:ci:video:structure && npm run test:ci:video:autopause && npm run test:ci:agent",
     "test:ci:indexer": "jest --passWithNoTests --runInBand test/indexer.test.js",
     "test:ci:search": "npm run test:ci:search:trigger && npm run test:ci:search:modal",
     "test:ci:search:trigger": "jest --passWithNoTests --runInBand test/search.test.js -t \"Search Trigger on All Pages|Search Trigger Placement\"",
@@ -22,6 +22,13 @@
     "test:ci:video": "npm run test:ci:video:structure && npm run test:ci:video:autopause",
     "test:ci:video:structure": "jest --passWithNoTests --runInBand test/video_autopause.test.js -t \"should have 7 video containers with data-src attributes|should detect video visibility with IntersectionObserver\"",
     "test:ci:video:autopause": "jest --passWithNoTests --runInBand test/video_autopause.test.js -t \"should remove iframe when scrolled out of viewport and restore when back|should maintain video src after scroll\"",
+    "test:ci:agent": "npm run test:ci:agent:llms && npm run test:ci:agent:manifest && npm run test:ci:agent:sitemap && npm run test:ci:agent:jsonld && npm run test:ci:agent:semantic && npm run test:ci:agent:data-action",
+    "test:ci:agent:llms": "jest --passWithNoTests --runInBand test/agent.llms_txt.test.js",
+    "test:ci:agent:manifest": "jest --passWithNoTests --runInBand test/agent.manifest.test.js",
+    "test:ci:agent:sitemap": "jest --passWithNoTests --runInBand test/agent.sitemap.test.js",
+    "test:ci:agent:jsonld": "jest --passWithNoTests --runInBand test/agent.jsonld.test.js",
+    "test:ci:agent:semantic": "jest --passWithNoTests --runInBand test/agent.semantic.test.js",
+    "test:ci:agent:data-action": "jest --passWithNoTests --runInBand test/agent.data_action.test.js",
     "test:video": "jest test/video_autopause.test.js --verbose",
     "test:standalone": "node test/test_autopause.js",
     "playwright:install": "playwright install --with-deps chromium"

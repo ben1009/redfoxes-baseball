@@ -18,7 +18,25 @@
     <script src="scroll_reveal.js" defer></script>
     <script src="count_up.js" defer></script>
     <link rel="stylesheet" href="baseball_theme.css">
-    
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "猛虎杯小组赛数据分析",
+      "description": "小组赛球员表现数据深度分析，多AI联合评估",
+      "author": [
+        { "@type": "Organization", "name": "Kimi" },
+        { "@type": "Organization", "name": "Gemini" },
+        { "@type": "Organization", "name": "ChatGPT" }
+      ],
+      "about": {
+        "@type": "SportsEvent",
+        "name": "猛虎杯棒球比赛"
+      }
+    }
+    </script>
+
     <style>
         /* ============================================
            Layout
@@ -676,7 +694,7 @@
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="page-nav">
+    <nav class="page-nav" aria-label="页面导航">
         <div class="nav-container">
             <a href="index.html" class="nav-link" target="_self">🏠 首页</a>
             <a href="tigercup_finalstage.html" class="nav-link" target="_self">🏆 决赛分析</a>
@@ -702,7 +720,7 @@
         <!-- Main Content -->
         <main class="content">
             <!-- 原始数据表 -->
-            <section id="data" data-reveal>
+            <section id="data" data-reveal data-action="view_data">
                 <h2>比赛数据表</h2>
                 <div class="image-container">
                     <img src="img/groupstage_data.png" alt="烈光少棒（赤狐队）比赛数据表">
@@ -714,7 +732,7 @@
             </section>
 
             <!-- 总结 -->
-            <section id="summary" data-reveal>
+            <section id="summary" data-reveal data-action="read_analysis">
                 <h2>三AI共识总结</h2>
                 <div class="summary-section">
                     <div class="summary-title">🎯 核心结论：攻强守弱</div>
@@ -744,8 +762,8 @@
             </section>
 
             <!-- Kimi 分析 -->
-            <section id="kimi" data-reveal>
-                <div class="ai-card" data-reveal>
+            <section id="kimi" data-reveal data-action="read_analysis" data-ai-source="Kimi">
+                <article class="ai-card" data-reveal>
                     <div class="ai-card-header kimi">🤖 Kimi 分析</div>
                     <div class="ai-card-content">
                         <h3>📊 整体数据概览</h3>
@@ -879,12 +897,12 @@
                             这是一份非常详细的棒球比赛记录！从数据看，球队进攻火力不错，但<strong>防守失误和投手控球</strong>是主要失分原因。需要针对性训练减少保送、漏球和传球失误。
                         </div>
                     </div>
-                </div>
+                </article>
             </section>
 
             <!-- Gemini 分析 -->
-            <section id="gemini" data-reveal>
-                <div class="ai-card" data-reveal>
+            <section id="gemini" data-reveal data-action="read_analysis" data-ai-source="Gemini">
+                <article class="ai-card" data-reveal>
                     <div class="ai-card-header gemini">🌟 Gemini 分析</div>
                     <div class="ai-card-content">
                         <p>这是一份非常详细的棒球/垒球比赛球员数据统计表，不仅记录了标准的进攻数据，还包含了非常具体的防守表现和赛场细节记录。从防守备注中对失误的详细描述、投手的保送率以及大量的盗垒数据来看，这大概率是一支青少年棒球队或业余球队的比赛/训练复盘记录。</p>
@@ -939,12 +957,12 @@
                             </ol>
                         </div>
                     </div>
-                </div>
+                </article>
             </section>
 
             <!-- ChatGPT 分析 -->
-            <section id="chatgpt" data-reveal>
-                <div class="ai-card" data-reveal>
+            <section id="chatgpt" data-reveal data-action="read_analysis" data-ai-source="ChatGPT">
+                <article class="ai-card" data-reveal>
                     <div class="ai-card-header chatgpt">💬 ChatGPT 分析</div>
                     <div class="ai-card-content">
                         <p>可以，这张表我按比赛复盘表来给你拆。</p>
@@ -1054,7 +1072,7 @@
                             <strong>一句话总结：</strong>你们这队进攻很有冲击力，已经有"会拿分"的样子；现在最该补的不是打击，而是防守基本功和投捕稳定性。只要把送分减少，比赛质量会马上上一个台阶。
                         </div>
                     </div>
-                </div>
+                </article>
             </section>
         </main>
 

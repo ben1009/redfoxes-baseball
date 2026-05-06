@@ -1,7 +1,7 @@
 # AGENTS.md - Red Foxes Baseball Team Website
 
 > This file provides essential context for AI coding agents working on this project.
-> Last updated: 2026-04-29
+> Last updated: 2026-05-06
 
 ---
 
@@ -72,6 +72,11 @@ redfoxes-baseball/
 │   └── README.md              # Legacy setup guide
 ├── README.md                  # Project documentation
 ├── AGENTS.md                  # This file
+├── llms.txt                   # Site overview for LLM agents
+├── agent-manifest.json        # Machine-readable page graph with capabilities
+├── agent-manifest.schema.json # JSON Schema for agent-manifest.json
+├── sitemap.xml                # Standard XML sitemap for crawlers
+├── robots.txt                 # Crawler directives and sitemap reference
 ├── test/
 │   ├── browser.js             # Playwright browser launcher (shared config)
 │   ├── pages.shared.js        # Shared test harness: static server, page harness
@@ -79,11 +84,18 @@ redfoxes-baseball/
 │   ├── video_autopause.test.js # Video autopause tests
 │   ├── search.test.js         # Search modal tests
 │   ├── indexer.test.js        # Content indexer tests
-│   └── test_autopause.js      # Standalone autopause smoke test
+│   ├── test_autopause.js      # Standalone autopause smoke test
+│   ├── agent.llms_txt.test.js # llms.txt validation
+│   ├── agent.manifest.test.js # agent-manifest.json validation
+│   ├── agent.sitemap.test.js  # sitemap.xml validation
+│   ├── agent.jsonld.test.js   # JSON-LD structured data validation
+│   ├── agent.semantic.test.js # Semantic HTML tag validation
+│   └── agent.data_action.test.js # data-action attribute validation
 ├── rfc/
 │   ├── 001_like_counter.md    # Like feature architecture design (RFC)
 │   ├── 002_supabase_like_counter.md # Active Supabase like counter design (RFC)
-│   └── 003_hybrid_search.md   # Hybrid search architecture design (RFC)
+│   ├── 003_hybrid_search.md   # Hybrid search architecture design (RFC)
+│   └── 004_agentic_website.md # Agentic website design (RFC)
 ├── LICENSE                    # CC BY-NC-SA 4.0 License
 └── img/                       # Static image assets
     ├── baseball_field_bg.svg  # Aerial baseball field background
@@ -276,6 +288,18 @@ Tests include:
 - The `--disable-crashpad-for-testing` Chromium flag must **not** be used — it silently breaks all network requests (`net::ERR_ABORTED`) in Playwright ≥1.59
 - `page.addInitScript()` only fires on `page.goto()` navigations, not `page.setContent()` — the test harness uses `page.goto()` with a prepared-HTML server endpoint for this reason
 - CI splits page tests into a matrix (one job per page) for faster feedback
+
+### Agentic Conventions
+
+This site is designed to be AI-agent-friendly. See RFC 004 for full design rationale.
+
+- **`llms.txt`**: Plain-text site overview at root. Agents read one file to understand the entire site. Keep under 2KB.
+- **`agent-manifest.json`**: Machine-readable page graph with URLs, types, auth requirements, and API endpoints. Update when adding/removing pages.
+- **`sitemap.xml`**: Standard XML sitemap. Update `<lastmod>` when content changes.
+- **JSON-LD**: Each HTML page has a `<script type="application/ld+json">` block in `<head>` with Schema.org structured data.
+- **Semantic HTML**: Pages use `<header>`, `<nav>`, `<main>`, `<footer>`, `<article>`, `<section>`. Keep CSS classes on semantic tags when upgrading from `<div>`.
+- **`data-action` attributes**: Interactive elements are annotated with machine-readable intent (e.g., `data-action="navigate"`, `data-action="like"`, `data-action="watch_video"`).
+- **Tests**: Agent-specific tests in `test/agent.*.test.js` validate all of the above.
 
 ### Deployment
 
