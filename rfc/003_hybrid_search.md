@@ -1,7 +1,7 @@
 # Hybrid Full-Text + Vector Search Design Document
 
 > 全站混合搜索设计文档 — Hybrid Search Across All Pages via Supabase
-> Last updated: 2026-04-29
+> Last updated: 2026-05-06
 
 ---
 
@@ -66,7 +66,7 @@ Add the generated `pagefind/` to the GitHub Pages build and include the Pagefind
 │                 │                            │ │  - hnsw vector index     │ │
 └─────────────────┘                            │ └──────────────────────────┘ │
                                                │ ┌──────────────────────────┐ │
-                                               │ │ Embedding API (OpenAI    │ │
+                                               │ │ Embedding API (Gemini    │ │
                                                │ │  or local model)         │ │
                                                │ └──────────────────────────┘ │
                                                └──────────────────────────────┘
@@ -89,7 +89,7 @@ Add the generated `pagefind/` to the GitHub Pages build and include the Pagefind
 | Edge Function | `supabase/functions/site-search/index.ts` | Public API: receives query, generates query embedding, runs hybrid search, returns ranked results |
 | Database | `public.documents` + `public.document_chunks` | Normalized schema: pages in `documents`, sections with embeddings in `document_chunks` |
 | Frontend Widget | Inline in `index.html` + shared JS | Search input modal, results rendering, keyboard shortcuts |
-| Embedding Provider | OpenAI API or self-hosted | Converts Chinese text to 1536-dim vectors (or compatible dimension) |
+| Embedding Provider | Gemini API (`gemini-embedding-2`) | Converts Chinese text to 1536-dim vectors (via output_dimensionality API parameter) |
 
 ### Why Two Tables?
 
@@ -335,7 +335,7 @@ as $$
       from public.document_chunks c
       join public.documents d on c.document_id = d.id
       where c.embedding is not null
-        and query_embedding is not null  -- skip vector search when OpenAI fallback (NULL embedding)
+        and query_embedding is not null  -- skip vector search when embedding generation fails (NULL embedding)
       order by c.embedding <=> query_embedding
       limit greatest(match_limit * 2, 20)
     ),
@@ -436,7 +436,7 @@ A Node.js script that runs locally (or in CI) to populate the search index.
 // Pseudocode — actual implementation uses node-html-parser or cheerio
 const fs = require('fs');
 const { createClient } = require('@supabase/supabase-js');
-const { OpenAI } = require('openai');
+// Production uses Gemini API; OpenAI is a viable alternative.
 
 const PAGES = [
   { path: 'index.html', title: '烈光少棒赤狐队 | 首页', category: 'hub' },
@@ -493,9 +493,10 @@ async function index() {
 
     // Generate embeddings in batch for all chunks of this page
     const embeddingTexts = chunks.map(c => `${c.heading || ''}\n${c.body}`);
-    const embeddings = await openai.embeddings.create({
-      model: 'text-embedding-3-small',
-      input: embeddingTexts,  // Batch: up to 2048 inputs per request
+    const embeddings = await callEmbeddingApi({
+      model: 'gemini-embedding-2',  // or 'text-embedding-3-small' for OpenAI
+      input: embeddingTexts,
+      outputDimensionality: 1536,   // preferred over manual truncation
     });
 
     // Insert all chunks in a single batch transaction
@@ -505,8 +506,8 @@ async function index() {
       section_id: c.section_id,
       heading: c.heading,
       chunk_text: c.body,
-      embedding: embeddings.data[i].embedding,
-      token_count: null,  /* OpenAI returns total batch tokens; per-chunk count requires tiktoken if needed */
+      embedding: embeddings[i],  // shape depends on provider
+      token_count: null  /* Gemini does not return per-chunk token counts */
     }));
 
     const { error: insertErr } = await supabase
@@ -540,7 +541,7 @@ For each HTML file:
 
 ```bash
 # One-time setup
-npm install --save-dev cheerio @supabase/supabase-js openai
+npm install --save-dev cheerio @supabase/supabase-js
 
 # Run manually after content updates
 node scripts/index-content.js
@@ -564,7 +565,7 @@ Indexing Script          Postgres                    Edge Function
      │                      │────────────────────────────>│
      │                      │  POST /generate-embeddings  │
      │                      │                             │
-     │                      │                      OpenAI API
+     │                      │                      Gemini API
      │                      │                             │
      │                      │ UPDATE embedding            │
      │                      │<────────────────────────────│
@@ -591,7 +592,7 @@ select cron.schedule(
 
 The Edge Function `generate-embeddings`:
 1. Queries `document_chunks` where `embedding IS NULL` (limit ~10)
-2. Calls OpenAI API to generate embeddings in batch
+2. Calls Gemini API to generate embeddings in batch
 3. Updates each chunk row with its embedding
 
 ```typescript
@@ -607,15 +608,16 @@ const { data: chunks } = await supabase
 
 if (!chunks || chunks.length === 0) return new Response('No pending chunks');
 
-const embeddings = await openai.embeddings.create({
-  model: 'text-embedding-3-small',
+const embeddings = await callEmbeddingApi({
+  model: 'gemini-embedding-2',  // or 'text-embedding-3-small' for OpenAI
   input: chunks.map(c => c.chunk_text),
+  outputDimensionality: 1536,   // preferred over manual truncation
 });
 
 for (let i = 0; i < chunks.length; i++) {
   await supabase
     .from('document_chunks')
-    .update({ embedding: embeddings.data[i].embedding })
+    .update({ embedding: embeddings[i] })
     .eq('id', chunks[i].id);
 }
 ```
@@ -683,11 +685,11 @@ GET /functions/v1/site-search?q={query}
 
 ```
 1. Validate query (non-empty, max 200 chars)
-2. Generate embedding for query via OpenAI API
+2. Generate embedding for query via Gemini API
 3. Call public.hybrid_search(query_text, query_embedding, 10)
 4. Format and return results with CORS headers
 
-**OpenAI embedding failure fallback:** If the embedding API fails (rate limit, timeout, error), fall back to FTS-only search by calling `public.hybrid_search(query_text, NULL, 10)`. The SQL function skips the vector CTE when `query_embedding IS NULL`, so RRF scores come from `fts_rank` alone.
+**Embedding API failure fallback:** If the embedding API fails (rate limit, timeout, error), fall back to FTS-only search by calling `public.hybrid_search(query_text, NULL, 10)`. The SQL function skips the vector CTE when `query_embedding IS NULL`, so RRF scores come from `fts_rank` alone.
 ```
 
 ### 7.3 Response Format
@@ -713,7 +715,7 @@ GET /functions/v1/site-search?q={query}
 Same pattern as the existing `sponsor-likes` Edge Function:
 
 - Restrict `Access-Control-Allow-Origin` to production domain + local dev ports
-- Do not expose OpenAI API key or Supabase service role key to browser
+- Do not expose Gemini API key or Supabase service role key to browser
 - Sanitize query input (strip HTML, limit length)
 - Return generic error messages on internal failures
 
@@ -794,16 +796,17 @@ document.addEventListener('keydown', (e) => {
 
 | Model | Dimension | Chinese Quality | Cost | Recommendation |
 |-------|-----------|-----------------|------|----------------|
-| `text-embedding-3-small` | 1536 | Good | Very low | **Primary choice** |
+| `gemini-embedding-2` | 1536 (via output_dimensionality) | Good | Very low | **Primary choice** |
+| `text-embedding-3-small` | 1536 | Good | Very low | OpenAI alternative |
 | `text-embedding-3-large` | 3072 | Better | Low | If higher precision needed |
-| Local (e.g. bge-large-zh) | 1024 | Excellent | Free (infra only) | If OpenAI is unavailable |
+| Local (e.g. bge-large-zh) | 1024 | Excellent | Free (infra only) | If external API unavailable |
 
-For this project, `text-embedding-3-small` offers the best cost/quality ratio.
+For this project, `gemini-embedding-2` offers the best cost/quality ratio, with `text-embedding-3-small` as a viable OpenAI alternative.
 
 ### 9.2 Chinese Text Handling
 
 - **Keyword search**: Use PGroonga (`&@~` operator) which has built-in CJK tokenization. No additional parser configuration needed.
-- **Semantic search**: OpenAI embedding models handle Simplified Chinese natively.
+- **Semantic search**: Gemini embedding models handle Simplified Chinese natively.
 - **Fallback**: If PGroonga is unavailable, use `to_tsvector('simple', ...)` which indexes every character individually. Less precise for multi-character words but functional.
 
 ---
@@ -812,7 +815,7 @@ For this project, `text-embedding-3-small` offers the best cost/quality ratio.
 
 | Threat | Risk | Mitigation |
 |--------|------|------------|
-| Embedding API key exposure | High | OpenAI key lives only in Edge Functions and indexing script; never exposed to browser. `site-search` Edge Function calls OpenAI for query embedding (1 request per search). `generate-embeddings` calls OpenAI for content embedding (batch, internal). |
+| Embedding API key exposure | High | Gemini key lives only in Edge Functions and indexing script; never exposed to browser. `site-search` Edge Function calls Gemini for query embedding (1 request per search). `generate-embeddings` calls Gemini for content embedding (batch, internal). |
 | SQL injection via search query | Low | Use parameterized SQL function; query is passed as text parameter only |
 | Search result enumeration | Low | Limit to 10 results; no pagination for now |
 | DDoS / expensive embedding calls | Medium | IP-based rate limiting (same Redis/Upstash as sponsor-likes) |
@@ -835,14 +838,12 @@ Reuse the existing Upstash Redis setup:
 
 Same concern as the like counter: Supabase hosted regions do not include mainland China. Nearest regions are Singapore / Tokyo / Seoul.
 
-**Search queries** (browser → Supabase Edge Function → Postgres) require a query embedding from OpenAI on every search (see Section 7.2). The actual hybrid search (FTS + vector + RRF) runs entirely in Postgres and does not call OpenAI. Latency depends on Supabase region choice plus OpenAI embedding latency (~100–300 ms).
+**Search queries** (browser → Supabase Edge Function → Postgres) require a query embedding from Gemini on every search (see Section 7.2). The actual hybrid search (FTS + vector + RRF) runs entirely in Postgres and does not call Gemini. Latency depends on Supabase region choice plus Gemini embedding latency (~100–300 ms).
 
-**Indexing / embedding generation** also requires OpenAI API access. For users in mainland China:
+**Indexing / embedding generation** also requires Gemini API access. For users in mainland China:
 - Run the indexing script from CI/CD (GitHub Actions) which has unrestricted internet access
 - Or run locally with VPN/proxy during development
 - Search embedding generation happens on Supabase Edge infrastructure (no mainland network restrictions)
-
-The `generate-embeddings` Edge Function (if using automatic embedding) runs on Supabase's edge infrastructure, which can reach OpenAI without mainland network restrictions.
 
 ### 11.2 Cost Estimate
 
@@ -892,7 +893,7 @@ supabase functions deploy generate-embeddings --no-verify-jwt
 ```
 
 Required secrets (in addition to existing ones):
-- `OPENAI_API_KEY`
+- `GEMINI_API_KEY` (for embedding generation in the Edge Function and indexing script)
 
 ### 12.3 Initial Index
 
@@ -914,7 +915,7 @@ Add the search trigger and modal markup + JS to:
 
 - **Index script**: Verify all HTML pages produce at least one chunk; verify chunk body is non-empty
 - **SQL function**: Test with known queries against seeded data; verify RRF ordering
-- **Edge Function**: Mock OpenAI embedding response; verify response shape and CORS headers
+- **Edge Function**: Mock Gemini embedding response; verify response shape and CORS headers
 - **Frontend**: Playwright tests for modal open/close, keyboard navigation, result click
 
 ### 13.2 Manual Checklist
@@ -989,7 +990,7 @@ The Edge Function uses `service_role` which bypasses RLS, so these policies are 
 | Search analytics (popular queries) | Low | Understand what visitors look for |
 | Filter by page type/category | Low | Narrow to rules, analysis, or videos |
 | Image alt-text indexing | Medium | Search figure captions and diagrams |
-| Local embedding model (no OpenAI dependency) | Medium | Remove external API dependency |
+| Local embedding model (no external API dependency) | Medium | Remove external API dependency |
 | Real-time re-index via GitHub Actions | Low | Always up-to-date after push |
 
 ---
@@ -1004,6 +1005,7 @@ The Edge Function uses `service_role` which bypasses RLS, so these policies are 
 | 2026-04-22 | Added Pagefind as Phase 0 quick alternative |
 | 2026-04-22 | Added category/tags fields and page-level metadata support |
 | 2026-04-22 | Added automatic embedding generation strategies (inline, cron, trigger) |
-| 2026-04-22 | Clarified OpenAI is indexing-only; expanded China availability guidance |
+| 2026-04-22 | Clarified embedding API is used for indexing and query-time generation; expanded China availability guidance |
 | 2026-04-29 | Updated testing references from Puppeteer to Playwright |
+| 2026-05-06 | Updated embedding provider from OpenAI to Gemini to match production implementation |
 

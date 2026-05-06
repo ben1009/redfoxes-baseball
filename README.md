@@ -13,6 +13,7 @@ This is the official website for **烈光少棒赤狐队 (Red Foxes Youth Baseba
 - **Tournament Information** - Rules and schedules for competitions
 - **Performance Analysis** - Data-driven player performance insights (groupstage + finalstage)
 - **Sponsor Support** - Sponsor page with global like counter (Supabase Edge Function + Postgres + Upstash Redis)
+- **Site Search** - Hybrid full-text + vector search across all pages (Supabase Edge Function + pgvector + pgroonga)
 
 ## 🔗 Live Demo
 
@@ -30,6 +31,7 @@ redfoxes-baseball/
 ├── tigercup_finalstage.html   # Finalstage performance analysis with multi-AI insights
 ├── sponsor_me.html            # Sponsor support page
 ├── site_analytics.js          # Shared Google Analytics bootstrap
+├── site_search.js             # Shared hybrid search UI (modal, keyboard nav)
 ├── image_modal.js             # Shared lightbox behavior across pages
 ├── baseball_theme.css         # Shared baseball field theme stylesheet
 ├── rules_style.css            # Shared rules page styling
@@ -37,6 +39,11 @@ redfoxes-baseball/
 ├── baseball_floats.css/js     # Floating baseball background animation
 ├── scroll_reveal.css/js       # Scroll-triggered reveal animations
 ├── count_up.js                # Animated number counter
+├── llms.txt                   # Site overview for LLM agents
+├── agent-manifest.json        # Machine-readable page graph with capabilities
+├── agent-manifest.schema.json # JSON Schema for agent-manifest.json
+├── sitemap.xml                # Standard XML sitemap for crawlers
+├── robots.txt                 # Crawler directives and sitemap reference
 ├── supabase/                  # Supabase Edge Function + SQL migration for like counter
 │   ├── functions/
 │   ├── migrations/
@@ -174,7 +181,7 @@ This site uses Google Analytics 4 to track visitor engagement and improve conten
 
 ## 🧪 Testing
 
-Comprehensive test suite with **158 tests** covering:
+Comprehensive test suite with **234 tests** covering:
 - Page structure and navigation tests
 - Video autopause functionality tests
 - Cross-page link verification
@@ -183,6 +190,7 @@ Comprehensive test suite with **158 tests** covering:
 - **Baseball Theme Motion Coverage** — animation hooks and reduced-motion support
 - **Floating Baseball Behavior Coverage** — passive background animations
 - **Like Widget Coverage** — DOM presence, toggle interaction, localStorage persistence
+- **Search Modal Coverage** — open/close, keyboard navigation, trigger injection, result rendering
 - Scroll reveal and count-up asset coverage
 
 Run tests locally:

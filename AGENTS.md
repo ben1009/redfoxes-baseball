@@ -358,7 +358,7 @@ The old Worker remains in `workers/` for reference and rollback:
 
 ### index.html (Navigation Hub)
 - Header displays team logo and motto
-- 5 navigation cards are present and clickable
+- 6 navigation cards are present and clickable
 - All links navigate to correct pages
 - Responsive layout works on mobile
 
