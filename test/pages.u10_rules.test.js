@@ -84,4 +84,13 @@ describe('U10 Rules Page (u10_rules.html)', () => {
         const metricCards = await harness.page.$$('.metric-card');
         expect(metricCards.length).toBeGreaterThan(0);
     }));
+
+    test('should have links to groupstage and finalstage analysis pages', async () => harness.withBrowser(async () => {
+        const navLinks = await harness.page.$$eval('.nav-link', links =>
+            links.map(link => link.getAttribute('href'))
+        );
+
+        expect(navLinks).toContain('tigercup_groupstage.html');
+        expect(navLinks).toContain('tigercup_finalstage.html');
+    }));
 });
