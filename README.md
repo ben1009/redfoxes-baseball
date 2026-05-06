@@ -121,7 +121,7 @@ Complete regulations for the PONY小马棒球联赛 (PONY Little League) U10 Com
   - Player statistics tables
   - Key metrics summary
   - Responsive tables and navigation
-  - Cross-page links to finalstage analysis and index
+  - Cross-page links to u10_rules, finalstage analysis, and index
 
 ## 🏆 Finalstage Analysis (tigercup_finalstage.html)
 
@@ -141,7 +141,7 @@ Complete regulations for the PONY小马棒球联赛 (PONY Little League) U10 Com
   - Player statistics tables and grading tables
   - Key metrics summary
   - Responsive tables and navigation
-  - Cross-page links to groupstage analysis and index
+  - Cross-page links to u10_rules, groupstage analysis, and index
 
 ## 🔐 Access Instructions
 
@@ -181,7 +181,7 @@ This site uses Google Analytics 4 to track visitor engagement and improve conten
 
 ## 🧪 Testing
 
-Comprehensive test suite with **234 tests** covering:
+Comprehensive test suite with **235 tests** covering:
 - Page structure and navigation tests
 - Video autopause functionality tests
 - Cross-page link verification
