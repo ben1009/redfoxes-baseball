@@ -17,7 +17,7 @@
     }
 
     const getCaptionText = (img) => {
-        const container = img.closest('.image-container');
+        const container = img.closest('.image-container, .chart-image-container');
         const caption = container ? container.querySelector('.image-caption') : null;
         return caption ? caption.textContent.trim() : (img.alt || '');
     };

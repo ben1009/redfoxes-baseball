@@ -113,7 +113,7 @@ redfoxes-baseball/
 
 ### File Organization Notes
 
-- **index.html**: Navigation hub with card-based layout (8 nav cards)
+- **index.html**: Navigation hub with card-based layout (7 nav cards)
 - **match_review.html**: Password protected; links shared `baseball_theme.css` plus inline page-specific styles
 - **u10_rules.html** / **pony_u10_rules.html**: Link `baseball_theme.css` + `rules_style.css`; both include schedule images with lightbox support
 - **pony_u10_tianjin.html**: Link `baseball_theme.css`; inline styles + image modal; features player stats table with `.table-responsive`, 56 defense notes, 3-AI analysis cards, error distribution chart
@@ -142,7 +142,7 @@ redfoxes-baseball/
 │   └── style (CSS embedded with CSS variables)
 ├── body
 │   ├── header (Team logo, name, motto)
-│   ├── nav class="nav-grid" (8 navigation cards)
+│   ├── nav class="nav-grid" (7 navigation cards)
 │   └── footer (Copyright)
 ```
 
@@ -367,7 +367,7 @@ The old Worker remains in `workers/` for reference and rollback:
 
 ### index.html (Navigation Hub)
 - Header displays team logo and motto
-- 8 navigation cards are present and clickable
+- 7 navigation cards are present and clickable
 - All links navigate to correct pages
 - Responsive layout works on mobile
 
