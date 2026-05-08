@@ -11,7 +11,7 @@ This is the official website for **烈光少棒赤狐队 (Red Foxes Youth Baseba
 
 - **Match Reviews** - Tactical analysis videos from friendship matches
 - **Tournament Information** - Rules and schedules for competitions
-- **Performance Analysis** - Data-driven player performance insights (groupstage + finalstage)
+- **Performance Analysis** - Data-driven player performance insights (PONY U10 + 猛虎杯 groupstage + finalstage)
 - **Sponsor Support** - Sponsor page with global like counter (Supabase Edge Function + Postgres + Upstash Redis)
 - **Site Search** - Hybrid full-text + vector search across all pages (Supabase Edge Function + pgvector + pgroonga)
 
@@ -27,6 +27,7 @@ redfoxes-baseball/
 ├── match_review.html          # Match review page (7 tactical clips with password protection)
 ├── u10_rules.html             # U10 tournament rules page
 ├── pony_u10_rules.html        # PONY U10 tournament rules page
+├── pony_u10_tianjin.html      # PONY U10 Tianjin tournament analysis with multi-AI insights
 ├── tigercup_groupstage.html   # Groupstage performance analysis with multi-AI insights
 ├── tigercup_finalstage.html   # Finalstage performance analysis with multi-AI insights
 ├── sponsor_me.html            # Sponsor support page
@@ -104,6 +105,25 @@ Complete regulations for the PONY小马棒球联赛 (PONY Little League) U10 Com
   - 📅 PONY Tianjin division tournament schedule with image lightbox
   - 📋 Complete rules: field specs, game format, pitcher limits, coach rules, base running
   - 🖨️ Print-friendly styles
+
+## 🎯 PONY U10 Tianjin Analysis (pony_u10_tianjin.html)
+
+**天津PONY U10数据分析** - Multi-AI Tournament Analysis
+
+- **Data Source**: 天津PONY U10 match statistics (May 2–4, 2026)
+- **Analysis by**: Kimi, Gemini, ChatGPT
+- **Content**:
+  - 6-match tournament schedule with results
+  - 13-player batting statistics table
+  - 56 defense notes with good/bad classification
+  - Error distribution chart with click-to-zoom
+  - Pitcher analysis, opponent breakdown, player portraits
+  - Parent letter section
+- **Features**:
+  - AI analysis cards with distinct branding (Kimi first)
+  - Responsive data tables with horizontal scroll
+  - Image modal for chart zoom
+  - Cross-page links to index and PONY rules
 
 ## 📊 Groupstage Analysis (tigercup_groupstage.html)
 

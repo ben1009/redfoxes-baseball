@@ -1,7 +1,7 @@
 # AGENTS.md - Red Foxes Baseball Team Website
 
 > This file provides essential context for AI coding agents working on this project.
-> Last updated: 2026-05-06
+> Last updated: 2026-05-08
 
 ---
 
@@ -11,11 +11,13 @@ This is a **static website** for **烈光少棒赤狐队 (Red Foxes Youth Baseba
 
 1. **Navigation Hub** (`index.html`) - Entry point with links to all content
 2. **Match Review** (`match_review.html`) - Seven tactical video clips with analysis
-3. **U10 Tournament Rules** (`u10_rules.html`) - Complete competition regulations  
-4. **Groupstage Analysis** (`tigercup_groupstage.html`) - Multi-AI performance analysis
-5. **Finalstage Analysis** (`tigercup_finalstage.html`) - Multi-AI final match analysis
-6. **Sponsor Page** (`sponsor_me.html`) - Sponsor support with global like counter (Supabase Edge Function)
-7. **Site Search** (`site_search.js`) - Hybrid full-text + vector search across all pages (Supabase Edge Function + pgvector + pgroonga)
+3. **U10 Tournament Rules** (`u10_rules.html`) - Complete competition regulations
+4. **PONY U10 Rules** (`pony_u10_rules.html`) - PONY U10 tournament rules
+5. **PONY U10 Analysis** (`pony_u10_tianjin.html`) - Tianjin PONY U10 tournament analysis with 3-AI review
+6. **Groupstage Analysis** (`tigercup_groupstage.html`) - Multi-AI performance analysis
+7. **Finalstage Analysis** (`tigercup_finalstage.html`) - Multi-AI final match analysis
+8. **Sponsor Page** (`sponsor_me.html`) - Sponsor support with global like counter (Supabase Edge Function)
+9. **Site Search** (`site_search.js`) - Hybrid full-text + vector search across all pages (Supabase Edge Function + pgvector + pgroonga)
 
 - **Live Site**: https://ben1009.github.io/redfoxes-baseball/
 - **Language**: Chinese (Simplified)
@@ -49,6 +51,7 @@ redfoxes-baseball/
 ├── match_review.html          # Match review page (7 tactical clips, password protected)
 ├── u10_rules.html             # U10 tournament rules page
 ├── pony_u10_rules.html        # PONY U10 tournament rules page
+├── pony_u10_tianjin.html      # PONY U10 Tianjin tournament analysis
 ├── tigercup_groupstage.html   # Groupstage performance analysis
 ├── tigercup_finalstage.html   # Finalstage performance analysis
 ├── sponsor_me.html            # Sponsor page (independent theme, global like widget)
@@ -101,6 +104,7 @@ redfoxes-baseball/
     ├── baseball_field_bg.svg  # Aerial baseball field background
     ├── schedule.jpg                  # U10 tournament schedule (猛虎杯)
     ├── pony_u10_tianjin_schedule.png # U10 PONY Tianjin division schedule
+    ├── error_distribution.png        # Team error type distribution chart
     ├── venue_map.jpg                 # Venue map
     ├── groupstage_data.png           # Groupstage match statistics
     ├── finalstage_data.png           # Finalstage match statistics
@@ -109,9 +113,10 @@ redfoxes-baseball/
 
 ### File Organization Notes
 
-- **index.html**: Navigation hub with card-based layout
+- **index.html**: Navigation hub with card-based layout (8 nav cards)
 - **match_review.html**: Password protected; links shared `baseball_theme.css` plus inline page-specific styles
 - **u10_rules.html** / **pony_u10_rules.html**: Link `baseball_theme.css` + `rules_style.css`; both include schedule images with lightbox support
+- **pony_u10_tianjin.html**: Link `baseball_theme.css`; inline styles + image modal; features player stats table with `.table-responsive`, 56 defense notes, 3-AI analysis cards, error distribution chart
 - **tigercup_groupstage.html** / **tigercup_finalstage.html**: Link `baseball_theme.css` plus inline page-specific styles
 - **sponsor_me.html**: Independent styling, does not use baseball field background or floating assets
 - **supabase/**: Edge Function and SQL migration for the active global like counter backend
@@ -137,7 +142,7 @@ redfoxes-baseball/
 │   └── style (CSS embedded with CSS variables)
 ├── body
 │   ├── header (Team logo, name, motto)
-│   ├── nav class="nav-grid" (6 navigation cards)
+│   ├── nav class="nav-grid" (8 navigation cards)
 │   └── footer (Copyright)
 ```
 
@@ -148,14 +153,15 @@ Single-file architecture with embedded CSS and JavaScript.
 - Main content with 7 video cards
 - Video autopause functionality
 
-### HTML Structure (tigercup_groupstage.html)
+### HTML Structure (tigercup_groupstage.html / tigercup_finalstage.html / pony_u10_tianjin.html)
 
-- Data image section
+- Data image section (groupstage/finalstage) or schedule + stats table (pony_u10_tianjin)
 - Summary section with key metrics
-- Kimi analysis card
+- Kimi analysis card (first)
 - Gemini analysis card
 - ChatGPT analysis card
 - Image modal for lightbox
+- pony_u10_tianjin only: defense notes section with note-good/note-bad classification, parent letter
 
 ### CSS Architecture
 
@@ -194,11 +200,14 @@ u10_rules.html / pony_u10_rules.html:
 - .metric-card - Stats card
 - #schedule - Tournament schedule section with image and caption
 
-tigercup_groupstage.html / tigercup_finalstage.html:
+tigercup_groupstage.html / tigercup_finalstage.html / pony_u10_tianjin.html:
 - .ai-card - Container for AI analysis
 - .ai-card-header.kimi/gemini/chatgpt - Brand colors
 - .summary-section - Key metrics summary
 - .page-nav - Sticky navigation with cross-page links
+- .table-responsive - Overflow-x auto wrapper for wide data tables
+- .chart-image-container - Horizontal-scroll image container for large charts
+- .note-good / .note-bad - Defense note classification colors (pony_u10_tianjin only)
 
 sponsor_me.html:
 - .like-widget - Like button container
@@ -358,7 +367,7 @@ The old Worker remains in `workers/` for reference and rollback:
 
 ### index.html (Navigation Hub)
 - Header displays team logo and motto
-- 6 navigation cards are present and clickable
+- 8 navigation cards are present and clickable
 - All links navigate to correct pages
 - Responsive layout works on mobile
 
@@ -374,6 +383,15 @@ The old Worker remains in `workers/` for reference and rollback:
 - Schedule section displays tournament image and caption
 - Image click opens lightbox/modal
 - Modal closes properly
+
+### pony_u10_tianjin.html
+- Schedule table with 6 matches displays correctly
+- Player statistics table has 18 columns (including 残垒/SLG/OBP) with horizontal scroll on mobile
+- 56 defense notes classified as note-good/note-bad
+- Error distribution chart displays with click-to-zoom
+- All 3 AI analysis cards are present (Kimi first)
+- Navigation links work (cross-page to index and pony_u10_rules)
+- Parent letter section displays at bottom of notes
 
 ### tigercup_groupstage.html
 - Data image displays correctly
