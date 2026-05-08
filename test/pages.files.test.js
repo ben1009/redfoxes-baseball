@@ -9,6 +9,7 @@ describe('File Existence Tests', () => {
         'pony_u10_rules.html',
         'tigercup_groupstage.html',
         'tigercup_finalstage.html',
+        'pony_u10_tianjin.html',
         'sponsor_me.html',
         'site_analytics.js',
         'image_modal.js',
@@ -183,6 +184,7 @@ describe('Shared Script Coverage', () => {
             'pony_u10_rules.html',
             'tigercup_groupstage.html',
             'tigercup_finalstage.html',
+            'pony_u10_tianjin.html',
             'sponsor_me.html'
         ];
 
@@ -201,6 +203,7 @@ describe('Shared Script Coverage', () => {
             'pony_u10_rules.html',
             'tigercup_groupstage.html',
             'tigercup_finalstage.html',
+            'pony_u10_tianjin.html',
             'sponsor_me.html'
         ];
 
