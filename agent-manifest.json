@@ -66,6 +66,16 @@
       "ai_sources": ["Kimi", "Gemini", "ChatGPT"]
     },
     {
+      "path": "pony_u10_tianjin.html",
+      "title": "天津PONY U10杯数据分析",
+      "type": "analysis",
+      "description": "天津PONY U10杯球员表现数据深度分析，多AI联合评估",
+      "actions": ["read_analysis", "view_data"],
+      "requires_auth": false,
+      "tags": ["PONY", "U10", "天津", "数据分析"],
+      "ai_sources": ["Kimi", "Gemini", "ChatGPT"]
+    },
+    {
       "path": "sponsor_me.html",
       "title": "赞助赤狐",
       "type": "sponsor",

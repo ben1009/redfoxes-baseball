@@ -9,6 +9,7 @@ const PAGES = [
     { file: 'pony_u10_rules.html', expectedType: 'SportsEvent' },
     { file: 'tigercup_groupstage.html', expectedType: 'Article' },
     { file: 'tigercup_finalstage.html', expectedType: 'Article' },
+    { file: 'pony_u10_tianjin.html', expectedType: 'Article' },
     { file: 'sponsor_me.html', expectedType: 'DonateAction' }
 ];
 

@@ -51,6 +51,11 @@ describe('PONY U10 Rules Page (pony_u10_rules.html)', () => {
         expect(scheduleLink).not.toBeNull();
     }));
 
+    test('should have link to PONY U10 Tianjin analysis page', async () => harness.withBrowser(async () => {
+        const analysisLink = await harness.page.$('a.nav-link[href="pony_u10_tianjin.html"]');
+        expect(analysisLink).not.toBeNull();
+    }));
+
     test('should have image containers with lightbox functionality', async () => harness.withBrowser(async () => {
         const imageContainers = await harness.page.$$('.image-container');
         expect(imageContainers.length).toBeGreaterThan(0);

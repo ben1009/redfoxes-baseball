@@ -134,8 +134,8 @@ describe('Indexer Chunk Extraction', () => {
     });
 
     describe('PAGES config', () => {
-        it('should list exactly 6 pages', () => {
-            expect(PAGES).toHaveLength(6);
+        it('should list exactly 7 pages', () => {
+            expect(PAGES).toHaveLength(7);
         });
 
         it('should include all expected page paths', () => {

@@ -19,7 +19,7 @@ describe('sitemap.xml', () => {
         expect(content).toContain('</urlset>');
     });
 
-    test('should contain all 7 page URLs', () => {
+    test('should contain all 8 page URLs', () => {
         const pages = [
             'index.html',
             'match_review.html',
@@ -27,6 +27,7 @@ describe('sitemap.xml', () => {
             'pony_u10_rules.html',
             'tigercup_groupstage.html',
             'tigercup_finalstage.html',
+            'pony_u10_tianjin.html',
             'sponsor_me.html'
         ];
         pages.forEach(page => {
@@ -36,7 +37,7 @@ describe('sitemap.xml', () => {
 
     test('each url entry should have loc, lastmod, changefreq, and priority', () => {
         const urlBlocks = content.match(/<url>[\s\S]*?<\/url>/g) || [];
-        expect(urlBlocks.length).toBe(7);
+        expect(urlBlocks.length).toBe(8);
         urlBlocks.forEach(block => {
             expect(block).toContain('<loc>');
             expect(block).toContain('<lastmod>');

@@ -18,6 +18,7 @@ const IMAGE_MODAL_PAGES = new Set([
     'pony_u10_rules.html',
     'tigercup_groupstage.html',
     'tigercup_finalstage.html',
+    'pony_u10_tianjin.html',
     'sponsor_me.html'
 ]);
 
@@ -28,6 +29,7 @@ const PAGE_PATHS = {
     ponyRules: 'pony_u10_rules.html',
     groupstage: 'tigercup_groupstage.html',
     finalstage: 'tigercup_finalstage.html',
+    ponyU10Tianjin: 'pony_u10_tianjin.html',
     sponsor: 'sponsor_me.html'
 };
 
