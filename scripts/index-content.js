@@ -19,6 +19,7 @@ const PAGES = [
   { path: 'pony_u10_rules.html', title: 'PONY U10 竞赛规则', category: 'rules', tags: ['PONY', 'U10'] },
   { path: 'tigercup_groupstage.html', title: '猛虎杯小组赛数据分析', category: 'analysis', tags: ['猛虎杯'] },
   { path: 'tigercup_finalstage.html', title: '猛虎杯决赛数据分析', category: 'analysis', tags: ['猛虎杯'] },
+  { path: 'pony_u10_tianjin.html', title: '天津PONY U10 数据分析', category: 'analysis', tags: ['PONY', 'U10'] },
   { path: 'sponsor_me.html', title: '赞助赤狐', category: 'sponsor' },
 ];
 
