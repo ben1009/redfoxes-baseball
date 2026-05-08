@@ -27,12 +27,12 @@ describe('Index Page (Navigation Hub)', () => {
         expect(teamLogo).not.toBeNull();
     }));
 
-    test('should have navigation grid with 6 cards', async () => harness.withBrowser(async () => {
+    test('should have navigation grid with 7 cards', async () => harness.withBrowser(async () => {
         const navGrid = await harness.page.$('.nav-grid');
         expect(navGrid).not.toBeNull();
 
         const cards = await harness.page.$$('.nav-card');
-        expect(cards.length).toBe(6);
+        expect(cards.length).toBe(7);
     }));
 
     test('should have correct navigation links', async () => harness.withBrowser(async () => {
@@ -45,6 +45,7 @@ describe('Index Page (Navigation Hub)', () => {
         expect(links).toContain('pony_u10_rules.html');
         expect(links).toContain('tigercup_groupstage.html');
         expect(links).toContain('tigercup_finalstage.html');
+        expect(links).toContain('pony_u10_tianjin.html');
         expect(links).toContain('sponsor_me.html');
     }));
 
@@ -93,5 +94,10 @@ describe('Index Page (Navigation Hub)', () => {
     test('should navigate from index to sponsor page', async () => harness.withBrowser(async () => {
         const sponsorLink = await harness.page.$('a[href="sponsor_me.html"]');
         expect(sponsorLink).not.toBeNull();
+    }));
+
+    test('should navigate from index to pony_u10_tianjin page', async () => harness.withBrowser(async () => {
+        const tianjinLink = await harness.page.$('a[href="pony_u10_tianjin.html"]');
+        expect(tianjinLink).not.toBeNull();
     }));
 });

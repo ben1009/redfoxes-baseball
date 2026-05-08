@@ -11,7 +11,7 @@ describe('data-action Attributes', () => {
             await harness.withBrowser(async () => {
                 await harness.loadPage();
                 const cards = await harness.page.$$('a.nav-card[data-action="navigate"]');
-                expect(cards).toHaveLength(6);
+                expect(cards).toHaveLength(7);
             });
         });
 
