@@ -146,6 +146,7 @@ describe('Indexer Chunk Extraction', () => {
                 'pony_u10_rules.html',
                 'tigercup_groupstage.html',
                 'tigercup_finalstage.html',
+                'pony_u10_tianjin.html',
                 'sponsor_me.html',
             ]));
         });
