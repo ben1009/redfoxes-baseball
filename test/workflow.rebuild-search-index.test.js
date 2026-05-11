@@ -63,10 +63,10 @@ describe('rebuild-search-index GitHub Actions workflow', () => {
 
     test('workflow must not require a committed package-lock.json', () => {
         // package-lock.json is gitignored in this repo, so these patterns
-        // would break CI on a fresh runner. Use `npm install` and skip
-        // the setup-node npm cache.
-        expect(workflowContent).not.toMatch(/run:\s*npm ci\b/);
-        expect(workflowContent).not.toMatch(/cache:\s*['"]npm['"]/);
-        expect(workflowContent).not.toMatch(/-\s+['"]package-lock\.json['"]/);
+        // would break CI on a fresh runner. Use a plain install step and
+        // keep the setup-node dependency cache disabled.
+        expect(workflowContent).not.toMatch(/\bnpm ci\b/);
+        expect(workflowContent).not.toMatch(/cache:\s*['"]?npm['"]?/);
+        expect(workflowContent).not.toMatch(/-\s+['"]?package-lock\.json['"]?/);
     });
 });

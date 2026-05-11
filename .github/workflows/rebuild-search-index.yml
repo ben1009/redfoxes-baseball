@@ -38,9 +38,10 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        # package-lock.json is gitignored in this repo, so we cannot use
-        # `npm ci` (which requires a lockfile) or `cache: npm` (which is
-        # keyed off the lockfile). Use `npm install` instead.
+        # package-lock.json is gitignored in this repo, so a lockfile-dependent
+        # install step would fail on a clean runner. Stick to a plain install
+        # and do not enable the setup-node dependency cache (it is keyed off
+        # the same missing lockfile).
         run: npm install
 
       - name: Rebuild search index
