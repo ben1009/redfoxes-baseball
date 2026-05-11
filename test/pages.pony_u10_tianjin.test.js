@@ -380,6 +380,52 @@ describe('PONY U10 Tianjin Analysis Page (pony_u10_tianjin.html)', () => {
         }));
     });
 
+    describe('Team aggregate stats consistency (batting table vs metric cards)', () => {
+        test('metric cards #data key-metrics should match sum of batting table columns', async () => harness.withBrowser(async () => {
+            const computed = await harness.page.evaluate(() => {
+                const tables = Array.from(document.querySelectorAll('#data .table-responsive table'));
+                const batting = tables[0]; // batting table comes first
+                const rows = Array.from(batting.querySelectorAll('tbody tr'));
+                let atBats = 0, hits = 0, runs = 0, steals = 0;
+                rows.forEach(r => {
+                    const tds = Array.from(r.querySelectorAll('td'));
+                    atBats += Number(tds[2].textContent.trim());   // 打数
+                    runs   += Number(tds[3].textContent.trim());   // 得点
+                    hits   += Number(tds[7].textContent.trim());   // 总安
+                    steals += Number(tds[10].textContent.trim());  // 盗垒
+                });
+                const avg = (hits / atBats).toFixed(3).replace(/^0/, '');
+                return { hits, runs, steals, avg };
+            });
+
+            const cardValues = await harness.page.$$eval('#data .key-metrics .metric-card', cards =>
+                cards.map(c => ({
+                    value: c.querySelector('.metric-value').textContent.trim(),
+                    label: c.querySelector('.metric-label').textContent.trim()
+                }))
+            );
+            const byLabel = Object.fromEntries(cardValues.map(c => [c.label, c.value]));
+
+            expect(byLabel['总安打']).toBe(String(computed.hits));
+            expect(byLabel['总得点']).toBe(String(computed.runs));
+            expect(byLabel['总盗垒']).toBe(String(computed.steals));
+            expect(byLabel['团队安打率']).toBe(computed.avg);
+        }));
+
+        test('info-box 数据说明 team-OPS claim should not contradict derived totals', async () => harness.withBrowser(async () => {
+            const infoText = await harness.page.$eval('#data .info-box', el => el.textContent);
+            // Must reference totals of 151/111, not stale values
+            expect(infoText).toContain('总打席151');
+            expect(infoText).toContain('总打数111');
+            // team OPS should be in reasonable range [1.0, 1.3] given current data
+            const match = infoText.match(/团队OPS约(\d+\.\d{1,2})/);
+            expect(match).not.toBeNull();
+            const ops = Number(match[1]);
+            expect(ops).toBeGreaterThanOrEqual(1.05);
+            expect(ops).toBeLessThanOrEqual(1.30);
+        }));
+    });
+
     describe('四AI共识总结 (summary section update)', () => {
         test('should use "四AI共识总结" heading (not the old "三AI")', async () => harness.withBrowser(async () => {
             const heading = await harness.page.$eval('#summary h2', el => el.textContent.trim());
