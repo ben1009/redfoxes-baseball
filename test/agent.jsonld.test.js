@@ -49,3 +49,16 @@ describe('JSON-LD Structured Data', () => {
         });
     });
 });
+
+describe('JSON-LD author consistency with page AI sources', () => {
+    test('pony_u10_tianjin.html should list Kimi, Gemini, ChatGPT, Claude as authors', () => {
+        const html = fs.readFileSync(path.resolve(__dirname, '..', 'pony_u10_tianjin.html'), 'utf8');
+        const $ = cheerio.load(html);
+        const block = JSON.parse($('script[type="application/ld+json"]').first().html());
+        const authorNames = (block.author || []).map(a => a.name);
+        expect(authorNames).toEqual(
+            expect.arrayContaining(['Kimi', 'Gemini', 'ChatGPT', 'Claude'])
+        );
+        expect(authorNames.length).toBe(4);
+    });
+});

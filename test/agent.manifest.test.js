@@ -73,4 +73,13 @@ describe('agent-manifest.json', () => {
     test('should have at least 3 API endpoints', () => {
         expect(manifest.api_endpoints.length).toBeGreaterThanOrEqual(3);
     });
+
+    test('pony_u10_tianjin.html should list 4 AI sources including Claude', () => {
+        const pony = manifest.pages.find(p => p.path === 'pony_u10_tianjin.html');
+        expect(pony).toBeDefined();
+        expect(pony.ai_sources).toEqual(
+            expect.arrayContaining(['Kimi', 'Gemini', 'ChatGPT', 'Claude'])
+        );
+        expect(pony.ai_sources.length).toBe(4);
+    });
 });
