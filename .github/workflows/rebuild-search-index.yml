@@ -35,7 +35,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          # Node 22 is required because @supabase/supabase-js needs native
+          # WebSocket support (available since Node 22). Node 20 fails with:
+          # "Node.js 20 detected without native WebSocket support."
+          node-version: '22'
 
       - name: Install dependencies
         # package-lock.json is gitignored in this repo, so a lockfile-dependent
