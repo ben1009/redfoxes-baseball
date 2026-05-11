@@ -294,6 +294,7 @@
         .ai-card:nth-of-type(1) { animation-delay: 0.2s; }
         .ai-card:nth-of-type(2) { animation-delay: 0.3s; }
         .ai-card:nth-of-type(3) { animation-delay: 0.4s; }
+        .ai-card:nth-of-type(4) { animation-delay: 0.5s; }
 
         .ai-card-header {
             padding: 15px 25px;
@@ -317,6 +318,10 @@
             background: linear-gradient(135deg, var(--color-chatgpt) 0%, #0d8c6d 100%);
         }
 
+        .ai-card-header.claude {
+            background: linear-gradient(135deg, var(--color-claude) 0%, #a85c43 100%);
+        }
+
         .ai-card {
             transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
         }
@@ -338,6 +343,11 @@
         .ai-card:has(.ai-card-header.chatgpt):hover {
             box-shadow: 0 20px 40px rgba(16, 163, 127, 0.22);
             border-color: rgba(16, 163, 127, 0.45);
+        }
+
+        .ai-card:has(.ai-card-header.claude):hover {
+            box-shadow: 0 20px 40px rgba(204, 120, 92, 0.22);
+            border-color: rgba(204, 120, 92, 0.45);
         }
 
         .ai-card-content {
@@ -759,6 +769,7 @@
             <a href="#kimi" class="nav-link" target="_self">🤖 Kimi</a>
             <a href="#gemini" class="nav-link" target="_self">🌟 Gemini</a>
             <a href="#chatgpt" class="nav-link" target="_self">💬 ChatGPT</a>
+            <a href="#claude" class="nav-link" target="_self">📊 Claude</a>
         </div>
     </nav>
 
@@ -861,7 +872,7 @@
                     </thead>
                     <tbody data-reveal>
                         <tr><td><strong>Max</strong></td><td>18</td><td>16</td><td>5</td><td>8</td><td>1</td><td>0</td><td>9</td><td>10</td><td>6</td><td>13</td><td>1</td><td>0</td><td>3</td><td>.560</td><td>.620</td><td>.550</td><td>1.17</td></tr>
-                        <tr><td><strong>程思乐</strong></td><td>17</td><td>15</td><td>3</td><td>8</td><td>0</td><td>0</td><td>8</td><td>8</td><td>8</td><td>12</td><td>1</td><td>0</td><td>6</td><td>.530</td><td>.530</td><td>.520</td><td>1.05</td></tr>
+                        <tr><td><strong>程思乐</strong></td><td>17</td><td>15</td><td>3</td><td>10</td><td>1</td><td>0</td><td>11</td><td>12</td><td>8</td><td>12</td><td>1</td><td>0</td><td>6</td><td>.730</td><td>.800</td><td>.700</td><td>1.50</td></tr>
                         <tr><td><strong>闫勋捷</strong></td><td>16</td><td>12</td><td>1</td><td>4</td><td>1</td><td>1</td><td>6</td><td>10</td><td>6</td><td>13</td><td>3</td><td>0</td><td>4</td><td>.500</td><td>.830</td><td>.500</td><td>1.33</td></tr>
                         <tr><td><strong>孙嘉泽</strong></td><td>17</td><td>9</td><td>2</td><td>3</td><td>1</td><td>0</td><td>4</td><td>5</td><td>3</td><td>10</td><td>7</td><td>1</td><td>3</td><td>.440</td><td>.550</td><td>.640</td><td>1.19</td></tr>
                         <tr><td><strong>付昌泽</strong></td><td>16</td><td>12</td><td>5</td><td>2</td><td>3</td><td>0</td><td>5</td><td>8</td><td>2</td><td>8</td><td>2</td><td>2</td><td>2</td><td>.410</td><td>.660</td><td>.430</td><td>1.09</td></tr>
@@ -876,6 +887,36 @@
                     </tbody>
                 </table>
                 </div>
+
+                <h3>🎯 投手数据</h3>
+                <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>球员</th>
+                            <th>主投局数</th>
+                            <th>投球数</th>
+                            <th>好球</th>
+                            <th>被安打</th>
+                            <th>失分</th>
+                            <th>保送</th>
+                            <th>三振</th>
+                            <th>触身球</th>
+                            <th>好球率</th>
+                        </tr>
+                    </thead>
+                    <tbody data-reveal>
+                        <tr><td><strong>闫勋捷</strong></td><td>5.66</td><td>118</td><td>48</td><td>6</td><td>8</td><td>7</td><td>9</td><td>0</td><td>.40</td></tr>
+                        <tr><td><strong>田雨稷</strong></td><td>9</td><td>127</td><td>52</td><td>21</td><td>7</td><td>2</td><td>4</td><td>1</td><td>.40</td></tr>
+                        <tr><td><strong>Max</strong></td><td>4</td><td>61</td><td>30</td><td>1</td><td>1</td><td>3</td><td>5</td><td>1</td><td>.49</td></tr>
+                        <tr><td><strong>孙嘉泽</strong></td><td>3.66</td><td>97</td><td>33</td><td>12</td><td>9</td><td>9</td><td>4</td><td>0</td><td>.34</td></tr>
+                        <tr><td><strong>瞿裕桐</strong></td><td>1</td><td>17</td><td>4</td><td>0</td><td>0</td><td>2</td><td>0</td><td>0</td><td>.23</td></tr>
+                        <tr><td><strong>刘景天</strong></td><td>1</td><td>16</td><td>4</td><td>0</td><td>0</td><td>2</td><td>0</td><td>0</td><td>.25</td></tr>
+                        <tr><td><strong>程思乐</strong></td><td>0.33</td><td>16</td><td>5</td><td>1</td><td>3</td><td>2</td><td>0</td><td>0</td><td>.31</td></tr>
+                    </tbody>
+                </table>
+                </div>
+
                 <div class="info-box">
                     <strong>💡 数据说明：</strong>本页数据来自天津PONY U10（2026年5月2日–4日），记录了烈光少棒（赤狐队）13名球员在6场比赛中的进攻与防守表现。总打席151，总打数111，团队OPS约1.02。
                 </div>
@@ -1006,31 +1047,46 @@
                 </div>
             </section>
 
-            <!-- 三AI共识总结 -->
+            <!-- 四AI共识总结 -->
             <section id="summary" data-reveal data-action="read_analysis">
-                <h2>三AI共识总结</h2>
+                <h2>四AI共识总结</h2>
                 <div class="summary-section">
-                    <div class="summary-title">🎯 核心结论：有冲劲，也有潜力</div>
+                    <div class="summary-title">🎯 核心结论：攻强守弱 · 选球顶级 · 控球短板</div>
                     <div class="key-metrics">
                         <div class="metric-card" data-reveal>
                             <span class="metric-value">✅</span>
                             <span class="metric-label">进攻火力强劲</span>
                         </div>
                         <div class="metric-card" data-reveal>
-                            <span class="metric-value">⚠️</span>
-                            <span class="metric-label">投手保送偏多</span>
+                            <span class="metric-value">🎯</span>
+                            <span class="metric-label">选球纪律顶级</span>
                         </div>
                         <div class="metric-card" data-reveal>
-                            <span class="metric-value">🎯</span>
+                            <span class="metric-value">⚠️</span>
+                            <span class="metric-label">投手控球短板</span>
+                        </div>
+                        <div class="metric-card" data-reveal>
+                            <span class="metric-value">🛡️</span>
                             <span class="metric-label">防守稳定性不足</span>
                         </div>
                     </div>
                     <div class="highlight-box">
-                        <strong>三位AI的共同观点：</strong>
+                        <strong>四位AI的共同观点：</strong>
                         <ul>
-                            <li><strong>进攻端：</strong>闫勋捷、Max、程思乐是球队进攻核心，打击效率高，盗垒侵略性强，全队OPS表现出色</li>
-                            <li><strong>防守端：</strong>投手控球不稳（连续保送导致局面失控）、外野漏球、内野补位意识不足是主要失分原因</li>
-                            <li><strong>改进方向：</strong>狠抓投手好球率、外野高飞球/地滚球基本功、跑垒判断与滑垒技术</li>
+                            <li><strong>进攻端（一致）：</strong>程思乐（OPS 1.50）、张景奕、闫勋捷、Max、孙嘉泽构成核心打线，选球纪律（BB/K 1.92）与盗垒压迫（94次）是全队最鲜明的特征。</li>
+                            <li><strong>投手端（一致）：</strong>Max 是控球 + 压制力最优投手（ERA 2.25、好球率 .49），但出场局数最少；田雨稷是最佳先发（BB/9 仅 2.0）；闫勋捷三振能力顶级但保送失控；孙嘉泽投手端目前是负价值（BB/9 = 22）。</li>
+                            <li><strong>失分原因（一致）：</strong>投手保送导致的"免费上垒"+ 外场漏球与内场补位缺失是失分主发动机；团队好球率仅 38.9%，没有一个投手达到 .50 门槛。</li>
+                            <li><strong>结构性洞察（Claude 新增）：</strong>"高 OPS ≠ 高得点贡献"——程思乐残垒 6 次全队最多，说明打线顺序的收益大于单人训练；前 4 名球员贡献全队 62% 的得点 + 打点，<strong>后排深度</strong>是最需要投资的地方；<strong>孙嘉泽的最佳定位是 #2 打者 + 捕手，不是投手</strong>。</li>
+                            <li><strong>改进方向（一致）：</strong>① 狠抓投手好球率（先进带、再练三振）；② 增加 Max 投球局数验证王牌属性；③ 外场高飞球 / 地滚球基本功；④ 跑垒判断（盲目盗垒 = 送出局）；⑤ 打线顺序实验 + 板凳球员打席量。</li>
+                        </ul>
+                    </div>
+                    <div class="info-box">
+                        <strong>📌 四AI视角分工：</strong>
+                        <ul>
+                            <li><strong>🤖 Kimi</strong>（指标派）：ERA / WHIP / K/9 等衍生指标量化分析</li>
+                            <li><strong>🌟 Gemini</strong>（架构派）：投手角色定位 + 训练建议</li>
+                            <li><strong>💬 ChatGPT</strong>（叙事派）：选手成长故事与风格刻画</li>
+                            <li><strong>📊 Claude</strong>（结构派）：跨数据关联 + 战术含义 + 反直觉洞察</li>
                         </ul>
                     </div>
                 </div>
@@ -1051,7 +1107,7 @@
                                 <tr><th>指标</th><th>领跑者</th><th>数据</th></tr>
                             </thead>
                             <tbody data-reveal>
-                                <tr><td><strong>OPS</strong></td><td>张景奕</td><td><strong>1.35</strong></td></tr>
+                                <tr><td><strong>OPS</strong></td><td>程思乐</td><td><strong>1.50</strong></td></tr>
                                 <tr><td><strong>安打率</strong></td><td>张景奕</td><td><strong>.750</strong></td></tr>
                                 <tr><td><strong>长打率</strong></td><td>闫勋捷</td><td><strong>.830</strong></td></tr>
                                 <tr><td><strong>上垒率</strong></td><td>孙嘉泽</td><td><strong>.640</strong> (7次保送)</td></tr>
@@ -1092,30 +1148,58 @@
                             <li><strong>需重点关注：</strong>孙嘉泽(-8)、田雨稷(-5)、程思乐(-3)、刘景天(-3)、小白(-3)</li>
                         </ul>
 
-                        <h3>🎯 投手专项分析</h3>
+                        <h3>📈 投手衍生指标深度分析</h3>
+                        <p>基于投手原始数据（主投局数、投球数、好球、被安打、失分、保送、三振）计算的衍生指标，可以更直观地反映每位投手的控球能力、压制力与用球效率。</p>
                         <table>
                             <thead>
-                                <tr><th>球员</th><th>角色</th><th>亮点</th><th>问题</th><th>综合评级</th></tr>
+                                <tr><th>球员</th><th>ERA</th><th>WHIP</th><th>K/BB</th><th>每局用球</th><th>K/9</th><th>BB/9</th></tr>
                             </thead>
                             <tbody data-reveal>
-                                <tr><td><strong>闫勋捷</strong></td><td>关门投手/捕手</td><td>4</td><td>3</td><td>⭐⭐⭐⭐⭐</td></tr>
-                                <tr><td><strong>Max</strong></td><td>3号投手/三垒</td><td>3</td><td>4</td><td>⭐⭐⭐⭐</td></tr>
-                                <tr><td><strong>田雨稷</strong></td><td>主力投手/游击</td><td>1</td><td>6</td><td>⭐⭐⭐</td></tr>
-                                <tr><td><strong>孙嘉泽</strong></td><td>先发/二号/捕手</td><td>1</td><td>7</td><td>⭐⭐</td></tr>
-                                <tr><td><strong>程思乐</strong></td><td>4号投手/中外</td><td>0</td><td>3</td><td>⭐⭐</td></tr>
-                                <tr><td><strong>刘景天</strong></td><td>3号投手/二垒</td><td>0</td><td>3</td><td>⭐⭐</td></tr>
-                                <tr><td><strong>瞿裕桐</strong></td><td>投手/右外</td><td>1</td><td>2</td><td>⭐⭐⭐</td></tr>
-                                <tr><td><strong>尹钰桢</strong></td><td>二垒/补位</td><td>1</td><td>1</td><td>⭐⭐⭐</td></tr>
+                                <tr><td><strong>Max</strong></td><td><strong>2.25</strong></td><td><strong>1.00</strong></td><td>1.67</td><td>15.2</td><td>11.25</td><td>6.75</td></tr>
+                                <tr><td><strong>田雨稷</strong></td><td>7.00</td><td>2.56</td><td>2.00</td><td><strong>14.1</strong></td><td>4.00</td><td><strong>2.00</strong></td></tr>
+                                <tr><td><strong>闫勋捷</strong></td><td>12.72</td><td>2.30</td><td>1.29</td><td>20.8</td><td><strong>14.31</strong></td><td>11.13</td></tr>
+                                <tr><td><strong>孙嘉泽</strong></td><td><strong>22.13</strong></td><td><strong>5.74</strong></td><td>0.44</td><td>26.5</td><td>9.84</td><td>22.13</td></tr>
+                                <tr><td><strong>瞿裕桐</strong></td><td>0.00</td><td>2.00</td><td>0.00</td><td>17.0</td><td>0.00</td><td>18.00</td></tr>
+                                <tr><td><strong>刘景天</strong></td><td>0.00</td><td>2.00</td><td>0.00</td><td>16.0</td><td>0.00</td><td>18.00</td></tr>
+                                <tr><td><strong>程思乐</strong></td><td>81.82</td><td>9.09</td><td>0.00</td><td>48.5</td><td>0.00</td><td>54.55</td></tr>
                             </tbody>
                         </table>
+
+                        <h4>🏆 投手球员画像</h4>
                         <div class="highlight-box">
-                            <strong>关键发现：</strong>
-                            <ul>
-                                <li>闫勋捷是<strong>最可靠的关门投手</strong>，重压下能调整呼吸节奏，连K两人守住胜利</li>
-                                <li>Max与闫勋捷的<strong>投补配合</strong>是全场最佳（奥熊第三四局0封）</li>
-                                <li>孙嘉泽作为<strong>先发投手极不稳定</strong>（奥熊第一局被打击10轮次，下6分）</li>
-                                <li>程思乐第5局<strong>连续保送3人</strong>造成被动，建议今后及早换人调整</li>
-                            </ul>
+                            <strong>Max</strong> — 【最佳投手】ERA 2.25全队最低，WHIP 1.00每局仅1人上垒，好球率49%最高，4局仅被1安打。K/9 11.25三振能力极强。<strong>结论：</strong>控球精准、压制力最强、效率最高，应增加投球局数。
+                        </div>
+                        <div class="highlight-box">
+                            <strong>孙嘉泽</strong> — 【控球崩溃】ERA 22.13灾难级，WHIP 5.74每局近6人上垒，9保送/3.66局，好球率仅34%，每局用球26.5个效率极低。<strong>结论：</strong>好球率需狠抓，目前不适合担任先发。
+                        </div>
+                        <div class="highlight-box">
+                            <strong>田雨稷</strong> — 【球队王牌】主投9局占全队最高工作量，ERA 7.0可接受，每局用球14.1效率最高，BB/9仅2.0保送控制最好。<strong>结论：</strong>工作量过大需减压，稳定但缺乏支援。
+                        </div>
+                        <div class="highlight-box">
+                            <strong>闫勋捷</strong> — 【三振王】K/9 14.31全队最高，三振9个最多，主投5.66局第二多。但ERA 12.72、BB/9 11.13保送过多导致失分。<strong>结论：</strong>夺三振能力强，但保送失控，关门角色需更稳定。
+                        </div>
+                        <div class="highlight-box">
+                            <strong>程思乐</strong> — 【样本失真】0.33局失3分，ERA 81.82无意义。好球率31%。<strong>结论：</strong>样本过小，结合进攻数据（OPS 1.50全队最高），建议专注打击，投手角色谨慎使用。
+                        </div>
+                        <div class="highlight-box">
+                            <strong>瞿裕桐 / 刘景天</strong> — 【待观察】各1局0失分，但2保送0三振，好球率23-25%。<strong>结论：</strong>样本过小，需更多比赛检验。
+                        </div>
+
+                        <h4>⚠️ 全队投手问题总结</h4>
+                        <table>
+                            <thead>
+                                <tr><th>问题</th><th>数据</th><th>说明</th></tr>
+                            </thead>
+                            <tbody data-reveal>
+                                <tr><td><strong>保送失控</strong></td><td>全队27次保送</td><td>仅田雨稷(2次)和Max(3次)控制得当，孙嘉泽9次、闫勋捷7次</td></tr>
+                                <tr><td><strong>好球率偏低</strong></td><td>均值约35%</td><td>仅Max(49%)达标，孙嘉泽34%、程思乐31%严重不足</td></tr>
+                                <tr><td><strong>工作量不均</strong></td><td>田+闫=14.66局</td><td>占全队63%，缺乏可靠第三投手分担</td></tr>
+                                <tr><td><strong>关门不稳</strong></td><td>闫勋捷BB/9 11.13</td><td>有亮点但保送过多，Max仅4局样本不足</td></tr>
+                                <tr><td><strong>效率差异大</strong></td><td>14.1球/局 vs 48.5球/局</td><td>田雨稷效率最高，程思乐因样本小失真</td></tr>
+                            </tbody>
+                        </table>
+                        <div class="info-box">
+                            <strong>训练建议：</strong>狠抓孙嘉泽/闫勋捷的好球率训练，增加Max投球局数测试其稳定性，为田雨稷寻找可靠轮换投手减轻负担。
                         </div>
 
                         <h3>🆚 按对手团队表现</h3>
@@ -1147,7 +1231,7 @@
                             <strong>孙嘉泽</strong> — 【上垒机器】OPS 1.19，上垒率.640最高（7保送），盗垒10次。<strong>问题严重：</strong>投手极不稳定（奥熊先发一局被下6分，重庆连续保送），捕手漏球，偷本垒被抓导致输强棒1分非常可惜。<strong>建议：</strong>狠抓投手好球率，加强捕手防守，跑垒需更冷静。
                         </div>
                         <div class="highlight-box">
-                            <strong>程思乐</strong> — 【打点王】打点8分最多，安打率.530。问题：投手第5局连续保送3人造成被动；中外野重大失误（背着手垫脚尖）丢2分。<strong>建议：</strong>专注打击和中外野防守姿势矫正，投手角色需谨慎使用。
+                            <strong>程思乐</strong> — 【打点王】打点8分最多，OPS 1.50全队最高（安打率.730/长打率.800）。问题：投手第5局连续保送3人造成被动；中外野重大失误（背着手垫脚尖）丢2分。<strong>建议：</strong>专注打击和中外野防守姿势矫正，投手角色需谨慎使用。
                         </div>
                         <div class="highlight-box">
                             <strong>付昌泽</strong> — 【长打威胁】OPS 1.09，3支二垒安打最多，长打率.660。问题：三振逃规则不清楚。<strong>建议：</strong>加强规则学习，保持长打优势。
@@ -1187,36 +1271,100 @@
                     <div class="ai-card-content">
                         <p>烈光少棒赤狐队 - U10天津Pony杯数据复盘与球员点评</p>
 
+                        <h3>🎯 投手数据专项点评</h3>
+                        <p>结合投手数据，可以非常直观地看出赤狐队投手阵营的出场分布、控球能力以及压制力。在U10阶段，投手的"控球率（好球率）"往往直接决定了比赛的走势。</p>
+
+                        <h4>🌟 核心王牌与高效投手</h4>
+                        <div class="highlight-box">
+                            <strong>1. Max（最高效的压制者）</strong>
+                            <ul>
+                                <li><strong>数据亮点：</strong>4局投球，仅被敲出1支安打、失1分，送出5次三振。好球率 49%（全队最高）。</li>
+                                <li><strong>点评：</strong>Max是本次比赛中表现最完美的投手。他的好球率接近50%，控球精准，这直接带来了极佳的压制力（仅1支被安打）。平均每局都有超过1次的三振，是球队最可以信赖的"终结者"或关键局投手。</li>
+                            </ul>
+                        </div>
+                        <div class="highlight-box">
+                            <strong>2. 田雨稷（吃局数的"耐劳型"先发）</strong>
+                            <ul>
+                                <li><strong>数据亮点：</strong>主投9局（全队最高，占极大比重），投球数高达127球。好球率维持在合格的 40%。</li>
+                                <li><strong>点评：</strong>作为球队的主力轮值，田雨稷承担了最重的投球任务。虽然被安打数较多（21支），但9局仅失7分（平均每局失分不到1分），说明他的垒上危机处理能力很强，能够通过让对手打出地滚球或高飞球来制造出局（仅4次三振说明他主要是"投给对手打"的类型）。</li>
+                            </ul>
+                        </div>
+                        <div class="highlight-box">
+                            <strong>3. 闫勋捷（强力三振型投手）</strong>
+                            <ul>
+                                <li><strong>数据亮点：</strong>5.66局送出 9次三振（全队最高）。好球率 40%。</li>
+                                <li><strong>点评：</strong>闫勋捷具备极强的三振能力（K/9值很高），能够凭借自身的球威直接解决打者。但他5.66局投了118球，用球数偏多，说明他经常陷入球数落后的纠缠局面（有7次保送）。如果能进一步提升好球率，减少不必要的坏球，他的统治力会更可怕。</li>
+                            </ul>
+                        </div>
+
+                        <h4>⚠️ 需要克服"控球心魔"的投手</h4>
+                        <div class="warning-box">
+                            <strong>4. 孙嘉泽（控球迷失，保送危机）</strong>
+                            <ul>
+                                <li><strong>数据痛点：</strong>3.66局出现 9次保送（全队最高），好球率仅为 34%。</li>
+                                <li><strong>点评：</strong>这组数据完美印证了前面复盘中的总结："连续保送造成困难局面"。孙嘉泽3.66局用了97球，极其消耗体力。过多的四坏球保送（9次）不仅免费送人上垒，还导致失分高达9分。他的当务之急是放弃追求球速，先要把球投进好球带。</li>
+                            </ul>
+                        </div>
+                        <div class="warning-box">
+                            <strong>5. 替补/中继群：程思乐、瞿裕桐、刘景天</strong>
+                            <ul>
+                                <li><strong>数据痛点：</strong>三人主投局数都在1局及以下，但好球率极低（程思乐31%、刘景天25%、瞿裕桐23%）。</li>
+                                <li><strong>点评：</strong>这三名小投手在短暂的上场时间里表现出了明显的"找不到准星"的状况。例如瞿裕桐1局投了17球只有4个好球；程思乐0.33局（仅解决1人）就失了3分，送出2次保送。说明他们在作为替补投手登场时，心理压力过大或投球动作变形，难以迅速进入状态。</li>
+                            </ul>
+                        </div>
+
+                        <h4>📋 投手群整体总结与针对性建议</h4>
+                        <div class="highlight-box">
+                            <strong>1. "四坏保送"是最大敌人</strong>
+                            <ul>
+                                <li>除了Max，其他投手的保送数都偏高。在U10级别的比赛中，"没有保送就赢了一半"。球队整体的好球率大多徘徊在 40% 甚至 30% 以下，这意味着投手扔出的球大半是坏球。建议日常训练中设立"牛棚好球带挑战"，不要求球速，只要求连续投进好球带的肌肉记忆。</li>
+                            </ul>
+                        </div>
+                        <div class="highlight-box">
+                            <strong>2. 用球数效率（Pitch Efficiency）</strong>
+                            <ul>
+                                <li>田雨稷（127球/9局 = 约14球/局）的效率还不错；但孙嘉泽（97球/3.66局 = 约26球/局）和闫勋捷（118球/5.66局 = 约20球/局）的用球数太高。用球数高意味着投手容易提早疲劳。需要鼓励投手"勇敢挑战打者"，让防守球员帮忙抓出局，而不是一味想要自己三振对手而投得太闪躲。</li>
+                            </ul>
+                        </div>
+                        <div class="highlight-box">
+                            <strong>3. 投手角色定位逐渐清晰</strong>
+                            <ul>
+                                <li><strong>田雨稷</strong> 适合作为先发投手（吃局数、稳定、心理素质好）；</li>
+                                <li><strong>Max</strong> 和 <strong>闫勋捷</strong> 适合在关键时刻（有关门危机或需要三振化解得点圈危机时）登场；</li>
+                                <li>对于 <strong>孙嘉泽</strong> 及其他中继投手，教练在换投时需要设立"停损点"（例如连续2个保送必须叫暂停安抚，连续3个保送必须果断换投）。</li>
+                            </ul>
+                        </div>
+
                         <h3>一、球员逐一点评（按攻击指数 OPS 排序）</h3>
 
-                        <h4>1. 张景奕 (OPS: 1.35)</h4>
+                        <h4>1. 程思乐 (OPS: 1.50)</h4>
                         <ul>
-                            <li>打击效率极高，占据全队攻击指数榜首。但跑垒判断需更加冷静，特别是在比分焦灼的关键局势下（如对阵奥熊时单场三次被抓盗垒），要加强阅读比赛的能力，避免冲动跑垒白白送掉出局数。</li>
+                            <li>得点圈的"打点王"（8分打点全队第一），OPS跃居全队榜首，关键时刻火力全开。但在投手丘上需要增强抗压能力，防守端（游击/中外野）必须纠正"背手、垫脚尖"等不良姿势，夯实基础动作以避免重大失误。</li>
                         </ul>
 
-                        <h4>2. 闫勋捷 (OPS: 1.33)</h4>
+                        <h4>2. 张景奕 (OPS: 1.35)</h4>
+                        <ul>
+                            <li>打击效率极高。但跑垒判断需更加冷静，特别是在比分焦灼的关键局势下（如对阵奥熊时单场三次被抓盗垒），要加强阅读比赛的能力，避免冲动跑垒白白送掉出局数。</li>
+                        </ul>
+
+                        <h4>3. 闫勋捷 (OPS: 1.33)</h4>
                         <ul>
                             <li>攻防俱佳的"大心脏"核心。进攻端不仅有极高的上垒和长打能力，还贡献了全队唯一的本垒打；防守端多次作为救场投手成功"关门"，在重压下懂得调整呼吸节奏，抗压能力成长显著。后续需继续雕琢捕手细节（如牵制与传一垒）及游击防守的稳定性。</li>
                         </ul>
 
-                        <h4>3. 孙嘉泽 (OPS: 1.19)</h4>
+                        <h4>4. 孙嘉泽 (OPS: 1.19)</h4>
                         <ul>
                             <li>选球绝佳的上垒利器，7次四坏球保送位列全队第一。作为先发/中继投手压制力强，但状态起伏较大，首要任务是狠抓"好球率"，避免连续保送造成困难局面。此外，跑垒时机的把握（偷本垒被抓盗非常可惜）和外野防守专注度（需减少漏球）有待提升。</li>
                         </ul>
 
-                        <h4>4. Max (OPS: 1.17)</h4>
+                        <h4>5. Max (OPS: 1.17)</h4>
                         <ul>
                             <li>绝对的进攻箭头与防守枢纽。安打数（9支）全队最高，防守端与队友配合默契，屡次上演精彩的"双杀"化解危机；作为投手也能干净利落零封对手。下一步强化的方向是三垒防守及传一垒的精准度。</li>
                         </ul>
 
-                        <h4>5. 付昌泽 (OPS: 1.09)</h4>
+                        <h4>6. 付昌泽 (OPS: 1.09)</h4>
                         <ul>
                             <li>长打能力出色，进攻输出稳定。具备极其强烈的团队协作意识，赛后主动帮队友收拾护具值得表扬。继续熟悉棒球的特殊赛规（如三振逃规则），会让他未来的赛场表现更加成熟。</li>
-                        </ul>
-
-                        <h4>6. 程思乐 (OPS: 1.05)</h4>
-                        <ul>
-                            <li>得点圈的"打点王"（8分打点全队第一），关键时刻火力全开。但在投手丘上需要增强抗压能力，防守端（游击/中外野）必须纠正"背手、垫脚尖"等不良姿势，夯实基础动作以避免重大失误。</li>
                         </ul>
 
                         <h4>7. 刘梵山 (OPS: 1.00)</h4>
@@ -1290,6 +1438,113 @@
                     <div class="ai-card-header chatgpt">💬 ChatGPT 分析</div>
                     <div class="ai-card-content">
 
+                        <h3>⚾ 投手数据分析</h3>
+                        <p>先看整体。这组数据非常典型 U10：三振能力已经开始出现差距，但真正决定比赛的仍然是 <strong>"好球率"</strong>。因为 U10 阶段能稳定连续击穿防线的球队其实不多，很多失分来自保送、暴投、守备失误后的连锁反应。所以<strong>好球率 + 控制局面能力比纯三振更重要</strong>。</p>
+                        <div class="warning-box">
+                            <strong>目前最大问题也很明显：</strong>全队没有一个投手好球率超过 50%。这意味着投球节奏长期落后、经常被迫投坏球、守备压力巨大。但同时也能看到，已经开始出现不同类型的投手雏形。
+                        </div>
+
+                        <h4>🔥 Max —— 目前最稳定的比赛型投手</h4>
+                        <div class="highlight-box">
+                            <strong>数据亮点：</strong>
+                            <ul>
+                                <li>局数 4</li>
+                                <li>被安打 1</li>
+                                <li>失分 1</li>
+                                <li>三振 5</li>
+                                <li>好球率 .49（全队最高）</li>
+                            </ul>
+                        </div>
+                        <p>这是目前全队"综合质量最高"的投手表现。</p>
+                        <p><strong>最大亮点：</strong></p>
+                        <ul>
+                            <li><strong>压制力极强：</strong>4局只被1支安打，说明球路有压制、打者不好击中、节奏控制不错。而且三振/局数比例非常优秀，U10能稳定制造挥空已经很难得。</li>
+                            <li><strong>比赛节奏成熟：</strong>虽然也有3次保送，但没有连续崩盘、没有大局失控，说明抗压能力很好。</li>
+                        </ul>
+                        <p><strong>当前问题：</strong>好球率还是不够高。.49已经全队最好，但仍然意味着一半球是坏球。未来如果好球率提升到55%-60%、第一球抢好球更稳定，压制力会明显提升。</p>
+
+                        <h4>⭐ 闫勋捷 —— 最有"王牌感"的投手</h4>
+                        <div class="highlight-box">
+                            <strong>数据亮点：</strong>
+                            <ul>
+                                <li>局数 5.66</li>
+                                <li>三振 9（全队最高）</li>
+                                <li>被安打 6</li>
+                                <li>保送 7</li>
+                            </ul>
+                        </div>
+                        <p>这是球队目前"天赋最高型"投手。</p>
+                        <p><strong>最大特点 —— 三振能力最强：</strong>9K 是目前最突出的数据，说明球有威胁、打者跟不上、具备压制能力，这种投手上限最高。</p>
+                        <p><strong>为什么失分仍然偏高？</strong>核心问题：控球波动。7次保送意味着很多局面是自己送出来的压力，而 U10 一旦保送 + 盗垒 + 暴投，比赛马上会失控。</p>
+                        <p><strong>另一个问题 —— 投球消耗偏大：</strong>118球投5.66局，意味着很多打席拖长、无法快速解决打者，是典型"有球威，但效率不高"。</p>
+                        <p><strong>未来方向：</strong>如果好球率提升，学会用简单球数解决打者、建立领先球数意识，会是真正能决定比赛的王牌。</p>
+
+                        <h4>🧠 田雨稷 —— 当前最可靠的"吃局数投手"</h4>
+                        <div class="highlight-box">
+                            <strong>数据亮点：</strong>
+                            <ul>
+                                <li>局数 9（全队最高）</li>
+                                <li>投球数 127</li>
+                                <li>被安打 21</li>
+                                <li>失分 7</li>
+                                <li>保送 2（全队最少）</li>
+                            </ul>
+                        </div>
+                        <p>这是目前最稳定承担轮值任务的投手。</p>
+                        <p><strong>最大价值 —— 保送极少：</strong>9局只有2保送，这非常重要。说明不会自己送分、能让比赛继续推进、能依赖守备。对于 U10，能稳定投进好球区，本身就是巨大价值。</p>
+                        <p><strong>问题也很明显 —— 被安打太多：</strong>21支安打说明球进入好球区后威胁不足，打者容易形成击球，属于"能投进去，但缺少压制力"。</p>
+                        <p><strong>当前定位：</strong>非常像稳定型先发。未来重点是增加球速、提高球尾变化、学习边角控球。如果能提升"质量"，会非常关键。</p>
+
+                        <h4>⚠️ 孙嘉泽 —— 高潜力，但波动最大的投手</h4>
+                        <div class="warning-box">
+                            <strong>数据亮点：</strong>
+                            <ul>
+                                <li>局数 3.66</li>
+                                <li>保送 9（全队最高）</li>
+                                <li>失分 9</li>
+                                <li>好球率 .34</li>
+                            </ul>
+                        </div>
+                        <p>这是典型"天赋明显，但还不会稳定比赛"的投手。</p>
+                        <p><strong>为什么说有潜力？</strong>因为仍然能送出4次三振，说明球并不差、打者其实不好打。但控球失控太严重，9保送/3.66局基本意味着每局都在送跑者。</p>
+                        <p><strong>本质问题：</strong>不是技术，而是节奏和情绪。很多少年投手一坏球就慌、被安打后更急、越想控越控不住，这是典型成长阶段。</p>
+                        <p><strong>未来重点：</strong>孙嘉泽最需要"学会冷静投球"。不是追求三振，而是快速抢好球、让对方打到球、相信守备。一旦突破心理关，提升会非常快。</p>
+
+                        <h4>⚡ 程思乐 —— 临时救火型</h4>
+                        <p>局数太少，但好球率偏低，且保送 + 失分都比较集中。说明目前还不适合承担高压力投球任务。未来如果继续练投，重点是基础动作稳定、第一球好球、节奏感。</p>
+
+                        <h4>🧱 瞿裕桐 / 刘景天</h4>
+                        <p>这两位数据非常接近：都能压制安打，但控球明显不足。其实"没被打"不代表投得好，因为主要问题在保送，这说明打者可能还没真正进入对决阶段，投手自己已经先失控。</p>
+
+                        <h4>📈 全队投手组总结</h4>
+                        <p>目前球队投手组已经开始出现<strong>三种不同类型</strong>：</p>
+                        <div class="highlight-box">
+                            <strong>1. 压制型（闫勋捷）</strong>
+                            <ul>
+                                <li>特点：三振强、上限高、波动也大</li>
+                                <li>适合：关键局、强队战</li>
+                            </ul>
+                        </div>
+                        <div class="highlight-box">
+                            <strong>2. 稳定型（田雨稷）</strong>
+                            <ul>
+                                <li>特点：控球稳定、吃局数、不容易崩</li>
+                                <li>适合：先发、稳定比赛节奏</li>
+                            </ul>
+                        </div>
+                        <div class="highlight-box">
+                            <strong>3. 比赛型（Max）</strong>
+                            <ul>
+                                <li>特点：综合能力最均衡、节奏成熟、抗压好</li>
+                                <li>目前最像：真正能"赢比赛"的投手</li>
+                            </ul>
+                        </div>
+
+                        <h4>🏆 最后结论</h4>
+                        <div class="info-box">
+                            目前这支球队已经有投手框架了。但真正决定下一阶段上限的，不是球速，而是：<strong>好球率、节奏控制、守备配合、情绪稳定</strong>。如果未来全队平均好球率能从 .35-.40 提升到 .50 左右，球队整体实力会直接提升一个档次。
+                        </div>
+
                         <h3>🔥 闫勋捷</h3>
                         <p>本届赛事球队绝对核心之一。无论打击、跑垒、投球、关键局表现，都处于全队最顶级水平。</p>
                         <div class="highlight-box">
@@ -1334,7 +1589,8 @@
                         <div class="highlight-box">
                             <strong>数据亮点：</strong>
                             <ul>
-                                <li>打率 0.530</li>
+                                <li>打率 0.730</li>
+                                <li>OPS 1.500（全队最高）</li>
                                 <li>8打点（全队最高）</li>
                                 <li>12盗垒</li>
                             </ul>
@@ -1388,6 +1644,135 @@
                             <li>学会了团队协作</li>
                         </ul>
                         <p>而这些成长，远比一场比赛的输赢更重要。如果未来继续加强基本功、防守纪律、投手稳定性，这支队伍会进步得非常快。</p>
+                    </div>
+                </article>
+            </section>
+
+            <!-- Claude 分析（教练视角数据解读） -->
+            <section id="claude" data-reveal data-action="read_analysis" data-ai-source="Claude">
+                <article class="ai-card" data-reveal>
+                    <div class="ai-card-header claude">📊 Claude 分析（数据结构派）</div>
+                    <div class="ai-card-content">
+                        <p>本卡片从"跨数据关联 + 结构性洞察"视角出发，重点不在逐人点评，而在找出数据背后的队伍本质特征与角色错配问题。</p>
+
+                        <h3>🧮 数据全景</h3>
+                        <div class="highlight-box">
+                            <strong>全队进攻（151 打席 / 111 打数）：</strong>
+                            <ul>
+                                <li>总安 52 / 得点 27 / 打点 31 / 盗垒 94</li>
+                                <li>保送 25 / 三振 13 → <strong>BB/K = 1.92（U10 顶级选球纪律）</strong></li>
+                                <li>Contact Rate ≈ 88%（三振率仅 11.7%）</li>
+                            </ul>
+                        </div>
+                        <div class="warning-box">
+                            <strong>全队投手（24.65 主投局 / 452 投球数）：</strong>
+                            <ul>
+                                <li>好球 176 → 团队好球率 <strong>38.9%</strong></li>
+                                <li>BB 27 / K 22 → K/BB = 0.81（三振比保送还少）</li>
+                                <li>ERA ≈ 10.22（9 局尺度）、被安打 41</li>
+                            </ul>
+                        </div>
+                        <p><strong>一句话总结：攻强守弱，选球是优势、控球是短板。</strong></p>
+
+                        <h3>🔍 4 个结构性事实</h3>
+
+                        <h4>1. 队伍的"进攻 DNA"是选球 + 速度，不是长打</h4>
+                        <ul>
+                            <li>BB/K 1.92 在 U10 层级是<strong>完全顶级</strong>的选球纪律</li>
+                            <li>三振率 8.6%（13/151 PA）同样顶级</li>
+                            <li>盗垒 94 次 / 6 场 = <strong>每场约 16 次盗垒</strong>，碾压级跑垒压迫</li>
+                            <li>但 ISO（SLG − AVG）：闫勋捷 .330、付昌泽 .250、剩下都 &lt; .10</li>
+                        </ul>
+                        <p><strong>结论：</strong>不是"打穿对方"的队伍，是"不断上垒 + 跑到对方防守崩溃"的队伍。训练方向——<strong>不需要猛挥棒，需要更精细的跑垒判断</strong>。</p>
+
+                        <h4>2. 投手好球率与打者选球率是同一枚硬币的两面</h4>
+                        <div class="highlight-box">
+                            <ul>
+                                <li>全队打者 BB/K = 1.92（极佳）</li>
+                                <li>全队投手 K/BB = 0.81（很差）</li>
+                            </ul>
+                            <p>你们的打者让对手投坏球，你们的投手也让对手不挥棒就上垒。对方跟你们玩的是<strong>同一个游戏</strong>，只是你们赢在打者、输在投手。这不是两个独立问题，是<strong>"全队对好球带的识别和控制能力"整体不足</strong>。训练应该围绕"对好球带的敏感度"一体化展开。</p>
+                        </div>
+
+                        <h4>3. 进攻产出高度集中在 4 个人</h4>
+                        <table>
+                            <thead>
+                                <tr><th>球员</th><th>得点</th><th>打点</th><th>合计产出</th></tr>
+                            </thead>
+                            <tbody data-reveal>
+                                <tr><td><strong>程思乐</strong></td><td>3</td><td>8</td><td><strong>11</strong></td></tr>
+                                <tr><td><strong>Max</strong></td><td>5</td><td>6</td><td><strong>11</strong></td></tr>
+                                <tr><td><strong>闫勋捷</strong></td><td>1</td><td>6</td><td><strong>7</strong></td></tr>
+                                <tr><td><strong>付昌泽</strong></td><td>5</td><td>2</td><td><strong>7</strong></td></tr>
+                                <tr><td>其他 9 人合计</td><td>13</td><td>9</td><td>22</td></tr>
+                            </tbody>
+                        </table>
+                        <p>前 4 人贡献 <strong>36/58 = 62%</strong> 的得点 + 打点。这是典型核心打线结构，但也意味着<strong>任何一个核心被针对（像猛虎杯决赛那样），队伍立刻缺人</strong>。后排深度是最需要投资的地方。</p>
+
+                        <h4>4. 高 OPS ≠ 高"得点贡献"</h4>
+                        <div class="warning-box">
+                            <p>程思乐 OPS 1.50 全队第一，但得点只有 3 分、<strong>残垒 6 次全队最多</strong>。</p>
+                            <ul>
+                                <li>他主要打得点圈位置（8 打点说明他打的都是有人在垒的位置）</li>
+                                <li>但后面棒次的接应能力不足，他上垒后经常被留在垒上</li>
+                            </ul>
+                            <p><strong>反证：</strong>付昌泽 OPS 1.09 却 5 得点 + 0 残留，说明他所在的棒次位置带来了高得点转化。</p>
+                            <p><strong>战术含义：</strong>打线排序的收益可能大于打击训练本身。<strong>把 Max + 付昌泽 放在程思乐/闫勋捷前面触发，把他们的盗垒威胁最大化</strong>。</p>
+                        </div>
+
+                        <h3>🔀 5 个"两面人"（攻击 + 投手双向交叉）</h3>
+                        <table>
+                            <thead>
+                                <tr><th>球员</th><th>OPS</th><th>投手 IP / ERA</th><th>定位建议</th></tr>
+                            </thead>
+                            <tbody data-reveal>
+                                <tr><td><strong>Max</strong></td><td>1.17</td><td>4.0 / <strong>2.25</strong></td><td>真·Two-Way 核心，投球局数严重不足</td></tr>
+                                <tr><td><strong>闫勋捷</strong></td><td>1.33</td><td>5.66 / 12.72</td><td>攻击核心 + 极端压制型 Closer（高风险高回报）</td></tr>
+                                <tr><td><strong>孙嘉泽</strong></td><td>1.19</td><td>3.66 / 22.13</td><td>攻击资产 top，但投手 ≈ 负价值，应暂停投</td></tr>
+                                <tr><td><strong>田雨稷</strong></td><td>0.57</td><td>9.0 / 7.00</td><td>反向：投手核心，打击贡献有限</td></tr>
+                                <tr><td><strong>程思乐</strong></td><td><strong>1.50</strong></td><td>0.33 / 81.82</td><td>攻击 MVP，投手别碰</td></tr>
+                            </tbody>
+                        </table>
+                        <div class="warning-box">
+                            <strong>最关键洞察：</strong>孙嘉泽是全队最严重的"角色错配"。上垒率 .640 全队第一，选球能力极强（7 保送），但投手 BB/9 = 22。他上投手丘 = 用他进攻端的价值去亏损换送分。<strong>他应该是 #2 打者 + 主力捕手，不是投手</strong>。
+                        </div>
+
+                        <h3>⚠️ 样本大小警告（这些球员先别下结论）</h3>
+                        <table>
+                            <thead>
+                                <tr><th>球员</th><th>打席 / 打数</th><th>OPS</th><th>备注</th></tr>
+                            </thead>
+                            <tbody data-reveal>
+                                <tr><td>张景奕</td><td>10 / 4</td><td>1.35</td><td>天赋明显但被抓盗 3 次</td></tr>
+                                <tr><td>刘梵山</td><td>4 / 4</td><td>1.00</td><td>数据好但样本太小</td></tr>
+                                <tr><td>陈诗恩</td><td>4 / 3</td><td>0.83</td><td>同上</td></tr>
+                                <tr><td>尹钰桢</td><td>4 / 4</td><td>0.50</td><td>同上</td></tr>
+                            </tbody>
+                        </table>
+                        <p>这四人加起来才 22 打席，<strong>任何基于单一数字（AVG/OPS）的判断都不可靠</strong>。下次比赛增加他们的打席量再看数据。</p>
+
+                        <h3>📋 下一阶段训练优先级</h3>
+                        <div class="highlight-box">
+                            <ol>
+                                <li><strong>投手好球率</strong>（#1，跟其他训练不在同一层级）—— 特别是孙嘉泽和闫勋捷</li>
+                                <li><strong>Max 增加投球局数</strong> —— 验证他是否是真王牌</li>
+                                <li><strong>跑垒判断</strong>（不是跑垒速度）—— 张景奕三次被抓盗代表典型问题</li>
+                                <li><strong>外野手防守基本姿势</strong> —— 程思乐"背手垫脚尖"这种问题是可被训练的</li>
+                                <li><strong>打线顺序实验</strong> —— 把付昌泽、Max 放在核心棒次前面试一次</li>
+                                <li><strong>板凳球员打席量</strong> —— 张景奕样本只有 4 AB，应继续投资</li>
+                            </ol>
+                        </div>
+
+                        <h3>🎯 最反直觉的一条</h3>
+                        <div class="warning-box">
+                            <p>团队里 <strong>保送 27 &gt; 三振 22</strong>。这意味着什么？</p>
+                            <p><strong>意味着对手不用挥棒就能上垒，而你们需要让守备干活去抓对手上垒后的出局。</strong>在 U10 这个"守备还在成型"的阶段，这个公式就是失分的发动机。</p>
+                            <p><strong>修炼顺序应该是：先学会把球投进好球带 → 再练三振。</strong>目前整支队伍（除 Max）都在反着练，这是所有数据背后的那条主线。</p>
+                        </div>
+
+                        <div class="info-box">
+                            <strong>方法说明：</strong>本分析由 Claude 基于页面公开的进攻 + 投手原始数据重新计算得出，衍生指标（BB/K、Contact Rate、ISO、K/9、BB/9、WHIP 等）均为 standard sabermetrics 算法；若后续某球员 raw data 修正，分析结论可能随之变化。
+                        </div>
                     </div>
                 </article>
             </section>
