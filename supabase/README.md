@@ -106,3 +106,14 @@ Requires environment variables:
 - `GEMINI_API_KEY`
 
 The script parses all HTML pages, extracts section-level chunks, generates Gemini `gemini-embedding-2` embeddings (3072-dim, truncated to 1536), and upserts into Supabase.
+
+### Automatic Re-indexing on Push
+
+The GitHub Actions workflow at [.github/workflows/rebuild-search-index.yml](../.github/workflows/rebuild-search-index.yml) automatically reruns `scripts/index-content.js` whenever one of the indexed HTML pages or the indexer itself changes on `main`/`master`. It also supports manual `workflow_dispatch` runs from the Actions tab (useful after Supabase migrations or after upgrading the Gemini embedding model).
+
+Required repository secrets (Settings → Secrets and variables → Actions):
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `GEMINI_API_KEY`
+
+Concurrency is set to `rebuild-search-index` with `cancel-in-progress: false` so overlapping runs queue instead of interrupting each other, avoiding partial upserts.

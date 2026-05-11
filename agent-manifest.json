@@ -73,7 +73,7 @@
       "actions": ["read_analysis", "view_data"],
       "requires_auth": false,
       "tags": ["PONY", "U10", "天津", "数据分析"],
-      "ai_sources": ["Kimi", "Gemini", "ChatGPT"]
+      "ai_sources": ["Kimi", "Gemini", "ChatGPT", "Claude"]
     },
     {
       "path": "sponsor_me.html",

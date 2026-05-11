@@ -1,0 +1,50 @@
+name: Rebuild Search Index
+
+on:
+  push:
+    branches: [ main, master ]
+    paths:
+      # Indexed HTML pages (must match PAGES array in scripts/index-content.js).
+      - 'index.html'
+      - 'u10_rules.html'
+      - 'pony_u10_rules.html'
+      - 'tigercup_groupstage.html'
+      - 'tigercup_finalstage.html'
+      - 'pony_u10_tianjin.html'
+      - 'sponsor_me.html'
+      # Indexer itself and its dependencies.
+      - 'scripts/index-content.js'
+      - 'package.json'
+      - 'package-lock.json'
+  # Allow manual re-index from the Actions tab (useful after Supabase migrations
+  # or when the Gemini embedding model is upgraded).
+  workflow_dispatch:
+
+concurrency:
+  # Only ever run one indexing job at a time to avoid partial upserts colliding.
+  group: rebuild-search-index
+  cancel-in-progress: false
+
+jobs:
+  reindex:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Rebuild search index
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: node scripts/index-content.js

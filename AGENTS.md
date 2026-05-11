@@ -13,7 +13,7 @@ This is a **static website** for **烈光少棒赤狐队 (Red Foxes Youth Baseba
 2. **Match Review** (`match_review.html`) - Seven tactical video clips with analysis
 3. **U10 Tournament Rules** (`u10_rules.html`) - Complete competition regulations
 4. **PONY U10 Rules** (`pony_u10_rules.html`) - PONY U10 tournament rules
-5. **PONY U10 Analysis** (`pony_u10_tianjin.html`) - Tianjin PONY U10 tournament analysis with 3-AI review
+5. **PONY U10 Analysis** (`pony_u10_tianjin.html`) - Tianjin PONY U10 tournament analysis with 4-AI review
 6. **Groupstage Analysis** (`tigercup_groupstage.html`) - Multi-AI performance analysis
 7. **Finalstage Analysis** (`tigercup_finalstage.html`) - Multi-AI final match analysis
 8. **Sponsor Page** (`sponsor_me.html`) - Sponsor support with global like counter (Supabase Edge Function)
@@ -116,7 +116,7 @@ redfoxes-baseball/
 - **index.html**: Navigation hub with card-based layout (7 nav cards)
 - **match_review.html**: Password protected; links shared `baseball_theme.css` plus inline page-specific styles
 - **u10_rules.html** / **pony_u10_rules.html**: Link `baseball_theme.css` + `rules_style.css`; both include schedule images with lightbox support
-- **pony_u10_tianjin.html**: Link `baseball_theme.css`; inline styles + image modal; features player stats table with `.table-responsive`, 56 defense notes, 3-AI analysis cards, error distribution chart
+- **pony_u10_tianjin.html**: Link `baseball_theme.css`; inline styles + image modal; features player stats table with `.table-responsive`, 56 defense notes, 4-AI analysis cards (Kimi/Gemini/ChatGPT/Claude), error distribution chart
 - **tigercup_groupstage.html** / **tigercup_finalstage.html**: Link `baseball_theme.css` plus inline page-specific styles
 - **sponsor_me.html**: Independent styling, does not use baseball field background or floating assets
 - **supabase/**: Edge Function and SQL migration for the active global like counter backend
@@ -160,6 +160,7 @@ Single-file architecture with embedded CSS and JavaScript.
 - Kimi analysis card (first)
 - Gemini analysis card
 - ChatGPT analysis card
+- Claude analysis card (pony_u10_tianjin only, 4th data-structural viewpoint)
 - Image modal for lightbox
 - pony_u10_tianjin only: defense notes section with note-good/note-bad classification, parent letter
 
@@ -179,6 +180,7 @@ Uses a shared `baseball_theme.css` with CSS custom properties (variables) for th
 - --color-kimi: #00a8e8 (Kimi blue)
 - --color-gemini: #4285f4 (Gemini blue)
 - --color-chatgpt: #10a37f (ChatGPT green)
+- --color-claude: #cc785c (Claude terracotta)
 
 All themed pages link `baseball_theme.css` for the shared background (`img/baseball_field_bg.svg`), resets, and common animations. Page-specific styles remain inline in each HTML file.
 
@@ -202,7 +204,7 @@ u10_rules.html / pony_u10_rules.html:
 
 tigercup_groupstage.html / tigercup_finalstage.html / pony_u10_tianjin.html:
 - .ai-card - Container for AI analysis
-- .ai-card-header.kimi/gemini/chatgpt - Brand colors
+- .ai-card-header.kimi/gemini/chatgpt/claude - Brand colors
 - .summary-section - Key metrics summary
 - .page-nav - Sticky navigation with cross-page links
 - .table-responsive - Overflow-x auto wrapper for wide data tables
@@ -389,7 +391,7 @@ The old Worker remains in `workers/` for reference and rollback:
 - Player statistics table has 18 columns (including 残垒/SLG/OBP) with horizontal scroll on mobile
 - 56 defense notes classified as note-good/note-bad
 - Error distribution chart displays with click-to-zoom
-- All 3 AI analysis cards are present (Kimi first)
+- All 4 AI analysis cards are present (Kimi first, Claude last)
 - Navigation links work (cross-page to index and pony_u10_rules)
 - Parent letter section displays at bottom of notes
 
