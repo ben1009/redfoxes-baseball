@@ -15,7 +15,6 @@ on:
       # Indexer itself and its dependencies.
       - 'scripts/index-content.js'
       - 'package.json'
-      - 'package-lock.json'
   # Allow manual re-index from the Actions tab (useful after Supabase migrations
   # or when the Gemini embedding model is upgraded).
   workflow_dispatch:
@@ -37,10 +36,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci
+        # package-lock.json is gitignored in this repo, so we cannot use
+        # `npm ci` (which requires a lockfile) or `cache: npm` (which is
+        # keyed off the lockfile). Use `npm install` instead.
+        run: npm install
 
       - name: Rebuild search index
         env:
