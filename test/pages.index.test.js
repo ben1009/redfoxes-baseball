@@ -43,6 +43,7 @@ describe('Index Page (Navigation Hub)', () => {
         expect(links).toContain('match_review.html');
         expect(links).toContain('u10_rules.html');
         expect(links).toContain('pony_u10_rules.html');
+        expect(links).toContain('cba_u10_rules.html');
         expect(links).toContain('tigercup_groupstage.html');
         expect(links).toContain('tigercup_finalstage.html');
         expect(links).toContain('pony_u10_tianjin.html');
@@ -94,6 +95,11 @@ describe('Index Page (Navigation Hub)', () => {
     test('should navigate from index to sponsor page', async () => harness.withBrowser(async () => {
         const sponsorLink = await harness.page.$('a[href="sponsor_me.html"]');
         expect(sponsorLink).not.toBeNull();
+    }));
+
+    test('should navigate from index to cba_u10_rules page', async () => harness.withBrowser(async () => {
+        const cbaRulesLink = await harness.page.$('a[href="cba_u10_rules.html"]');
+        expect(cbaRulesLink).not.toBeNull();
     }));
 
     test('should navigate from index to pony_u10_tianjin page', async () => harness.withBrowser(async () => {

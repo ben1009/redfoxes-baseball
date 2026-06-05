@@ -7,6 +7,7 @@ const PAGES = [
     'match_review.html',
     'u10_rules.html',
     'pony_u10_rules.html',
+    'cba_u10_rules.html',
     'tigercup_groupstage.html',
     'tigercup_finalstage.html',
     'pony_u10_tianjin.html',
@@ -45,6 +46,11 @@ describe('Semantic HTML', () => {
 
     test('pony_u10_rules.html should have <nav> with aria-label', () => {
         const $ = cheerio.load(fs.readFileSync(path.resolve(__dirname, '..', 'pony_u10_rules.html'), 'utf8'));
+        expect($('nav[aria-label]').length).toBeGreaterThanOrEqual(1);
+    });
+
+    test('cba_u10_rules.html should have <nav> with aria-label', () => {
+        const $ = cheerio.load(fs.readFileSync(path.resolve(__dirname, '..', 'cba_u10_rules.html'), 'utf8'));
         expect($('nav[aria-label]').length).toBeGreaterThanOrEqual(1);
     });
 

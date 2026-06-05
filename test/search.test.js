@@ -20,6 +20,7 @@ const PAGE_PATHS = {
     matchReview: 'match_review.html',
     rules: 'u10_rules.html',
     ponyRules: 'pony_u10_rules.html',
+    cbaRules: 'cba_u10_rules.html',
     groupstage: 'tigercup_groupstage.html',
     finalstage: 'tigercup_finalstage.html',
     sponsor: 'sponsor_me.html'
@@ -172,7 +173,7 @@ describe('Search UI Tests', () => {
 
     describe('Search Trigger Placement', () => {
         test('trigger should be inside nav-container on rules pages', async () => withBrowser(async () => {
-            const navPages = [PAGE_PATHS.rules, PAGE_PATHS.ponyRules, PAGE_PATHS.groupstage, PAGE_PATHS.finalstage];
+            const navPages = [PAGE_PATHS.rules, PAGE_PATHS.ponyRules, PAGE_PATHS.cbaRules, PAGE_PATHS.groupstage, PAGE_PATHS.finalstage];
             for (const url of navPages) {
                 await loadPage(url);
                 await page.waitForTimeout(100);
