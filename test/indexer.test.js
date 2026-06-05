@@ -66,6 +66,28 @@ describe('Indexer Chunk Extraction', () => {
         });
     });
 
+    describe('cba_u10_rules.html', () => {
+        const html = fs.readFileSync(path.resolve(__dirname, '../cba_u10_rules.html'), 'utf-8');
+        const chunks = extractChunks(html, 'cba_u10_rules.html');
+        const validIds = getValidIds(html);
+
+        it('should produce at least one chunk', () => {
+            expect(chunks.length).toBeGreaterThan(0);
+        });
+
+        it('should use real section IDs and no synthetic fallbacks', () => {
+            const chunksWithId = chunks.filter(c => c.section_id);
+            expect(chunksWithId.length).toBeGreaterThan(0);
+
+            for (const chunk of chunks) {
+                if (chunk.section_id) {
+                    expect(validIds.has(chunk.section_id)).toBe(true);
+                }
+                expect(chunk.section_id).not.toMatch(/^section-\d+$/);
+            }
+        });
+    });
+
     describe('tigercup_groupstage.html', () => {
         const html = fs.readFileSync(path.resolve(__dirname, '../tigercup_groupstage.html'), 'utf-8');
         const chunks = extractChunks(html, 'tigercup_groupstage.html');
@@ -134,8 +156,8 @@ describe('Indexer Chunk Extraction', () => {
     });
 
     describe('PAGES config', () => {
-        it('should list exactly 7 pages', () => {
-            expect(PAGES).toHaveLength(7);
+        it('should list exactly 8 pages', () => {
+            expect(PAGES).toHaveLength(8);
         });
 
         it('should include all expected page paths', () => {
@@ -144,6 +166,7 @@ describe('Indexer Chunk Extraction', () => {
                 'index.html',
                 'u10_rules.html',
                 'pony_u10_rules.html',
+                'cba_u10_rules.html',
                 'tigercup_groupstage.html',
                 'tigercup_finalstage.html',
                 'pony_u10_tianjin.html',
