@@ -16,6 +16,7 @@ except for the match review page (password protected, hint provided).
 - [友谊赛战术复盘](match_review.html) — 7 videos (password: coach started baseball year)
 - [猛虎杯 U10 竞赛章程](u10_rules.html) — Tournament rules
 - [PONY U10 竞赛规则](pony_u10_rules.html) — PONY league rules (Tianjin)
+- [中国棒球协会 U10 竞赛规则](cba_u10_rules.html) — CBA national tournament rules
 - [猛虎杯小组赛](tigercup_groupstage.html) / [决赛](tigercup_finalstage.html) / [天津PONY杯](pony_u10_tianjin.html) — Multi-AI data analysis
 - [赞助赤狐](sponsor_me.html) — Sponsor page with like counter
 

@@ -27,12 +27,12 @@ describe('Index Page (Navigation Hub)', () => {
         expect(teamLogo).not.toBeNull();
     }));
 
-    test('should have navigation grid with 7 cards', async () => harness.withBrowser(async () => {
+    test('should have navigation grid with 8 cards', async () => harness.withBrowser(async () => {
         const navGrid = await harness.page.$('.nav-grid');
         expect(navGrid).not.toBeNull();
 
         const cards = await harness.page.$$('.nav-card');
-        expect(cards.length).toBe(7);
+        expect(cards.length).toBe(8);
     }));
 
     test('should have correct navigation links', async () => harness.withBrowser(async () => {
