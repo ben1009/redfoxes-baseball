@@ -16,6 +16,7 @@ except for the match review page (password protected, hint provided).
 - [友谊赛战术复盘](match_review.html) — 7 videos (password: coach started baseball year)
 - [猛虎杯 U10 竞赛章程](u10_rules.html) — Tournament rules
 - [PONY U10 竞赛规则](pony_u10_rules.html) — PONY league rules (Tianjin)
+- [中国棒球协会 U10 竞赛规则](cba_u10_rules.html) — CBA national tournament rules
 - [猛虎杯小组赛](tigercup_groupstage.html) / [决赛](tigercup_finalstage.html) / [天津PONY杯](pony_u10_tianjin.html) — Multi-AI data analysis
 - [赞助赤狐](sponsor_me.html) — Sponsor page with like counter
 
@@ -23,7 +24,7 @@ except for the match review page (password protected, hint provided).
 
 - Search: Press Cmd/Ctrl+K on any page to open site-wide search
 - Sponsor: Visit sponsor_me.html and click the like button
-- View Rules: u10_rules.html or pony_u10_rules.html
+- View Rules: u10_rules.html, pony_u10_rules.html, or cba_u10_rules.html
 - View Analysis: tigercup_groupstage.html, tigercup_finalstage.html, pony_u10_tianjin.html
 - Watch Videos: match_review.html (password required)
 
@@ -32,7 +33,7 @@ except for the match review page (password protected, hint provided).
 - Team: 烈光少棒赤狐队 (Red Foxes Youth Baseball Team)
 - Motto: "友谊第一，比赛第二 · 烈光少棒加油"
 - Coach: 张锦新
-- Tournaments: 猛虎杯 (Tiger Cup), PONY U10
+- Tournaments: 猛虎杯 (Tiger Cup), PONY U10, CBA U10
 - Password hint for match_review: "张锦新 哪年开始接触从事棒球运动？"
 
 ## Technical Notes

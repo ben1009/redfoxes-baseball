@@ -46,6 +46,15 @@
       "tags": ["PONY", "U10", "Bronco-10", "天津赛区"]
     },
     {
+      "path": "cba_u10_rules.html",
+      "title": "中国棒球协会 U10 竞赛规则",
+      "type": "rules",
+      "description": "2026年中国棒球协会全国性棒球赛事 全国青少年棒球锦标赛U10组竞赛规则",
+      "actions": ["read_rules"],
+      "requires_auth": false,
+      "tags": ["CBA", "U10", "全国赛", "中国棒球协会"]
+    },
+    {
       "path": "tigercup_groupstage.html",
       "title": "猛虎杯小组赛数据分析",
       "type": "analysis",

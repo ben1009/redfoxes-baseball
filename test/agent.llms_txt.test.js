@@ -21,12 +21,13 @@ describe('llms.txt', () => {
         expect(content).toContain('Red Foxes Youth Baseball Team');
     });
 
-    test('should list all 8 pages', () => {
+    test('should list all 9 pages', () => {
         const pages = [
             'index.html',
             'match_review.html',
             'u10_rules.html',
             'pony_u10_rules.html',
+            'cba_u10_rules.html',
             'tigercup_groupstage.html',
             'tigercup_finalstage.html',
             'pony_u10_tianjin.html',

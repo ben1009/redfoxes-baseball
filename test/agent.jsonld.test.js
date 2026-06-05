@@ -7,6 +7,7 @@ const PAGES = [
     { file: 'match_review.html', expectedType: 'SportsEvent' },
     { file: 'u10_rules.html', expectedType: 'SportsEvent' },
     { file: 'pony_u10_rules.html', expectedType: 'SportsEvent' },
+    { file: 'cba_u10_rules.html', expectedType: 'SportsEvent' },
     { file: 'tigercup_groupstage.html', expectedType: 'Article' },
     { file: 'tigercup_finalstage.html', expectedType: 'Article' },
     { file: 'pony_u10_tianjin.html', expectedType: 'Article' },
