@@ -36,6 +36,7 @@
     <nav class="page-nav" aria-label="页面导航">
         <div class="nav-container">
             <a href="index.html" class="nav-link">🏠 首页</a>
+            <a href="#schedule" class="nav-link">📅 赛程</a>
             <a href="#eligibility" class="nav-link">🎂 资格</a>
             <a href="#team-size" class="nav-link">👥 报名</a>
             <a href="#field-specs" class="nav-link">🏟️ 场地</a>
@@ -62,6 +63,18 @@
 
         <!-- Main Content -->
         <main class="content">
+            <!-- 中国棒球协会U10赛事赛程图片 -->
+            <section id="schedule" data-reveal data-action="read_rules">
+                <h2>中国棒球协会 U10 赛事赛程</h2>
+                <div class="image-container">
+                    <img src="https://i.getmoshi.app/53e191rh" alt="中国棒球协会全国青少年棒球锦标赛U10组赛程表">
+                    <div class="image-caption">📅 中国棒球协会全国青少年棒球锦标赛 U10组赛程信息</div>
+                </div>
+                <div class="info-box">
+                    <strong>💡 温馨提示：</strong>赛程信息以赛事官方发布和赛前通知为准，请密切关注后续更新。
+                </div>
+            </section>
+
             <!-- 参赛资格与年龄要求 -->
             <section id="eligibility" data-reveal data-action="read_rules">
                 <h2>参赛资格与年龄要求</h2>
@@ -446,5 +459,13 @@
         </footer>
     </div>
 
+    <!-- Image Modal -->
+    <div id="imageModal" class="image-modal" data-modal-mode="standard">
+        <button class="modal-close" aria-label="Close modal">&times;</button>
+        <img class="modal-content" id="modalImage" alt="">
+        <div class="modal-caption" id="modalCaption"></div>
+    </div>
+
+    <script src="image_modal.js" defer></script>
 </body>
 </html>
