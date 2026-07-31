@@ -27,6 +27,7 @@ redfoxes-baseball/
 ├── match_review.html          # Match review page (7 tactical clips with password protection)
 ├── u10_rules.html             # U10 tournament rules page
 ├── pony_u10_rules.html        # PONY U10 tournament rules page
+├── cba_u10_rules.html         # China Baseball Association U10 tournament rules page
 ├── pony_u10_tianjin.html      # PONY U10 Tianjin tournament analysis with multi-AI insights
 ├── tigercup_groupstage.html   # Groupstage performance analysis with multi-AI insights
 ├── tigercup_finalstage.html   # Finalstage performance analysis with multi-AI insights
@@ -53,6 +54,8 @@ redfoxes-baseball/
 │   ├── baseball_field_bg.svg  # Aerial baseball field background
 │   ├── *.png                  # Decorative icons for pages
 │   ├── schedule.jpg           # U10 tournament schedule
+│   ├── pony_u10_tianjin_schedule.png # PONY Tianjin division schedule
+│   ├── cba_u10_schedule.png   # China Baseball Association U10 schedule
 │   ├── venue_map.jpg          # Venue map
 │   ├── groupstage_data.png    # Groupstage match statistics
 │   ├── finalstage_data.png    # Finalstage match statistics
@@ -104,6 +107,17 @@ Complete regulations for the PONY小马棒球联赛 (PONY Little League) U10 Com
   - 📍 Sticky navigation with quick links to all sections
   - 📅 PONY Tianjin division tournament schedule with image lightbox
   - 📋 Complete rules: field specs, game format, pitcher limits, coach rules, base running
+  - 🖨️ Print-friendly styles
+
+## 🇨🇳 China Baseball Association U10 Rules (cba_u10_rules.html)
+
+Complete regulations for the China Baseball Association national U10 tournament:
+
+- **Event**: 2026年中国棒球协会全国性棒球赛事 / 全国青少年棒球锦标赛 U10组
+- **Features**:
+  - 📍 Sticky navigation with quick links to rules sections
+  - 📅 Local CBA U10 schedule image with lightbox
+  - 📋 Complete rules: eligibility, roster size, equipment, game format, pitcher limits, timing, appeal
   - 🖨️ Print-friendly styles
 
 ## 🎯 PONY U10 Tianjin Analysis (pony_u10_tianjin.html)
@@ -201,7 +215,7 @@ This site uses Google Analytics 4 to track visitor engagement and improve conten
 
 ## 🧪 Testing
 
-Comprehensive test suite with **235 tests** covering:
+Comprehensive test suite with **306 tests** covering:
 - Page structure and navigation tests
 - Video autopause functionality tests
 - Cross-page link verification
