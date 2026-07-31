@@ -1,7 +1,7 @@
 # AGENTS.md - Red Foxes Baseball Team Website
 
 > This file provides essential context for AI coding agents working on this project.
-> Last updated: 2026-05-08
+> Last updated: 2026-07-31
 
 ---
 
@@ -13,11 +13,12 @@ This is a **static website** for **烈光少棒赤狐队 (Red Foxes Youth Baseba
 2. **Match Review** (`match_review.html`) - Seven tactical video clips with analysis
 3. **U10 Tournament Rules** (`u10_rules.html`) - Complete competition regulations
 4. **PONY U10 Rules** (`pony_u10_rules.html`) - PONY U10 tournament rules
-5. **PONY U10 Analysis** (`pony_u10_tianjin.html`) - Tianjin PONY U10 tournament analysis with 4-AI review
-6. **Groupstage Analysis** (`tigercup_groupstage.html`) - Multi-AI performance analysis
-7. **Finalstage Analysis** (`tigercup_finalstage.html`) - Multi-AI final match analysis
-8. **Sponsor Page** (`sponsor_me.html`) - Sponsor support with global like counter (Supabase Edge Function)
-9. **Site Search** (`site_search.js`) - Hybrid full-text + vector search across all pages (Supabase Edge Function + pgvector + pgroonga)
+5. **CBA U10 Rules** (`cba_u10_rules.html`) - China Baseball Association national U10 tournament rules
+6. **PONY U10 Analysis** (`pony_u10_tianjin.html`) - Tianjin PONY U10 tournament analysis with 4-AI review
+7. **Groupstage Analysis** (`tigercup_groupstage.html`) - Multi-AI performance analysis
+8. **Finalstage Analysis** (`tigercup_finalstage.html`) - Multi-AI final match analysis
+9. **Sponsor Page** (`sponsor_me.html`) - Sponsor support with global like counter (Supabase Edge Function)
+10. **Site Search** (`site_search.js`) - Hybrid full-text + vector search across all pages (Supabase Edge Function + pgvector + pgroonga)
 
 - **Live Site**: https://ben1009.github.io/redfoxes-baseball/
 - **Language**: Chinese (Simplified)
@@ -51,6 +52,7 @@ redfoxes-baseball/
 ├── match_review.html          # Match review page (7 tactical clips, password protected)
 ├── u10_rules.html             # U10 tournament rules page
 ├── pony_u10_rules.html        # PONY U10 tournament rules page
+├── cba_u10_rules.html         # China Baseball Association U10 tournament rules page
 ├── pony_u10_tianjin.html      # PONY U10 Tianjin tournament analysis
 ├── tigercup_groupstage.html   # Groupstage performance analysis
 ├── tigercup_finalstage.html   # Finalstage performance analysis
@@ -104,6 +106,7 @@ redfoxes-baseball/
     ├── baseball_field_bg.svg  # Aerial baseball field background
     ├── schedule.jpg                  # U10 tournament schedule (猛虎杯)
     ├── pony_u10_tianjin_schedule.png # U10 PONY Tianjin division schedule
+    ├── cba_u10_schedule.png          # China Baseball Association U10 schedule
     ├── error_distribution.png        # Team error type distribution chart
     ├── venue_map.jpg                 # Venue map
     ├── groupstage_data.png           # Groupstage match statistics
@@ -113,9 +116,9 @@ redfoxes-baseball/
 
 ### File Organization Notes
 
-- **index.html**: Navigation hub with card-based layout (7 nav cards)
+- **index.html**: Navigation hub with card-based layout (8 nav cards)
 - **match_review.html**: Password protected; links shared `baseball_theme.css` plus inline page-specific styles
-- **u10_rules.html** / **pony_u10_rules.html**: Link `baseball_theme.css` + `rules_style.css`; both include schedule images with lightbox support
+- **u10_rules.html** / **pony_u10_rules.html** / **cba_u10_rules.html**: Link `baseball_theme.css` + `rules_style.css`; include schedule images with lightbox support
 - **pony_u10_tianjin.html**: Link `baseball_theme.css`; inline styles + image modal; features player stats table with `.table-responsive`, 56 defense notes, 4-AI analysis cards (Kimi/Gemini/ChatGPT/Claude), error distribution chart
 - **tigercup_groupstage.html** / **tigercup_finalstage.html**: Link `baseball_theme.css` plus inline page-specific styles
 - **sponsor_me.html**: Independent styling, does not use baseball field background or floating assets
@@ -123,7 +126,7 @@ redfoxes-baseball/
 - **workers/**: Legacy Cloudflare implementation retained for reference and rollback
 - **baseball_theme.css**: Shared theme variables, body background, resets, and common animations
 - **site_analytics.js**: Centralized GA initialization used by all HTML pages
-- **image_modal.js**: Shared lightbox behavior used by rules (both U10 and PONY), report, and sponsor pages
+- **image_modal.js**: Shared lightbox behavior used by rules (U10, PONY, and CBA), report, and sponsor pages
 - **site_search.js**: Shared search modal with hybrid search backend; loaded by all HTML pages via `<script>` tag
 - No build process or bundling required
 - No framework dependencies
@@ -142,7 +145,7 @@ redfoxes-baseball/
 │   └── style (CSS embedded with CSS variables)
 ├── body
 │   ├── header (Team logo, name, motto)
-│   ├── nav class="nav-grid" (7 navigation cards)
+│   ├── nav class="nav-grid" (8 navigation cards)
 │   └── footer (Copyright)
 ```
 
@@ -196,7 +199,7 @@ match_review.html:
 - .video-card - Container for each video clip
 - .video-container - 16:9 responsive video wrapper
 
-u10_rules.html / pony_u10_rules.html:
+u10_rules.html / pony_u10_rules.html / cba_u10_rules.html:
 - .page-nav - Sticky navigation bar
 - .image-modal - Full-screen image lightbox
 - .metric-card - Stats card
@@ -369,7 +372,7 @@ The old Worker remains in `workers/` for reference and rollback:
 
 ### index.html (Navigation Hub)
 - Header displays team logo and motto
-- 7 navigation cards are present and clickable
+- 8 navigation cards are present and clickable
 - All links navigate to correct pages
 - Responsive layout works on mobile
 
@@ -379,12 +382,16 @@ The old Worker remains in `workers/` for reference and rollback:
 - All 7 video iframes load without errors
 - Video autopause feature works when scrolling
 
-### u10_rules.html / pony_u10_rules.html
+### u10_rules.html / pony_u10_rules.html / cba_u10_rules.html
 - Sticky navigation displays and sticks on scroll
 - Images display correctly
 - Schedule section displays tournament image and caption
 - Image click opens lightbox/modal
 - Modal closes properly
+
+### cba_u10_rules.html
+- Schedule image loads from `img/cba_u10_schedule.png`
+- Eligibility, roster, equipment, game format, pitcher limits, timing, and appeal sections display correctly
 
 ### pony_u10_tianjin.html
 - Schedule table with 6 matches displays correctly

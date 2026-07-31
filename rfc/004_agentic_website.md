@@ -100,16 +100,18 @@ except for the match review page (password protected, hint provided).
 - [友谊赛战术复盘](match_review.html) — 7 tactical video clips with analysis (requires password, hint: year coach started baseball)
 - [猛虎杯 U10 竞赛章程](u10_rules.html) — Tournament rules and schedule
 - [PONY U10 竞赛规则](pony_u10_rules.html) — PONY league rules (Tianjin division)
+- [中国棒球协会 U10 竞赛规则](cba_u10_rules.html) — CBA national tournament rules and schedule
 - [小组赛数据分析](tigercup_groupstage.html) — Group stage match analysis (multi-AI)
 - [决赛数据分析](tigercup_finalstage.html) — Final stage match analysis (multi-AI)
+- [天津PONY U10杯数据分析](pony_u10_tianjin.html) — Tianjin PONY U10 match analysis (multi-AI)
 - [赞助赤狐](sponsor_me.html) — Sponsor support page with like counter
 
 ## Actions Available
 
 - Search: Press Cmd/Ctrl+K on any page to open site-wide search
 - Sponsor: Visit sponsor_me.html and click the like button
-- View Rules: Navigate to u10_rules.html or pony_u10_rules.html
-- View Analysis: Navigate to tigercup_groupstage.html or tigercup_finalstage.html
+- View Rules: Navigate to u10_rules.html, pony_u10_rules.html, or cba_u10_rules.html
+- View Analysis: Navigate to tigercup_groupstage.html, tigercup_finalstage.html, or pony_u10_tianjin.html
 - Watch Videos: Navigate to match_review.html (password required)
 
 ## Key Data
@@ -117,7 +119,7 @@ except for the match review page (password protected, hint provided).
 - Team: 烈光少棒赤狐队 (Red Foxes Youth Baseball Team)
 - Motto: "友谊第一，比赛第二 · 烈光少棒加油"
 - Coach: 张锦新
-- Tournaments: 猛虎杯 (Tiger Cup), PONY U10
+- Tournaments: 猛虎杯 (Tiger Cup), PONY U10, CBA U10
 - Password hint for match_review: "张锦新 哪年开始接触从事棒球运动？"
 
 ## Technical Notes
@@ -181,6 +183,15 @@ A JSON file that agents can parse programmatically to understand site topology a
       "actions": ["read_rules", "view_schedule"],
       "requires_auth": false,
       "tags": ["PONY", "U10", "Bronco-10", "天津赛区"]
+    },
+    {
+      "path": "cba_u10_rules.html",
+      "title": "中国棒球协会 U10 竞赛规则",
+      "type": "rules",
+      "description": "2026年中国棒球协会全国性棒球赛事 全国青少年棒球锦标赛U10组竞赛规则与赛程",
+      "actions": ["read_rules", "view_schedule"],
+      "requires_auth": false,
+      "tags": ["CBA", "U10", "全国赛", "中国棒球协会"]
     },
     {
       "path": "tigercup_groupstage.html",
@@ -279,7 +290,19 @@ Standard XML sitemap for search engines and agents.
   </url>
   <url>
     <loc>https://ben1009.github.io/redfoxes-baseball/pony_u10_rules.html</loc>
-    <lastmod>2026-05-06</lastmod>
+    <lastmod>2026-05-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ben1009.github.io/redfoxes-baseball/cba_u10_rules.html</loc>
+    <lastmod>2026-07-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ben1009.github.io/redfoxes-baseball/pony_u10_tianjin.html</loc>
+    <lastmod>2026-05-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -372,6 +395,20 @@ Each page includes a `<script type="application/ld+json">` block describing its 
   "@type": "SportsEvent",
   "name": "2026年春季PONY小马棒球联赛",
   "description": "天津君奥棒球联赛暨PONY小马棒球联赛合作联盟赛 U10组（Bronco-10）竞赛规则",
+  "sport": "Baseball",
+  "eventStatus": "EventScheduled"
+}
+</script>
+```
+
+**cba_u10_rules.html** — SportsEvent:
+```html
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SportsEvent",
+  "name": "2026年中国棒球协会全国性棒球赛事",
+  "description": "全国青少年棒球锦标赛U10组竞赛规则",
   "sport": "Baseball",
   "eventStatus": "EventScheduled"
 }
@@ -501,7 +538,7 @@ Disallow: /redfoxes-baseball/rfc/
 
 ### Phase 3: Content Pages (Per-page)
 
-For each page (`match_review.html`, `u10_rules.html`, `pony_u10_rules.html`, `tigercup_groupstage.html`, `tigercup_finalstage.html`, `sponsor_me.html`):
+For each page (`match_review.html`, `u10_rules.html`, `pony_u10_rules.html`, `cba_u10_rules.html`, `tigercup_groupstage.html`, `tigercup_finalstage.html`, `pony_u10_tianjin.html`, `sponsor_me.html`):
 
 1. Add JSON-LD appropriate to page type
 2. Upgrade `<div>` containers to semantic tags (`<article>`, `<section>`, `<main>`)
@@ -651,3 +688,4 @@ All files are static — deploy with the rest of the site via GitHub Pages:
 |------|--------|
 | 2026-04-30 | Initial RFC draft |
 | 2026-05-06 | Updated sitemap example dates to match current deployment |
+| 2026-07-31 | Updated page graph examples for CBA U10 rules, PONY Tianjin analysis, and CBA schedule support |

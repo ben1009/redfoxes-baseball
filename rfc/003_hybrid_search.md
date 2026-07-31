@@ -11,7 +11,8 @@ A site-wide search feature that lets visitors quickly find content across all pa
 
 ### Goals
 
-- **Search every page**: index.html, match_review.html, u10_rules.html, pony_u10_rules.html, tigercup_groupstage.html, tigercup_finalstage.html, sponsor_me.html
+- **Search every public page**: index.html, u10_rules.html, pony_u10_rules.html, cba_u10_rules.html, tigercup_groupstage.html, tigercup_finalstage.html, pony_u10_tianjin.html, sponsor_me.html
+- **Exclude password-protected content**: match_review.html is intentionally excluded from indexing so protected review content is not searchable before unlock
 - **Hybrid ranking**: keyword matches boost exact hits; vector matches catch paraphrases and semantic intent
 - **Section-level granularity**: results link directly to headings/anchors, not just whole pages
 - **Low latency**: < 300 ms for typical queries from APAC
@@ -189,8 +190,8 @@ Chunking strategy:
 | Page | Chunk Boundary | Typical Chunks |
 |------|---------------|----------------|
 | index.html | Each nav-card (title + description) | ~6 |
-| match_review.html | Each video card (title + analysis text) | ~7 |
-| u10_rules.html / pony_u10_rules.html | Each `<section>` or `<h2>` block | ~15 |
+| match_review.html | Not indexed; password-protected content remains excluded from public search | 0 |
+| u10_rules.html / pony_u10_rules.html / cba_u10_rules.html | Each `<section>` or `<h2>` block | ~15 |
 | tigercup_groupstage.html / finalstage.html | Each AI analysis card or subsection | ~10 |
 | sponsor_me.html | Each offer/sticker card | ~6 |
 
@@ -440,11 +441,13 @@ const { createClient } = require('@supabase/supabase-js');
 
 const PAGES = [
   { path: 'index.html', title: '烈光少棒赤狐队 | 首页', category: 'hub' },
-  { path: 'match_review.html', title: '烈光 vs 飞雪 友谊赛复盘', category: 'review' },
+  // match_review.html is excluded because it is password-protected.
   { path: 'u10_rules.html', title: '猛虎杯 U10 竞赛章程', category: 'rules', tags: ['U10', '猛虎杯'] },
   { path: 'pony_u10_rules.html', title: 'PONY U10 竞赛规则', category: 'rules', tags: ['PONY', 'U10'] },
+  { path: 'cba_u10_rules.html', title: '中国棒球协会 U10 竞赛规则', category: 'rules', tags: ['CBA', 'U10', '全国赛'] },
   { path: 'tigercup_groupstage.html', title: '猛虎杯小组赛数据分析', category: 'analysis', tags: ['猛虎杯'] },
   { path: 'tigercup_finalstage.html', title: '猛虎杯决赛数据分析', category: 'analysis', tags: ['猛虎杯'] },
+  { path: 'pony_u10_tianjin.html', title: '天津PONY U10 数据分析', category: 'analysis', tags: ['PONY', 'U10'] },
   { path: 'sponsor_me.html', title: '赞助赤狐', category: 'sponsor' },
 ];
 
@@ -1008,4 +1011,4 @@ The Edge Function uses `service_role` which bypasses RLS, so these policies are 
 | 2026-04-22 | Clarified embedding API is used for indexing and query-time generation; expanded China availability guidance |
 | 2026-04-29 | Updated testing references from Puppeteer to Playwright |
 | 2026-05-06 | Updated embedding provider from OpenAI to Gemini to match production implementation |
-
+| 2026-07-31 | Updated indexed page inventory for CBA U10 rules, PONY Tianjin analysis, and password-protected match review exclusion |
