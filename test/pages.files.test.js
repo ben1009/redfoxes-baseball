@@ -20,6 +20,7 @@ describe('File Existence Tests', () => {
         'img/finalstage_data.png',
         'img/tigercup_final_ranking.jpg',
         'img/pony_u10_tianjin_schedule.png',
+        'img/cba_u10_schedule.png',
         'workers/sponsor_likes.js',
         'workers/wrangler.toml',
         'workers/README.md',
