@@ -109,6 +109,7 @@ redfoxes-baseball/
     ├── schedule.jpg                  # U10 tournament schedule (猛虎杯)
     ├── pony_u10_tianjin_schedule.png # U10 PONY Tianjin division schedule
     ├── cba_u10_schedule.png          # China Baseball Association U10 schedule
+    ├── cba_u10_schedule_results.png  # China Baseball Association U10 schedule-results image
     ├── error_distribution.png        # Team error type distribution chart
     ├── venue_map.jpg                 # Venue map
     ├── groupstage_data.png           # Groupstage match statistics

@@ -105,13 +105,13 @@
 <body>
     <nav class="page-nav" aria-label="页面导航">
         <div class="nav-container">
-            <a href="index.html" class="nav-link" target="_self">🏠 首页</a>
-            <a href="cba_u10_rules.html" class="nav-link" target="_self">🏛️ CBA规则</a>
-            <a href="#schedule" class="nav-link" target="_self">📅 赛果</a>
-            <a href="#data" class="nav-link" target="_self">📊 球员数据</a>
-            <a href="#chatgpt" class="nav-link" target="_self">💬 GPT</a>
-            <a href="#kimi" class="nav-link" target="_self">🤖 Kimi</a>
-            <a href="#gemini" class="nav-link" target="_self">🌟 Gemini</a>
+            <a href="index.html" class="nav-link" target="_self" data-action="navigate">🏠 首页</a>
+            <a href="cba_u10_rules.html" class="nav-link" target="_self" data-action="navigate">🏛️ CBA规则</a>
+            <a href="#schedule" class="nav-link" target="_self" data-action="navigate">📅 赛果</a>
+            <a href="#data" class="nav-link" target="_self" data-action="navigate">📊 球员数据</a>
+            <a href="#chatgpt" class="nav-link" target="_self" data-action="navigate">💬 GPT</a>
+            <a href="#kimi" class="nav-link" target="_self" data-action="navigate">🤖 Kimi</a>
+            <a href="#gemini" class="nav-link" target="_self" data-action="navigate">🌟 Gemini</a>
         </div>
     </nav>
 
@@ -135,7 +135,7 @@
                     <div class="metric-card" data-reveal><span class="metric-value">第二名</span><span class="metric-label">B组 / 优胜组</span></div>
                 </div>
                 <div class="chart-image-container">
-                    <img src="img/cba_u10_schedule_results.png" alt="北京烈光赤狐队赛程赛果" data-zoomable>
+                    <img src="img/cba_u10_schedule_results.png" alt="北京烈光赤狐队赛程赛果" data-zoomable data-action="zoom_image">
                     <div class="image-caption">2026年全国青少年棒球锦标赛 U10组暨全国小学生棒球训练营 · 北京烈光赤狐队赛程赛果</div>
                 </div>
             </section>
@@ -250,7 +250,7 @@
         </footer>
     </div>
     <div id="imageModal" class="image-modal" data-modal-mode="standard">
-        <button class="modal-close" type="button" aria-label="关闭图片">&times;</button>
+        <button class="modal-close" type="button" aria-label="关闭图片" data-action="close_image">&times;</button>
         <img class="modal-content" id="modalImage" alt="">
         <div id="modalCaption" class="modal-caption"></div>
     </div>

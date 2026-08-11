@@ -57,6 +57,7 @@ redfoxes-baseball/
 │   ├── schedule.jpg           # U10 tournament schedule
 │   ├── pony_u10_tianjin_schedule.png # PONY Tianjin division schedule
 │   ├── cba_u10_schedule.png   # China Baseball Association U10 schedule
+│   ├── cba_u10_schedule_results.png # CBA U10 schedule-results image
 │   ├── venue_map.jpg          # Venue map
 │   ├── groupstage_data.png    # Groupstage match statistics
 │   ├── finalstage_data.png    # Finalstage match statistics
@@ -148,9 +149,8 @@ Complete regulations for the China Baseball Association national U10 tournament:
 - **Analysis by**: GPT, Kimi, Gemini
 - **Content**:
   - 14-player core data table covering offense, running, fielding, and pitching
-  - Schedule-results image and readable game-result tables
+  - Clickable schedule-results image
   - Verbatim GPT, Kimi, and Gemini analysis sections
-  - 14-player core data table covering offense, running, fielding, and pitching
 - **Features**:
   - AI analysis cards with distinct branding
   - Responsive wide player-data table
