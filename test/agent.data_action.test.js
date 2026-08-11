@@ -11,7 +11,7 @@ describe('data-action Attributes', () => {
             await harness.withBrowser(async () => {
                 await harness.loadPage();
                 const cards = await harness.page.$$('a.nav-card[data-action="navigate"]');
-                expect(cards).toHaveLength(8);
+                expect(cards).toHaveLength(9);
             });
         });
 
@@ -81,6 +81,42 @@ describe('data-action Attributes', () => {
                 await harness.loadPage();
                 const sections = await harness.page.$$('section[data-action="read_rules"]');
                 expect(sections.length).toBeGreaterThan(0);
+            });
+        });
+    });
+
+    describe('cba_u10_rules.html', () => {
+        const harness = createPageHarness(PAGE_PATHS.cbaRules);
+
+        beforeAll(harness.setup);
+        afterAll(harness.teardown);
+
+        test('analysis links should have data-action="navigate"', async () => {
+            await harness.withBrowser(async () => {
+                await harness.loadPage();
+                const links = await harness.page.$$('a[href="cba_u10_player_analysis.html"][data-action="navigate"]');
+                expect(links).toHaveLength(2);
+            });
+        });
+    });
+
+    describe('cba_u10_player_analysis.html', () => {
+        const harness = createPageHarness(PAGE_PATHS.cbaU10PlayerAnalysis);
+
+        beforeAll(harness.setup);
+        afterAll(harness.teardown);
+
+        test('new interactive elements should have data-action attributes', async () => {
+            await harness.withBrowser(async () => {
+                await harness.loadPage();
+                const navLinks = await harness.page.$$('nav.page-nav a.nav-link[data-action="navigate"]');
+                expect(navLinks).toHaveLength(7);
+
+                const zoomImage = await harness.page.$('img[data-zoomable][data-action="zoom_image"]');
+                expect(zoomImage).not.toBeNull();
+
+                const closeButton = await harness.page.$('button.modal-close[data-action="close_image"]');
+                expect(closeButton).not.toBeNull();
             });
         });
     });

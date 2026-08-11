@@ -27,12 +27,12 @@ describe('Index Page (Navigation Hub)', () => {
         expect(teamLogo).not.toBeNull();
     }));
 
-    test('should have navigation grid with 8 cards', async () => harness.withBrowser(async () => {
+    test('should have navigation grid with 9 cards', async () => harness.withBrowser(async () => {
         const navGrid = await harness.page.$('.nav-grid');
         expect(navGrid).not.toBeNull();
 
         const cards = await harness.page.$$('.nav-card');
-        expect(cards.length).toBe(8);
+        expect(cards.length).toBe(9);
     }));
 
     test('should have correct navigation links', async () => harness.withBrowser(async () => {
@@ -47,7 +47,26 @@ describe('Index Page (Navigation Hub)', () => {
         expect(links).toContain('tigercup_groupstage.html');
         expect(links).toContain('tigercup_finalstage.html');
         expect(links).toContain('pony_u10_tianjin.html');
+        expect(links).toContain('cba_u10_player_analysis.html');
         expect(links).toContain('sponsor_me.html');
+    }));
+
+    test('should group tournament rules with their analysis pages', async () => harness.withBrowser(async () => {
+        const links = await harness.page.$$eval('.nav-card', cards =>
+            cards.map(card => card.getAttribute('href'))
+        );
+
+        expect(links).toEqual([
+            'match_review.html',
+            'u10_rules.html',
+            'tigercup_groupstage.html',
+            'tigercup_finalstage.html',
+            'pony_u10_rules.html',
+            'pony_u10_tianjin.html',
+            'cba_u10_rules.html',
+            'cba_u10_player_analysis.html',
+            'sponsor_me.html'
+        ]);
     }));
 
     test('should have team motto', async () => harness.withBrowser(async () => {
@@ -105,5 +124,10 @@ describe('Index Page (Navigation Hub)', () => {
     test('should navigate from index to pony_u10_tianjin page', async () => harness.withBrowser(async () => {
         const tianjinLink = await harness.page.$('a[href="pony_u10_tianjin.html"]');
         expect(tianjinLink).not.toBeNull();
+    }));
+
+    test('should navigate from index to cba_u10_player_analysis page', async () => harness.withBrowser(async () => {
+        const playerAnalysisLink = await harness.page.$('a[href="cba_u10_player_analysis.html"]');
+        expect(playerAnalysisLink).not.toBeNull();
     }));
 });

@@ -10,6 +10,7 @@ describe('File Existence Tests', () => {
         'tigercup_groupstage.html',
         'tigercup_finalstage.html',
         'pony_u10_tianjin.html',
+        'cba_u10_player_analysis.html',
         'sponsor_me.html',
         'site_analytics.js',
         'image_modal.js',
@@ -21,6 +22,7 @@ describe('File Existence Tests', () => {
         'img/tigercup_final_ranking.jpg',
         'img/pony_u10_tianjin_schedule.png',
         'img/cba_u10_schedule.png',
+        'img/cba_u10_schedule_results.png',
         'workers/sponsor_likes.js',
         'workers/wrangler.toml',
         'workers/README.md',
@@ -186,6 +188,7 @@ describe('Shared Script Coverage', () => {
             'tigercup_groupstage.html',
             'tigercup_finalstage.html',
             'pony_u10_tianjin.html',
+            'cba_u10_player_analysis.html',
             'sponsor_me.html'
         ];
 
@@ -205,6 +208,7 @@ describe('Shared Script Coverage', () => {
             'tigercup_groupstage.html',
             'tigercup_finalstage.html',
             'pony_u10_tianjin.html',
+            'cba_u10_player_analysis.html',
             'sponsor_me.html'
         ];
 
