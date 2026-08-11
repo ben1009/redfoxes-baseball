@@ -36,8 +36,8 @@ describe('agent-manifest.json', () => {
         expect(manifest.site.url).toContain('ben1009.github.io');
     });
 
-    test('should have exactly 9 pages', () => {
-        expect(manifest.pages).toHaveLength(9);
+    test('should have exactly 10 pages', () => {
+        expect(manifest.pages).toHaveLength(10);
     });
 
     test('each page should have required fields', () => {

@@ -11,7 +11,7 @@ This is the official website for **烈光少棒赤狐队 (Red Foxes Youth Baseba
 
 - **Match Reviews** - Tactical analysis videos from friendship matches
 - **Tournament Information** - Rules and schedules for competitions
-- **Performance Analysis** - Data-driven player performance insights (PONY U10 + 猛虎杯 groupstage + finalstage)
+- **Performance Analysis** - Data-driven player performance insights (CBA U10 player analysis + 猛虎杯 groupstage + finalstage)
 - **Sponsor Support** - Sponsor page with global like counter (Supabase Edge Function + Postgres + Upstash Redis)
 - **Site Search** - Hybrid full-text + vector search across all pages (Supabase Edge Function + pgvector + pgroonga)
 
@@ -29,6 +29,7 @@ redfoxes-baseball/
 ├── pony_u10_rules.html        # PONY U10 tournament rules page
 ├── cba_u10_rules.html         # China Baseball Association U10 tournament rules page
 ├── pony_u10_tianjin.html      # PONY U10 Tianjin tournament analysis with multi-AI insights
+├── cba_u10_player_analysis.html # CBA U10 player data analysis with multi-AI insights
 ├── tigercup_groupstage.html   # Groupstage performance analysis with multi-AI insights
 ├── tigercup_finalstage.html   # Finalstage performance analysis with multi-AI insights
 ├── sponsor_me.html            # Sponsor support page
@@ -139,6 +140,22 @@ Complete regulations for the China Baseball Association national U10 tournament:
   - Image modal for chart zoom
   - Cross-page links to index and PONY rules
 
+## 📈 CBA U10 Player Analysis (cba_u10_player_analysis.html)
+
+**全国青少年棒球锦标赛 U10 球员数据分析** - Multi-AI Player Profile Analysis
+
+- **Data Source**: 2026 national U10 schedule results and player statistics
+- **Analysis by**: GPT, Kimi, Gemini
+- **Content**:
+  - 14-player core data table covering offense, running, fielding, and pitching
+  - Schedule-results image and readable game-result tables
+  - Verbatim GPT, Kimi, and Gemini analysis sections
+  - 14-player core data table covering offense, running, fielding, and pitching
+- **Features**:
+  - AI analysis cards with distinct branding
+  - Responsive wide player-data table
+  - Cross-page links to index and CBA U10 rules
+
 ## 📊 Groupstage Analysis (tigercup_groupstage.html)
 
 **猛虎杯小组赛数据分析** - Multi-AI Performance Analysis
@@ -215,7 +232,7 @@ This site uses Google Analytics 4 to track visitor engagement and improve conten
 
 ## 🧪 Testing
 
-Comprehensive test suite with **306 tests** covering:
+Comprehensive test suite covering:
 - Page structure and navigation tests
 - Video autopause functionality tests
 - Cross-page link verification

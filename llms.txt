@@ -5,8 +5,7 @@
 
 ## Overview
 
-This site contains match reviews, tournament rules, data analysis reports,
-and a sponsor page for the Red Foxes youth baseball team.
+This site contains match reviews, rules, data reports, and sponsor support.
 All content is static HTML with embedded CSS/JS. No login required
 except for the match review page (password protected, hint provided).
 
@@ -17,7 +16,7 @@ except for the match review page (password protected, hint provided).
 - [猛虎杯 U10 竞赛章程](u10_rules.html) — Tournament rules
 - [PONY U10 竞赛规则](pony_u10_rules.html) — PONY league rules (Tianjin)
 - [中国棒球协会 U10 竞赛规则](cba_u10_rules.html) — CBA national rules and schedule
-- [猛虎杯小组赛](tigercup_groupstage.html) / [决赛](tigercup_finalstage.html) / [天津PONY杯](pony_u10_tianjin.html) — Multi-AI data analysis
+- Analysis: [猛虎杯小组赛](tigercup_groupstage.html), [决赛](tigercup_finalstage.html), [天津PONY杯](pony_u10_tianjin.html), [CBA球员分析](cba_u10_player_analysis.html)
 - [赞助赤狐](sponsor_me.html) — Sponsor page with like counter
 
 ## Actions Available
@@ -25,7 +24,7 @@ except for the match review page (password protected, hint provided).
 - Search: Press Cmd/Ctrl+K on any page to open site-wide search
 - Sponsor: Visit sponsor_me.html and click the like button
 - View Rules: u10_rules.html, pony_u10_rules.html, or cba_u10_rules.html
-- View Analysis: tigercup_groupstage.html, tigercup_finalstage.html, pony_u10_tianjin.html
+- View Analysis: tigercup_groupstage.html, tigercup_finalstage.html, pony_u10_tianjin.html, cba_u10_player_analysis.html
 - Watch Videos: match_review.html (password required)
 
 ## Key Data

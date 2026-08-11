@@ -16,9 +16,11 @@ window.gtag = window.gtag || function(){ dataLayer.push(arguments); };`;
 const IMAGE_MODAL_PAGES = new Set([
     'u10_rules.html',
     'pony_u10_rules.html',
+    'cba_u10_rules.html',
     'tigercup_groupstage.html',
     'tigercup_finalstage.html',
     'pony_u10_tianjin.html',
+    'cba_u10_player_analysis.html',
     'sponsor_me.html'
 ]);
 
@@ -27,9 +29,11 @@ const PAGE_PATHS = {
     matchReview: 'match_review.html',
     rules: 'u10_rules.html',
     ponyRules: 'pony_u10_rules.html',
+    cbaRules: 'cba_u10_rules.html',
     groupstage: 'tigercup_groupstage.html',
     finalstage: 'tigercup_finalstage.html',
     ponyU10Tianjin: 'pony_u10_tianjin.html',
+    cbaU10PlayerAnalysis: 'cba_u10_player_analysis.html',
     sponsor: 'sponsor_me.html'
 };
 

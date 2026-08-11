@@ -85,6 +85,16 @@
       "ai_sources": ["Kimi", "Gemini", "ChatGPT", "Claude"]
     },
     {
+      "path": "cba_u10_player_analysis.html",
+      "title": "全国青少年棒球锦标赛 U10 球员数据分析",
+      "type": "analysis",
+      "description": "全国青少年棒球锦标赛U10组赛程赛果与球员统计分析",
+      "actions": ["read_analysis", "view_data"],
+      "requires_auth": false,
+      "tags": ["CBA", "U10", "全国青少年棒球锦标赛", "数据分析"],
+      "ai_sources": ["GPT", "Kimi", "Gemini"]
+    },
+    {
       "path": "sponsor_me.html",
       "title": "赞助赤狐",
       "type": "sponsor",

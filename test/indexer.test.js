@@ -7,7 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const cheerio = require('cheerio');
 
-const { extractChunks, PAGES } = require('../scripts/index-content.js');
+const { extractChunks, PAGES, selectedPagesFromArgs } = require('../scripts/index-content.js');
 
 describe('Indexer Chunk Extraction', () => {
     function getValidIds(html) {
@@ -156,8 +156,8 @@ describe('Indexer Chunk Extraction', () => {
     });
 
     describe('PAGES config', () => {
-        it('should list exactly 8 pages', () => {
-            expect(PAGES).toHaveLength(8);
+        it('should list exactly 9 pages', () => {
+            expect(PAGES).toHaveLength(9);
         });
 
         it('should include all expected page paths', () => {
@@ -170,6 +170,7 @@ describe('Indexer Chunk Extraction', () => {
                 'tigercup_groupstage.html',
                 'tigercup_finalstage.html',
                 'pony_u10_tianjin.html',
+                'cba_u10_player_analysis.html',
                 'sponsor_me.html',
             ]));
         });
@@ -177,6 +178,14 @@ describe('Indexer Chunk Extraction', () => {
         it('should exclude password-protected pages', () => {
             const paths = PAGES.map(p => p.path);
             expect(paths).not.toContain('match_review.html');
+        });
+
+        it('should support targeted page selection for partial rebuilds', () => {
+            expect(selectedPagesFromArgs(['--page', 'cba_u10_player_analysis.html']).map(p => p.path))
+                .toEqual(['cba_u10_player_analysis.html']);
+            expect(selectedPagesFromArgs(['--page=pony_u10_tianjin.html']).map(p => p.path))
+                .toEqual(['pony_u10_tianjin.html']);
+            expect(() => selectedPagesFromArgs(['--page', 'match_review.html'])).toThrow(/Unknown page path/);
         });
     });
 

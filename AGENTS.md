@@ -15,10 +15,11 @@ This is a **static website** for **烈光少棒赤狐队 (Red Foxes Youth Baseba
 4. **PONY U10 Rules** (`pony_u10_rules.html`) - PONY U10 tournament rules
 5. **CBA U10 Rules** (`cba_u10_rules.html`) - China Baseball Association national U10 tournament rules
 6. **PONY U10 Analysis** (`pony_u10_tianjin.html`) - Tianjin PONY U10 tournament analysis with 4-AI review
-7. **Groupstage Analysis** (`tigercup_groupstage.html`) - Multi-AI performance analysis
-8. **Finalstage Analysis** (`tigercup_finalstage.html`) - Multi-AI final match analysis
-9. **Sponsor Page** (`sponsor_me.html`) - Sponsor support with global like counter (Supabase Edge Function)
-10. **Site Search** (`site_search.js`) - Hybrid full-text + vector search across all pages (Supabase Edge Function + pgvector + pgroonga)
+7. **CBA U10 Player Analysis** (`cba_u10_player_analysis.html`) - national U10 schedule-results and player data analysis with GPT/Kimi/Gemini review
+8. **Groupstage Analysis** (`tigercup_groupstage.html`) - Multi-AI performance analysis
+9. **Finalstage Analysis** (`tigercup_finalstage.html`) - Multi-AI final match analysis
+10. **Sponsor Page** (`sponsor_me.html`) - Sponsor support with global like counter (Supabase Edge Function)
+11. **Site Search** (`site_search.js`) - Hybrid full-text + vector search across all pages (Supabase Edge Function + pgvector + pgroonga)
 
 - **Live Site**: https://ben1009.github.io/redfoxes-baseball/
 - **Language**: Chinese (Simplified)
@@ -54,6 +55,7 @@ redfoxes-baseball/
 ├── pony_u10_rules.html        # PONY U10 tournament rules page
 ├── cba_u10_rules.html         # China Baseball Association U10 tournament rules page
 ├── pony_u10_tianjin.html      # PONY U10 Tianjin tournament analysis
+├── cba_u10_player_analysis.html # CBA U10 player data analysis
 ├── tigercup_groupstage.html   # Groupstage performance analysis
 ├── tigercup_finalstage.html   # Finalstage performance analysis
 ├── sponsor_me.html            # Sponsor page (independent theme, global like widget)
@@ -116,10 +118,11 @@ redfoxes-baseball/
 
 ### File Organization Notes
 
-- **index.html**: Navigation hub with card-based layout (8 nav cards)
+- **index.html**: Navigation hub with card-based layout (9 nav cards)
 - **match_review.html**: Password protected; links shared `baseball_theme.css` plus inline page-specific styles
 - **u10_rules.html** / **pony_u10_rules.html** / **cba_u10_rules.html**: Link `baseball_theme.css` + `rules_style.css`; include schedule images with lightbox support
 - **pony_u10_tianjin.html**: Link `baseball_theme.css`; inline styles + image modal; features player stats table with `.table-responsive`, 56 defense notes, 4-AI analysis cards (Kimi/Gemini/ChatGPT/Claude), error distribution chart
+- **cba_u10_player_analysis.html**: Link `baseball_theme.css`; inline styles; features clickable schedule-results image, 14-player core data table, and GPT/Kimi/Gemini analysis cards
 - **tigercup_groupstage.html** / **tigercup_finalstage.html**: Link `baseball_theme.css` plus inline page-specific styles
 - **sponsor_me.html**: Independent styling, does not use baseball field background or floating assets
 - **supabase/**: Edge Function and SQL migration for the active global like counter backend
@@ -145,7 +148,7 @@ redfoxes-baseball/
 │   └── style (CSS embedded with CSS variables)
 ├── body
 │   ├── header (Team logo, name, motto)
-│   ├── nav class="nav-grid" (8 navigation cards)
+│   ├── nav class="nav-grid" (9 navigation cards)
 │   └── footer (Copyright)
 ```
 
@@ -156,9 +159,9 @@ Single-file architecture with embedded CSS and JavaScript.
 - Main content with 7 video cards
 - Video autopause functionality
 
-### HTML Structure (tigercup_groupstage.html / tigercup_finalstage.html / pony_u10_tianjin.html)
+### HTML Structure (tigercup_groupstage.html / tigercup_finalstage.html / pony_u10_tianjin.html / cba_u10_player_analysis.html)
 
-- Data image section (groupstage/finalstage) or schedule + stats table (pony_u10_tianjin)
+- Data image section (groupstage/finalstage), schedule + stats table (pony_u10_tianjin), or clickable schedule-results image + player core data table (cba_u10_player_analysis)
 - Summary section with key metrics
 - Kimi analysis card (first)
 - Gemini analysis card
@@ -205,7 +208,7 @@ u10_rules.html / pony_u10_rules.html / cba_u10_rules.html:
 - .metric-card - Stats card
 - #schedule - Tournament schedule section with image and caption
 
-tigercup_groupstage.html / tigercup_finalstage.html / pony_u10_tianjin.html:
+tigercup_groupstage.html / tigercup_finalstage.html / pony_u10_tianjin.html / cba_u10_player_analysis.html:
 - .ai-card - Container for AI analysis
 - .ai-card-header.kimi/gemini/chatgpt/claude - Brand colors
 - .summary-section - Key metrics summary
@@ -372,7 +375,7 @@ The old Worker remains in `workers/` for reference and rollback:
 
 ### index.html (Navigation Hub)
 - Header displays team logo and motto
-- 8 navigation cards are present and clickable
+- 9 navigation cards are present and clickable
 - All links navigate to correct pages
 - Responsive layout works on mobile
 
@@ -401,6 +404,12 @@ The old Worker remains in `workers/` for reference and rollback:
 - All 4 AI analysis cards are present (Kimi first, Claude last)
 - Navigation links work (cross-page to index and pony_u10_rules)
 - Parent letter section displays at bottom of notes
+
+### cba_u10_player_analysis.html
+- 14-player core data table displays correctly
+- Schedule image and result tables display correctly
+- GPT, Kimi, and Gemini analysis cards are present
+- Navigation links work (cross-page to index and cba_u10_rules)
 
 ### tigercup_groupstage.html
 - Data image displays correctly

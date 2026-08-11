@@ -11,6 +11,7 @@ const PAGES = [
     'tigercup_groupstage.html',
     'tigercup_finalstage.html',
     'pony_u10_tianjin.html',
+    'cba_u10_player_analysis.html',
     'sponsor_me.html'
 ];
 

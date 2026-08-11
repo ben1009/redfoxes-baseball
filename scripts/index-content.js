@@ -4,6 +4,7 @@
  *
  * Usage:
  *   SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... GEMINI_API_KEY=... node scripts/index-content.js
+ *   SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... GEMINI_API_KEY=... node scripts/index-content.js --page cba_u10_player_analysis.html
  */
 
 const fs = require('fs');
@@ -21,8 +22,41 @@ const PAGES = [
   { path: 'tigercup_groupstage.html', title: '猛虎杯小组赛数据分析', category: 'analysis', tags: ['猛虎杯'] },
   { path: 'tigercup_finalstage.html', title: '猛虎杯决赛数据分析', category: 'analysis', tags: ['猛虎杯'] },
   { path: 'pony_u10_tianjin.html', title: '天津PONY U10 数据分析', category: 'analysis', tags: ['PONY', 'U10'] },
+  { path: 'cba_u10_player_analysis.html', title: '全国青少年棒球锦标赛 U10 球员数据分析', category: 'analysis', tags: ['CBA', 'U10', '全国青少年棒球锦标赛'] },
   { path: 'sponsor_me.html', title: '赞助赤狐', category: 'sponsor' },
 ];
+
+function selectedPagesFromArgs(args) {
+  const selected = [];
+  for (let i = 0; i < args.length; i++) {
+    const arg = args[i];
+    if (arg === '--page') {
+      const value = args[i + 1];
+      if (!value) {
+        throw new Error('--page requires a page path');
+      }
+      selected.push(value);
+      i++;
+    } else if (arg.startsWith('--page=')) {
+      selected.push(arg.slice('--page='.length));
+    } else {
+      throw new Error(`Unknown argument: ${arg}`);
+    }
+  }
+
+  if (selected.length === 0) {
+    return PAGES;
+  }
+
+  const knownPages = new Map(PAGES.map(page => [page.path, page]));
+  return selected.map(pagePath => {
+    const page = knownPages.get(pagePath);
+    if (!page) {
+      throw new Error(`Unknown page path for indexing: ${pagePath}`);
+    }
+    return page;
+  });
+}
 
 const MAX_CHUNK_LENGTH = 800;
 const TARGET_DIM = 1536;
@@ -229,7 +263,7 @@ async function generateEmbeddings(apiKey, texts) {
   return allEmbeddings;
 }
 
-async function index() {
+async function index(pages = PAGES) {
   const supabase = createClient(
     getEnv('SUPABASE_URL'),
     getEnv('SUPABASE_SERVICE_ROLE_KEY'),
@@ -249,7 +283,7 @@ async function index() {
     .not('page_path', 'in', inList);
   if (delErr) console.warn('Cleanup warning:', delErr);
 
-  for (const page of PAGES) {
+  for (const page of pages) {
     const filePath = path.resolve(__dirname, '..', page.path);
     if (!fs.existsSync(filePath)) {
       console.warn(`Skipping missing file: ${page.path}`);
@@ -332,7 +366,7 @@ async function index() {
 }
 
 if (require.main === module) {
-  index().catch(err => {
+  index(selectedPagesFromArgs(process.argv.slice(2))).catch(err => {
     console.error('Indexing failed:', err.message);
     process.exit(1);
   });
@@ -341,6 +375,7 @@ if (require.main === module) {
 module.exports = {
   extractChunks,
   slugify,
+  selectedPagesFromArgs,
   PAGES,
   MAX_CHUNK_LENGTH,
 };
