@@ -1,7 +1,7 @@
 # AGENTS.md - Red Foxes Baseball Team Website
 
 > This file provides essential context for AI coding agents working on this project.
-> Last updated: 2026-07-31
+> Last updated: 2026-10-06
 
 ---
 
@@ -19,7 +19,8 @@ This is a **static website** for **烈光少棒赤狐队 (Red Foxes Youth Baseba
 8. **Groupstage Analysis** (`tigercup_groupstage.html`) - Multi-AI performance analysis
 9. **Finalstage Analysis** (`tigercup_finalstage.html`) - Multi-AI final match analysis
 10. **Sponsor Page** (`sponsor_me.html`) - Sponsor support with global like counter (Supabase Edge Function)
-11. **Site Search** (`site_search.js`) - Hybrid full-text + vector search across all pages (Supabase Edge Function + pgvector + pgroonga)
+11. **Open Tournament Player Analysis** (`open_tournament_player_analysis.html`) - all 12 players with opponent-weighted rankings, full reviews, role tiers, and team findings
+12. **Site Search** (`site_search.js`) - Hybrid full-text + vector search across all pages (Supabase Edge Function + pgvector + pgroonga)
 
 - **Live Site**: https://ben1009.github.io/redfoxes-baseball/
 - **Language**: Chinese (Simplified)
@@ -56,6 +57,7 @@ redfoxes-baseball/
 ├── cba_u10_rules.html         # China Baseball Association U10 tournament rules page
 ├── pony_u10_tianjin.html      # PONY U10 Tianjin tournament analysis
 ├── cba_u10_player_analysis.html # CBA U10 player data analysis
+├── open_tournament_player_analysis.html # Open tournament opponent-weighted player analysis
 ├── tigercup_groupstage.html   # Groupstage performance analysis
 ├── tigercup_finalstage.html   # Finalstage performance analysis
 ├── sponsor_me.html            # Sponsor page (independent theme, global like widget)
@@ -119,11 +121,12 @@ redfoxes-baseball/
 
 ### File Organization Notes
 
-- **index.html**: Navigation hub with card-based layout (9 nav cards)
+- **index.html**: Navigation hub with card-based layout (10 nav cards)
 - **match_review.html**: Password protected; links shared `baseball_theme.css` plus inline page-specific styles
 - **u10_rules.html** / **pony_u10_rules.html** / **cba_u10_rules.html**: Link `baseball_theme.css` + `rules_style.css`; include schedule images with lightbox support
 - **pony_u10_tianjin.html**: Link `baseball_theme.css`; inline styles + image modal; features player stats table with `.table-responsive`, 56 defense notes, 4-AI analysis cards (Kimi/Gemini/ChatGPT/Claude), error distribution chart
 - **cba_u10_player_analysis.html**: Link `baseball_theme.css`; inline styles; features clickable schedule-results image, 14-player core data table, and GPT/Kimi/Gemini analysis cards
+- **open_tournament_player_analysis.html**: Link `baseball_theme.css`; inline styles; features a 12-player ranking table, a GPT 5.6 sol max analysis card with the CBA page's green header and `.player-note` layout, opponent weights (成都 ×4, 蓝袜 ×3, 九人 ×2, 广州/湖东 ×1), role tiers, and numbered references without links
 - **tigercup_groupstage.html** / **tigercup_finalstage.html**: Link `baseball_theme.css` plus inline page-specific styles
 - **sponsor_me.html**: Independent styling, does not use baseball field background or floating assets
 - **supabase/**: Edge Function and SQL migration for the active global like counter backend
@@ -149,7 +152,7 @@ redfoxes-baseball/
 │   └── style (CSS embedded with CSS variables)
 ├── body
 │   ├── header (Team logo, name, motto)
-│   ├── nav class="nav-grid" (9 navigation cards)
+│   ├── nav class="nav-grid" (10 navigation cards)
 │   └── footer (Copyright)
 ```
 
@@ -376,7 +379,7 @@ The old Worker remains in `workers/` for reference and rollback:
 
 ### index.html (Navigation Hub)
 - Header displays team logo and motto
-- 9 navigation cards are present and clickable
+- 10 navigation cards are present and clickable
 - All links navigate to correct pages
 - Responsive layout works on mobile
 

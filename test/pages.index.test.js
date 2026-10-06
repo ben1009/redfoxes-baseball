@@ -27,12 +27,12 @@ describe('Index Page (Navigation Hub)', () => {
         expect(teamLogo).not.toBeNull();
     }));
 
-    test('should have navigation grid with 9 cards', async () => harness.withBrowser(async () => {
+    test('should have navigation grid with 10 cards', async () => harness.withBrowser(async () => {
         const navGrid = await harness.page.$('.nav-grid');
         expect(navGrid).not.toBeNull();
 
         const cards = await harness.page.$$('.nav-card');
-        expect(cards.length).toBe(9);
+        expect(cards.length).toBe(10);
     }));
 
     test('should have correct navigation links', async () => harness.withBrowser(async () => {
@@ -48,6 +48,7 @@ describe('Index Page (Navigation Hub)', () => {
         expect(links).toContain('tigercup_finalstage.html');
         expect(links).toContain('pony_u10_tianjin.html');
         expect(links).toContain('cba_u10_player_analysis.html');
+        expect(links).toContain('open_tournament_player_analysis.html');
         expect(links).toContain('sponsor_me.html');
     }));
 
@@ -65,6 +66,7 @@ describe('Index Page (Navigation Hub)', () => {
             'pony_u10_tianjin.html',
             'cba_u10_rules.html',
             'cba_u10_player_analysis.html',
+            'open_tournament_player_analysis.html',
             'sponsor_me.html'
         ]);
     }));

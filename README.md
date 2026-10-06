@@ -30,6 +30,7 @@ redfoxes-baseball/
 ├── cba_u10_rules.html         # China Baseball Association U10 tournament rules page
 ├── pony_u10_tianjin.html      # PONY U10 Tianjin tournament analysis with multi-AI insights
 ├── cba_u10_player_analysis.html # CBA U10 player data analysis with multi-AI insights
+├── open_tournament_player_analysis.html # Open tournament weighted analysis of all 12 players
 ├── tigercup_groupstage.html   # Groupstage performance analysis with multi-AI insights
 ├── tigercup_finalstage.html   # Finalstage performance analysis with multi-AI insights
 ├── sponsor_me.html            # Sponsor support page
@@ -155,6 +156,16 @@ Complete regulations for the China Baseball Association national U10 tournament:
   - AI analysis cards with distinct branding
   - Responsive wide player-data table
   - Cross-page links to index and CBA U10 rules
+
+## ⚖️ Open Tournament Player Analysis (open_tournament_player_analysis.html)
+
+**全国青少年棒球公开赛总决赛 U10 球员数据分析** - Opponent-weighted Player Review
+
+- **Data Source**: Official result announcements for October 2, 5, and 6, and the October 4 competition schedule
+- **Content**: All 12 players, opponent-weighted ranking and full player reviews, role tiers, and team findings
+- **Weights**: 成都 ×4, 蓝袜 ×3, 九人 ×2, 广州 / 湖东 ×1
+- **Features**: GPT 5.6 sol max analysis card with the CBA page's green header and player-note layout, player jump links, responsive tables, shared site search, and numbered references without links
+- **Evaluation**: Includes offense, pitching, fielding errors, catcher passed balls, walks, wild pitches, innings, and sample size
 
 ## 📊 Groupstage Analysis (tigercup_groupstage.html)
 

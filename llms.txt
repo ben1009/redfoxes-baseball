@@ -1,13 +1,12 @@
 # 烈光少棒赤狐队 (Red Foxes Youth Baseball Team)
 
-> A static website for the Red Foxes youth baseball team. Language: Chinese (Simplified).
+> Static youth baseball site. Language: Chinese (Simplified).
 > Live at: https://ben1009.github.io/redfoxes-baseball/
 
 ## Overview
 
-This site contains match reviews, rules, data reports, and sponsor support.
-All content is static HTML with embedded CSS/JS. No login required
-except for the match review page (password protected, hint provided).
+Match reviews, rules, data reports, and sponsor support. Static HTML;
+only the match review requires a password.
 
 ## Pages
 
@@ -17,6 +16,7 @@ except for the match review page (password protected, hint provided).
 - [PONY U10 竞赛规则](pony_u10_rules.html) — PONY league rules (Tianjin)
 - [中国棒球协会 U10 竞赛规则](cba_u10_rules.html) — CBA national rules and schedule
 - Analysis: [猛虎杯小组赛](tigercup_groupstage.html), [决赛](tigercup_finalstage.html), [天津PONY杯](pony_u10_tianjin.html), [CBA球员分析](cba_u10_player_analysis.html)
+- [公开赛球员分析](open_tournament_player_analysis.html) — 12 players, opponent weights, full reviews
 - [赞助赤狐](sponsor_me.html) — Sponsor page with like counter
 
 ## Actions Available
@@ -24,15 +24,15 @@ except for the match review page (password protected, hint provided).
 - Search: Press Cmd/Ctrl+K on any page to open site-wide search
 - Sponsor: Visit sponsor_me.html and click the like button
 - View Rules: u10_rules.html, pony_u10_rules.html, or cba_u10_rules.html
-- View Analysis: tigercup_groupstage.html, tigercup_finalstage.html, pony_u10_tianjin.html, cba_u10_player_analysis.html
+- View Analysis: Follow the analysis links above
 - Watch Videos: match_review.html (password required)
 
 ## Key Data
 
-- Team: 烈光少棒赤狐队 (Red Foxes Youth Baseball Team)
+- Team: 烈光少棒赤狐队
 - Motto: "友谊第一，比赛第二 · 烈光少棒加油"
 - Coach: 张锦新
-- Tournaments: 猛虎杯 (Tiger Cup), PONY U10, CBA U10
+- Tournaments: 猛虎杯 (Tiger Cup), PONY U10, CBA U10, 公开赛
 - Password hint for match_review: "张锦新 哪年开始接触从事棒球运动？"
 
 ## Technical Notes

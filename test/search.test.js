@@ -24,6 +24,7 @@ const PAGE_PATHS = {
     groupstage: 'tigercup_groupstage.html',
     finalstage: 'tigercup_finalstage.html',
     cbaPlayerAnalysis: 'cba_u10_player_analysis.html',
+    openTournamentPlayerAnalysis: 'open_tournament_player_analysis.html',
     sponsor: 'sponsor_me.html'
 };
 
