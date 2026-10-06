@@ -23,6 +23,7 @@ const PAGES = [
   { path: 'tigercup_finalstage.html', title: '猛虎杯决赛数据分析', category: 'analysis', tags: ['猛虎杯'] },
   { path: 'pony_u10_tianjin.html', title: '天津PONY U10 数据分析', category: 'analysis', tags: ['PONY', 'U10'] },
   { path: 'cba_u10_player_analysis.html', title: '全国青少年棒球锦标赛 U10 球员数据分析', category: 'analysis', tags: ['CBA', 'U10', '全国青少年棒球锦标赛'] },
+  { path: 'open_tournament_player_analysis.html', title: '全国青少年棒球公开赛总决赛 U10 球员数据分析', category: 'analysis', tags: ['公开赛', 'U10', '总决赛', '球员分析', '对手权重'] },
   { path: 'sponsor_me.html', title: '赞助赤狐', category: 'sponsor' },
 ];
 

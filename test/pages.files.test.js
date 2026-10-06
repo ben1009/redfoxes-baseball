@@ -11,6 +11,7 @@ describe('File Existence Tests', () => {
         'tigercup_finalstage.html',
         'pony_u10_tianjin.html',
         'cba_u10_player_analysis.html',
+        'open_tournament_player_analysis.html',
         'sponsor_me.html',
         'site_analytics.js',
         'image_modal.js',
@@ -189,6 +190,7 @@ describe('Shared Script Coverage', () => {
             'tigercup_finalstage.html',
             'pony_u10_tianjin.html',
             'cba_u10_player_analysis.html',
+            'open_tournament_player_analysis.html',
             'sponsor_me.html'
         ];
 
@@ -209,6 +211,7 @@ describe('Shared Script Coverage', () => {
             'tigercup_finalstage.html',
             'pony_u10_tianjin.html',
             'cba_u10_player_analysis.html',
+            'open_tournament_player_analysis.html',
             'sponsor_me.html'
         ];
 

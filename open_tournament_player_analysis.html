@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="全国青少年棒球公开赛总决赛 U10 球员数据分析，按对手权重复盘烈光少棒赤狐队12名队员的投打守跑表现。">
+    <title>全国青少年棒球公开赛总决赛 U10 球员数据分析 | 烈光少棒赤狐队</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Ctext%20y='.9em'%20font-size='90'%3E%F0%9F%A6%8A%3C/text%3E%3C/svg%3E">
+    <link rel="canonical" href="https://ben1009.github.io/redfoxes-baseball/open_tournament_player_analysis.html">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-QJ6EXQH8SW"></script>
+    <script src="site_analytics.js"></script>
+    <script src="site_search.js" defer></script>
+    <link rel="stylesheet" href="baseball_floats.css">
+    <script src="baseball_floats.js" defer></script>
+    <script src="count_up.js" defer></script>
+    <link rel="stylesheet" href="baseball_theme.css">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "全国青少年棒球公开赛总决赛 U10 球员数据分析",
+      "description": "按对手权重复盘烈光少棒赤狐队12名队员的投打守跑表现",
+      "inLanguage": "zh-CN",
+      "dateModified": "2026-10-06",
+      "author": { "@type": "Organization", "name": "GPT 5.6 sol max" },
+      "about": { "@type": "SportsEvent", "name": "全国青少年棒球公开赛总决赛 U10组" },
+      "citation": ["10月2日成绩公告","10月4日竞赛日程","10月5日成绩公告","10月6日成绩公告"],
+      "mainEntityOfPage": "https://ben1009.github.io/redfoxes-baseball/open_tournament_player_analysis.html"
+    }
+    </script>
+    <style>
+        .container { max-width: 980px; margin: 40px auto; background: linear-gradient(170deg, rgba(255,249,230,0.97) 0%, rgba(245,230,200,0.96) 100%); border-radius: var(--border-radius-large); box-shadow: var(--shadow-large), inset 0 0 0 1px rgba(255,255,255,0.5); position: relative; z-index: 2; overflow: hidden; border: 3px solid var(--leather-tan); animation: reportEnter 0.8s ease-out; }
+        .container::before { content: ''; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px; border: 2px dashed var(--stitch-red); border-radius: var(--border-radius-medium); pointer-events: none; opacity: 0.35; }
+        .content { padding: 40px 50px; background: rgba(255,249,230,0.5); }
+        section { margin-bottom: 35px; page-break-inside: avoid; animation: aiReveal 0.65s ease-out backwards; }
+        section[id] { scroll-margin-top: 100px; }
+        header { background: linear-gradient(170deg, rgba(30,15,15,0.9) 0%, rgba(60,30,25,0.85) 50%, rgba(40,20,18,0.9) 100%), repeating-linear-gradient(0deg, transparent 0 3px, rgba(0,0,0,0.15) 3px 6px), repeating-linear-gradient(90deg, transparent 0 3px, rgba(0,0,0,0.1) 3px 6px); color: var(--leather-cream); padding: 46px 30px 42px; text-align: center; position: relative; border-bottom: 4px solid var(--dirt-dark-orange); animation: scoreboardFlash 0.9s ease-out; box-shadow: inset 0 0 0 3px var(--dirt-light-orange), inset 0 0 0 6px rgba(0,0,0,0.3); }
+        header::after { content: ''; position: absolute; inset: 10px; border: 2px dashed var(--dirt-light-orange); border-radius: 20px; opacity: 0.5; pointer-events: none; }
+        h1 { font-size: 2.25em; font-weight: 800; text-shadow: 0 3px 12px rgba(0,0,0,0.5), 0 0 40px rgba(255,193,7,0.2); margin-bottom: 10px; letter-spacing: 3px; }
+        .subtitle { font-size: 1.14em; color: var(--dirt-light-orange); font-weight: 700; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); letter-spacing: 1px; }
+        .badge-container { margin-top: 15px; }
+        .tournament-badge, .team-badge { display: inline-block; color: white; font-weight: bold; box-shadow: var(--shadow-medium); }
+        .tournament-badge { background: linear-gradient(135deg, var(--dirt-dark-orange), var(--dirt-orange)); color: var(--leather-cream); padding: 9px 20px; border-radius: var(--border-radius-small); font-size: 0.9em; letter-spacing: 0.4px; border: 1px solid var(--dirt-light-orange); }
+        .team-badge { background: linear-gradient(135deg, var(--fox-red), var(--color-primary-light)); padding: 7px 16px; border-radius: 999px; font-size: 0.85em; margin-left: 10px; }
+        h2 { color: var(--fox-red); font-size: 1.56em; margin-bottom: 15px; padding-bottom: 12px; border-bottom: 3px solid var(--leather-tan); display: flex; align-items: center; font-weight: 800; }
+        h2::before { content: '⚾'; color: var(--dirt-orange); margin-right: 10px; font-size: 0.95em; }
+        h3 { color: var(--color-text-secondary); font-size: 1.2em; margin: 20px 0 12px; font-weight: 700; }
+        p, li { line-height: 1.8; color: var(--color-text); font-size: 1.05em; margin-bottom: 10px; }
+        .page-nav { background: linear-gradient(135deg, rgba(30,15,15,0.95) 0%, rgba(60,30,25,0.96) 100%); padding: 14px 0; position: sticky; top: 0; z-index: 100; box-shadow: 0 8px 20px rgba(0,0,0,0.25); border-bottom: 1px solid var(--dirt-light-orange); }
+        .nav-container { max-width: 980px; margin: 0 auto; padding: 0 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+        .nav-link { color: var(--leather-cream); text-decoration: none; padding: 8px 14px; border-radius: 999px; font-size: 0.9em; font-weight: 700; transition: background 0.2s, transform 0.2s, color 0.2s; white-space: nowrap; border: 1px solid rgba(255,255,255,0.12); }
+        .nav-link:hover { background: rgba(230,126,34,0.25); color: var(--dirt-light-orange); transform: translateY(-1px); }
+        .key-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 15px; margin: 25px 0; }
+        .metric-card { background: linear-gradient(180deg, #fffdf9, rgba(255,249,230,0.98)); border: 2px solid var(--leather-tan); border-radius: var(--border-radius-medium); padding: 20px; text-align: center; box-shadow: var(--shadow-medium); position: relative; overflow: hidden; }
+        .metric-card::before { content: ''; position: absolute; inset: 0 auto 0 0; width: 6px; background: linear-gradient(180deg, var(--dirt-orange), var(--fox-red)); }
+        .metric-value { font-size: 2em; color: var(--fox-red); font-weight: 700; display: block; margin-bottom: 5px; }
+        .metric-label { color: var(--color-text-secondary); font-size: 0.95em; font-weight: 600; }
+        .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 20px 0; border-radius: var(--border-radius-medium); }
+        table { width: 100%; border-collapse: collapse; margin: 0; background: white; border-radius: var(--border-radius-medium); overflow: hidden; box-shadow: var(--shadow-small); font-size: 0.95em; border: 1px solid rgba(139,30,36,0.12); }
+        .table-responsive table { min-width: 860px; }
+        th { background: linear-gradient(135deg, var(--dirt-dark-orange) 0%, var(--dirt-orange) 55%, var(--dirt-light-orange) 100%); color: var(--leather-cream); padding: 12px; text-align: left; font-weight: 700; letter-spacing: 0.3px; }
+        td { padding: 10px 12px; border-bottom: 1px solid #e0e0e0; color: var(--color-text); vertical-align: top; }
+        tr:nth-child(even) { background: #faf7f2; }
+        .ai-card { background: linear-gradient(170deg, rgba(255,249,230,0.97) 0%, rgba(245,230,200,0.96) 100%); border-radius: var(--border-radius-large); margin: 25px 0; overflow: hidden; box-shadow: var(--shadow-medium), inset 0 0 0 1px rgba(255,255,255,0.5); border: 3px solid var(--leather-tan); }
+        .ai-card-header { padding: 15px 25px; color: white; font-weight: 700; font-size: 1.2em; }
+        .ai-card-header.chatgpt { background: linear-gradient(135deg, var(--color-chatgpt) 0%, #0d8c6d 100%); }
+        .ai-card-content { padding: 25px; }
+        .analysis-body h3 { color: var(--fox-red); font-size: 1.25em; margin: 26px 0 14px; padding-bottom: 8px; border-bottom: 2px solid var(--leather-tan); }
+        .analysis-body h4 { color: var(--dirt-dark-orange); font-size: 1.08em; margin: 22px 0 10px; font-weight: 800; }
+        .analysis-body h5 { color: var(--dirt-dark-orange); font-size: 1em; margin: 18px 0 10px; font-weight: 800; }
+        .analysis-body p { margin-bottom: 14px; }
+        .analysis-body ul, .analysis-body ol { margin: 12px 0 18px 24px; }
+        .analysis-body li { margin-bottom: 8px; }
+        .analysis-body strong { color: var(--fox-red); font-weight: 800; }
+        .reference-mark { color: var(--color-text-secondary); font-size: 0.72em; font-weight: 600; line-height: 0; margin-left: 3px; white-space: nowrap; }
+        .reference-list { margin: 14px 0 0 24px; }
+        .reference-list li { color: var(--color-text-secondary); font-size: 0.95em; }
+        .analysis-table { margin: 16px 0 24px; }
+        .analysis-table table { font-size: 0.92em; }
+        .analysis-table th, .analysis-table td { padding: 9px 10px; }
+        .contact-footer { background: rgba(0,0,0,0.28); color: var(--leather-cream); padding: 30px; text-align: center; margin-top: 40px; border-radius: 0 0 var(--border-radius-large) var(--border-radius-large); border-top: 1px solid rgba(255,255,255,0.12); backdrop-filter: blur(4px); }
+        .contact-footer p { color: var(--leather-cream); margin: 5px 0; }
+
+        .nav-link:focus-visible, .player-jump:focus-visible, .ranking-link:focus-visible { outline: 3px solid var(--dirt-light-orange); outline-offset: 3px; }
+        .ranking-link { color: var(--fox-red); text-underline-offset: 3px; font-weight: 700; }
+        .summary-callout { border-left: 5px solid var(--fox-red); border-radius: 0 var(--border-radius-medium) var(--border-radius-medium) 0; padding: 18px 20px; background: rgba(255,255,255,0.6); margin: 20px 0; }
+        .summary-callout p:last-child { margin-bottom: 0; }
+        .weight-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 20px 0; }
+        .weight-card { background: white; border: 2px solid var(--leather-tan); border-top: 4px solid var(--dirt-orange); border-radius: var(--border-radius-medium); padding: 16px 12px; text-align: center; }
+        .weight-card:first-child { border-top-color: var(--fox-red); }
+        .weight-value { display: block; color: var(--fox-red); font-size: 1.7em; font-weight: 800; }
+        .weight-name { color: var(--color-text-secondary); font-weight: 700; }
+        .table-responsive:focus-visible { outline: 3px solid var(--fox-red); outline-offset: 3px; }
+        caption { padding: 12px; text-align: left; font-weight: 700; color: var(--color-text-secondary); background: rgba(255,249,230,0.85); }
+        .table-responsive .ranking-table { min-width: 720px; }
+        .ranking-table th:first-child { width: 65px; }
+        .ranking-table td:first-child { font-weight: 800; color: var(--fox-red); text-align: center; }
+        .ranking-table th:nth-child(2) { width: 130px; }
+        .ranking-table tbody th { background: transparent; color: var(--color-text); border-bottom: 1px solid #e0e0e0; padding: 10px 12px; }
+        .ranking-table tr:nth-child(-n+4) { background: rgba(76,175,80,0.07); }
+        .data-legend { color: var(--color-text-secondary); font-size: 0.9em; padding: 12px 15px; background: rgba(255,255,255,0.5); border-radius: var(--border-radius-medium); }
+        .player-index { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0; }
+        .player-jump { color: var(--color-text-secondary); text-decoration: none; font-weight: 700; font-size: 0.92em; border: 1px solid var(--leather-tan); border-radius: 999px; padding: 8px 12px; background: rgba(255,255,255,0.7); }
+        .player-jump:hover { background: var(--leather-tan); color: var(--fox-red); }
+        .player-profile[id], .player-profile h4[id], #players { scroll-margin-top: 100px; }
+        .player-note-list { display: grid; gap: 12px; margin: 14px 0 22px; }
+        .player-note { background: rgba(255,255,255,0.45); border: 1px solid rgba(245,230,200,0.95); border-left: 4px solid var(--dirt-orange); border-radius: var(--border-radius-medium); padding: 12px 14px; }
+        .player-note h4 { margin-top: 0; }
+        .analysis-body .player-focus { color: var(--color-text-secondary); font-size: 0.95em; margin-bottom: 10px; }
+        .player-tier { display: inline-block; color: var(--color-text-secondary); background: var(--leather-tan); border-radius: 999px; padding: 4px 10px; font-size: 0.82em; font-weight: 700; margin-bottom: 12px; }
+        .player-analysis > :last-child { margin-bottom: 0; }
+        .stat-line { background: rgba(245,230,200,0.55); border-radius: 12px; padding: 12px 14px; font-weight: 700; }
+        .tier-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+        .tier-card { background: rgba(255,255,255,0.6); border: 2px solid var(--leather-tan); border-left: 5px solid var(--grass-texture); border-radius: var(--border-radius-medium); padding: 20px; }
+        .tier-card h3 { margin: 0 0 12px; color: var(--fox-red); }
+        .tier-card p:last-child { margin-bottom: 0; }
+        .tier-card:nth-child(2) { border-left-color: var(--dirt-orange); }
+        .tier-card:nth-child(3) { border-left-color: var(--color-kimi); }
+        .tier-card:nth-child(4) { border-left-color: var(--color-text-secondary); }
+        .table-responsive .team-table { min-width: 480px; }
+        .team-table td, .team-table th { text-align: center; }
+        .team-table tbody th { background: transparent; color: var(--color-text); border-bottom: 1px solid #e0e0e0; }
+        .team-table td:last-child { text-align: left; }
+        .contact-footer a { color: var(--leather-cream); text-underline-offset: 3px; }
+        @media (max-width: 768px) {
+            .container { margin: 20px 10px; }
+            .content { padding: 25px 20px; }
+            header { padding: 36px 20px; }
+            h1 { font-size: 1.7em; letter-spacing: 1px; }
+            h2 { font-size: 1.35em; }
+            .subtitle { font-size: 1em; }
+            .nav-container { padding: 0 10px; gap: 4px; }
+            .nav-link { padding: 5px 8px; font-size: 0.8em; }
+            section[id], .player-profile[id], .player-profile h4[id], #players { scroll-margin-top: 135px; }
+            .team-badge { margin-left: 0; margin-top: 10px; }
+            .key-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .metric-card { padding: 16px 10px; }
+            .metric-value { font-size: 1.7em; }
+            .weight-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .tier-grid { grid-template-columns: 1fr; }
+            .ai-card-content { padding: 18px 15px; }
+            .ai-card-header { padding: 15px; }
+            .player-note { padding: 12px; }
+            .analysis-body p, .analysis-body li { overflow-wrap: anywhere; }
+            .contact-footer { padding: 24px 18px; }
+        }
+        @media print {
+            body { background: white; }
+            .container { box-shadow: none; margin: 0; border: 0; max-width: none; animation: none; }
+            .container::before, .page-nav, .player-index { display: none; }
+            .content { padding: 20px; }
+            section, .ai-card { break-inside: auto; animation: none; }
+            h2, h3, h4, .ai-card-header { break-after: avoid; }
+            .table-responsive { overflow: visible; }
+            .table-responsive .ranking-table, .table-responsive .team-table { min-width: 0; }
+            .contact-footer { background: white; }
+            .contact-footer p, .contact-footer a { color: var(--color-text); }
+        }
+    </style>
+</head>
+<body>
+    <nav class="page-nav" aria-label="页面导航">
+        <div class="nav-container">
+            <a href="index.html" class="nav-link" data-action="navigate">🏠 首页</a>
+            <a href="#overview" class="nav-link" data-action="navigate">⚖️ 评估口径</a>
+            <a href="#ranking" class="nav-link" data-action="navigate">📊 综合排序</a>
+            <a href="#chatgpt" class="nav-link" data-action="navigate">💬 GPT</a>
+            <a href="#tiers" class="nav-link" data-action="navigate">🧩 球员分层</a>
+            <a href="#team" class="nav-link" data-action="navigate">🎯 团队结论</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header>
+            <h1>全国青少年棒球公开赛总决赛 U10 球员数据分析</h1>
+            <div class="subtitle">北京烈光赤狐队 · 赛程赛果与球员数据分析</div>
+            <div class="badge-container">
+                <span class="tournament-badge">📊 5场比赛</span>
+                <span class="team-badge">🏆 冠军组第三名</span>
+            </div>
+        </header>
+
+        <main class="content">
+            <section id="overview" class="summary-section" data-action="read_analysis">
+                <h2>评估口径与核心观察</h2>
+                <div class="key-metrics">
+                    <div class="metric-card"><span class="metric-value">12人</span><span class="metric-label">全部有比赛记录的队员</span></div>
+                    <div class="metric-card"><span class="metric-value">5支</span><span class="metric-label">不同权重的对手</span></div>
+                    <div class="metric-card"><span class="metric-value">×4</span><span class="metric-label">成都战最高权重</span></div>
+                    <div class="metric-card"><span class="metric-value">4:3</span><span class="metric-label">蓝袜三四名战比分</span></div>
+                </div>
+                <p>把打击、投球、守备失误、捕手漏接（PB）、暴投与保送、承担局数都放进综合判断。湖东19:1这样的比赛，不能与成都、蓝袜的表现等量评价。</p>
+                <div class="weight-grid" aria-label="对手权重">
+                    <div class="weight-card"><span class="weight-value">×4</span><span class="weight-name">成都</span></div>
+                    <div class="weight-card"><span class="weight-value">×3</span><span class="weight-name">蓝袜</span></div>
+                    <div class="weight-card"><span class="weight-value">×2</span><span class="weight-name">九人</span></div>
+                    <div class="weight-card"><span class="weight-value">×1</span><span class="weight-name">广州 / 湖东</span></div>
+                </div>
+                <div class="summary-callout">
+                    <p><strong>田雨稷的局数承担、高驰庭的投球效率、周立行的强队上垒、闫勋捷的关键打击，是四类关键贡献。</strong></p>
+                    <p>球队提升重点落在高压下的投手控球与守备稳定性。评估同时考虑出场机会，张若愚、李牧白的强队样本不足，不能直接用总打击率与主力比较。</p>
+                </div>
+            </section>
+
+            <section id="ranking" data-action="view_data">
+                <h2>12名球员综合排序</h2>
+                <p>点击球员姓名查看逐人分析。小屏幕可横向滚动表格。</p>
+                <div class="table-responsive" role="region" aria-label="球员综合排序表，可横向滚动" tabindex="0">
+                    <table class="ranking-table">
+                        <caption>按对手权重综合评估</caption>
+                        <thead><tr><th scope="col">排序</th><th scope="col">球员</th><th scope="col">强队表现判断</th><th scope="col">主要扣分点</th></tr></thead>
+                        <tbody>
+                            <tr><td>1</td><th scope="row"><a href="#player-1" class="ranking-link" data-action="navigate">田雨稷</a></th><td>九人主投极稳；成都有安打；蓝袜继续吃局数</td><td>蓝袜4BB</td></tr>
+                            <tr><td>2</td><th scope="row"><a href="#player-2" class="ranking-link" data-action="navigate">高驰庭</a></th><td>九人2局0安0ER；蓝袜关键三垒打</td><td>成都无贡献；九人1E</td></tr>
+                            <tr><td>3</td><th scope="row"><a href="#player-3" class="ranking-link" data-action="navigate">周立行</a></th><td>三支强队上垒能力最稳定</td><td>成都2E非常伤</td></tr>
+                            <tr><td>4</td><th scope="row"><a href="#player-4" class="ranking-link" data-action="navigate">闫勋捷</a></th><td>成都唯一RBI；蓝袜胜投；九人2RBI</td><td>成都投球明显崩；PB</td></tr>
+                            <tr><td>5</td><th scope="row"><a href="#player-5" class="ranking-link" data-action="navigate">Max Shen</a></th><td>蓝袜爆发极强</td><td>强队3E；成都投球完全失控</td></tr>
+                            <tr><td>6</td><th scope="row"><a href="#player-6" class="ranking-link" data-action="navigate">杨逍墨</a></th><td>成都至少吃2局并2K</td><td>强队打击几乎无输出；3E</td></tr>
+                            <tr><td>7</td><th scope="row"><a href="#player-7" class="ranking-link" data-action="navigate">程思乐</a></th><td>蓝袜2RBI，小组赛投打优秀</td><td>成都投球0出局被3安</td></tr>
+                            <tr><td>8</td><th scope="row"><a href="#player-8" class="ranking-link" data-action="navigate">付昌泽</a></th><td>对强队连续靠保送上垒，几乎没负贡献</td><td>打击威胁较小</td></tr>
+                            <tr><td>9</td><th scope="row"><a href="#player-9" class="ranking-link" data-action="navigate">张景奕</a></th><td>成都有盗垒，弱队上垒不错</td><td>对前三强队基本没有安打</td></tr>
+                            <tr><td>10</td><th scope="row"><a href="#player-10" class="ranking-link" data-action="navigate">陈诗恩</a></th><td>跑垒、牺牲触击、防守型角色</td><td>打击样本和产出都少</td></tr>
+                            <tr><td>11</td><th scope="row"><a href="#player-11" class="ranking-link" data-action="navigate">张若愚</a></th><td>湖东三垒打+RBI</td><td>没有前三强队比赛样本</td></tr>
+                            <tr><td>12</td><th scope="row"><a href="#player-12" class="ranking-link" data-action="navigate">李牧白</a></th><td>广州投球好球率不错，湖东上垒跑分</td><td>后三场基本未进入主要轮换</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="data-legend"><strong>数据速读：</strong>AB＝打数，H＝安打，R＝得分／失分，ER＝自责分，RBI＝打点，BB＝保送，K＝三振，SB＝盗垒，E＝守备失误，PB＝捕手漏接，WP＝暴投。打击记录“3-2”表示3打数2安打；投球“2.1局／2.2局”表示2局加1个／2个出局数。</p>
+            </section>
+
+            <section id="chatgpt" class="ai-card" aria-labelledby="chatgpt-title" data-action="read_analysis" data-ai-source="GPT 5.6 sol max">
+                <div id="chatgpt-title" class="ai-card-header chatgpt">💬 GPT 5.6 sol max</div>
+                <div class="ai-card-content"><div class="analysis-body">
+                    <h3 id="players">逐人分析</h3>
+                    <nav class="player-index" aria-label="球员快速定位">
+                        <a href="#player-1" class="player-jump" data-action="navigate">1. 田雨稷</a>
+                        <a href="#player-2" class="player-jump" data-action="navigate">2. 高驰庭</a>
+                        <a href="#player-3" class="player-jump" data-action="navigate">3. 周立行</a>
+                        <a href="#player-4" class="player-jump" data-action="navigate">4. 闫勋捷</a>
+                        <a href="#player-5" class="player-jump" data-action="navigate">5. Max Shen</a>
+                        <a href="#player-6" class="player-jump" data-action="navigate">6. 杨逍墨</a>
+                        <a href="#player-7" class="player-jump" data-action="navigate">7. 程思乐</a>
+                        <a href="#player-8" class="player-jump" data-action="navigate">8. 付昌泽</a>
+                        <a href="#player-9" class="player-jump" data-action="navigate">9. 张景奕</a>
+                        <a href="#player-10" class="player-jump" data-action="navigate">10. 陈诗恩</a>
+                        <a href="#player-11" class="player-jump" data-action="navigate">11. 张若愚</a>
+                        <a href="#player-12" class="player-jump" data-action="navigate">12. 李牧白</a>
+                    </nav>
+                    <div class="player-note-list">
+                        <article id="player-1" class="player-note player-profile" aria-labelledby="player-title-1" data-action="read_analysis">
+                            <h4 id="player-title-1">1. 田雨稷</h4>
+                            <p class="player-focus">综合第一，最大的优势是“没有明显崩盘”</p>
+                            <span class="player-tier">第一档 · 强队检验</span>
+                            <div class="player-analysis">
+                                <p>他的总打击数据并不好看，但在最高权重的成都战，烈光全队只有 <strong>2 支安打</strong>，田雨稷占一支：<strong>2打数1安</strong>。 <sup class="reference-mark" data-references="3" aria-label="参考资料：10月5日成绩公告">[3]</sup></p>
+                                <p>真正拉开价值的是投手。</p>
+                                <h5>对九人：</h5>
+                                <p><strong>3.0局，5H，1R/1ER，1BB，1K，43球31好球。</strong></p>
+                                <p>好球率约 <strong>72.1%</strong>，这是烈光整个强队阶段最像“成熟先发”的一场。 <sup class="reference-mark" data-references="2" aria-label="参考资料：10月4日竞赛日程">[2]</sup></p>
+                                <h5>三四名战蓝袜又投：</h5>
+                                <p><strong>2.1局，1H，3R但仅1ER，4BB，1K。</strong></p>
+                                <p>这场最大问题就是 <strong>4BB</strong>，控球明显下降；不过仍然只被1安，而且承担了7个出局数。 <sup class="reference-mark" data-references="4" aria-label="参考资料：10月6日成绩公告">[4]</sup></p>
+                                <h5>再加上广州首战 2局1安1ER、2K，整届合计大约：</h5>
+                                <p><strong>7.1局，7H，5R/3ER，6BB，4K。</strong></p>
+                                <p>而且正式记录里没看到他的守备失误。</p>
+                                <h5>所以田雨稷不是数据最华丽，而是：</h5>
+                                <p><strong>高权重比赛承担最多局数，同时没有出现成都那种0出局/大量保送式崩盘。</strong></p>
+                                <p>第一我还是给他。</p>
+                            </div>
+                        </article>
+
+                        <article id="player-2" class="player-note player-profile" aria-labelledby="player-title-2" data-action="read_analysis">
+                            <h4 id="player-title-2">2. 高驰庭</h4>
+                            <p class="player-focus">单位机会的质量可能全队最高</p>
+                            <span class="player-tier">第一档 · 强队检验</span>
+                            <div class="player-analysis">
+                                <p>高驰庭最大特点是：<strong>越重要的比赛，贡献越值钱。</strong></p>
+                                <h5>九人战：</h5>
+                                <p><strong>2.0局，0H，0ER，2BB，2K。</strong></p>
+                                <p>虽然出现1个守备失误，而且因为守备因素账面丢2分，但投手自责分是0。 <sup class="reference-mark" data-references="2" aria-label="参考资料：10月4日竞赛日程">[2]</sup></p>
+                                <h5>蓝袜铜牌战：</h5>
+                                <p><strong>2打数1安，而且是三垒打，1RBI、1BB、1SB。</strong></p>
+                                <p>4:3的比赛，一个三垒安打+RBI价值非常高。 <sup class="reference-mark" data-references="4" aria-label="参考资料：10月6日成绩公告">[4]</sup></p>
+                                <p>弱队阶段他也不是刷子：广州还投过 <strong>1局0安0BB 2K，10球7好球</strong>。 <sup class="reference-mark" data-references="1" aria-label="参考资料：10月2日成绩公告">[1]</sup></p>
+                                <p>他没排第一主要因为最高权重成都战只有 <strong>1打数0安、1K</strong>，没有真正参与投球。</p>
+                                <h5>但单看：</h5>
+                                <p><strong>投手效率 + 长打 + 强队表现</strong></p>
+                                <p>他甚至可以争全队第一。</p>
+                            </div>
+                        </article>
+
+                        <article id="player-3" class="player-note player-profile" aria-labelledby="player-title-3" data-action="read_analysis">
+                            <h4 id="player-title-3">3. 周立行</h4>
+                            <p class="player-focus">最好的强队打者，但成都2E把他从前二拉下来</p>
+                            <span class="player-tier">第一档 · 强队检验</span>
+                            <div class="player-analysis">
+                                <p>周立行如果只看打击，我会给全队第一档。</p>
+                                <h5>九人：</h5>
+                                <p><strong>3-2、1R、1RBI、1SB。</strong></p>
+                                <p>烈光全队只有3支安打，他一个人2支。 <sup class="reference-mark" data-references="2" aria-label="参考资料：10月4日竞赛日程">[2]</sup></p>
+                                <h5>蓝袜：</h5>
+                                <p><strong>3-2、1R。</strong> <sup class="reference-mark" data-references="4" aria-label="参考资料：10月6日成绩公告">[4]</sup></p>
+                                <h5>成都甚至没有正式AB，而是：</h5>
+                                <p><strong>2次保送 + 1得分。</strong></p>
+                                <p>意味着成都投手始终没真正解决掉他。 <sup class="reference-mark" data-references="3" aria-label="参考资料：10月5日成绩公告">[3]</sup></p>
+                                <h5>但是不能只看打击。成都那场官方记录明确：</h5>
+                                <p><strong>周立行 2个失误。</strong> <sup class="reference-mark" data-references="3" aria-label="参考资料：10月5日成绩公告">[3]</sup></p>
+                                <p>而成都又是×4的最高权重，这个扣分很大。</p>
+                                <p>这两个失误也解释了一部分烈光为什么13失分但只有7个自责分：守备确实把投手压力放大了。</p>
+                                <h5>所以：</h5>
+                                <p><strong>纯打击：Top 1～2。<br>综合攻守：第三。</strong></p>
+                            </div>
+                        </article>
+
+                        <article id="player-4" class="player-note player-profile" aria-labelledby="player-title-4" data-action="read_analysis">
+                            <h4 id="player-title-4">4. 闫勋捷</h4>
+                            <p class="player-focus">贡献很大，但成都投球必须重扣</p>
+                            <span class="player-tier">第一档 · 强队检验</span>
+                            <div class="player-analysis">
+                                <p>闫勋捷的打击其实是这批人里最“抗强度”的。</p>
+                                <p>九人：<strong>3-1、2RBI</strong>。<br>成都：<strong>2-1、二垒打、全队唯一RBI</strong>。<br>蓝袜：<strong>2-1、1BB、1SB。</strong> <sup class="reference-mark" data-references="2 3 4" aria-label="参考资料：10月4日竞赛日程；10月5日成绩公告；10月6日成绩公告">[2, 3, 4]</sup></p>
+                                <p>所以单论强队打击，他甚至可能比周立行更有长打/RBI能力。</p>
+                                <h5>蓝袜投球也是代表作：</h5>
+                                <p><strong>2.2局，1H，0R，3BB，2K，胜投。</strong> <sup class="reference-mark" data-references="4" aria-label="参考资料：10月6日成绩公告">[4]</sup></p>
+                                <h5>但成都必须重扣：</h5>
+                                <p class="stat-line"><strong>0.2局 · 2H · 5R · 1ER · 2BB · 0K · 27球13好球 · 2次暴投</strong></p>
+                                <p>不能拿“只有1ER”替他洗掉，因为 <strong>2BB、2WP、27球只有13好球</strong>都是投手本人制造的问题。 <sup class="reference-mark" data-references="3" aria-label="参考资料：10月5日成绩公告">[3]</sup></p>
+                                <p>守备/捕手方面也不是完全干净：广州有 <strong>1E+PB</strong>，九人又有 <strong>PB</strong>。 <sup class="reference-mark" data-references="1 2" aria-label="参考资料：10月2日成绩公告；10月4日竞赛日程">[1, 2]</sup></p>
+                                <h5>所以闫勋捷的特点是：</h5>
+                                <p><strong>综合能力最全面，强队打击很好，但波动也最大。</strong></p>
+                                <p>若成都权重最高，他不能排第一，我现在放第四比较合理。</p>
+                            </div>
+                        </article>
+
+                        <article id="player-5" class="player-note player-profile" aria-labelledby="player-title-5" data-action="read_analysis">
+                            <h4 id="player-title-5">5. Max Shen</h4>
+                            <p class="player-focus">一场能赢球，也可能一场明显拖后腿</p>
+                            <span class="player-tier">第二档 · 波动明显</span>
+                            <div class="player-analysis">
+                                <h5>Max Shen 蓝袜战是整届个人最爆的单场之一：</h5>
+                                <p><strong>2-2、2R、1BB、2SB，其中一次直接盗本垒。</strong></p>
+                                <p>烈光4分，他自己回来2分。 <sup class="reference-mark" data-references="4" aria-label="参考资料：10月6日成绩公告">[4]</sup></p>
+                                <p>湖东低权重比赛也有 <strong>2-2、2R、2RBI、二垒打</strong>。 <sup class="reference-mark" data-references="1" aria-label="参考资料：10月2日成绩公告">[1]</sup></p>
+                                <p>但是综合评价必须看另一面。</p>
+                                <h5>成都投球：</h5>
+                                <p><strong>0.0局、2BB，9球只有1个好球。</strong></p>
+                                <p>连一个出局都没拿到。 <sup class="reference-mark" data-references="3" aria-label="参考资料：10月5日成绩公告">[3]</sup></p>
+                                <h5>守备更伤：</h5>
+                                <ul>
+                                    <li>九人：<strong>1E</strong></li>
+                                    <li>蓝袜：<strong>2E</strong></li>
+                                </ul>
+                                <p>也就是说对高权重比赛就有 <strong>3个失误</strong>。 <sup class="reference-mark" data-references="2 4" aria-label="参考资料：10月4日竞赛日程；10月6日成绩公告">[2, 4]</sup></p>
+                                <h5>所以 Max Shen 是：</h5>
+                                <p><strong>攻击/跑垒上限 S，综合稳定性只能 A-/B+。</strong></p>
+                            </div>
+                        </article>
+
+                        <article id="player-6" class="player-note player-profile" aria-labelledby="player-title-6" data-action="read_analysis">
+                            <h4 id="player-title-6">6. 杨逍墨</h4>
+                            <p class="player-focus">弱队很亮，但强队后打击明显掉档</p>
+                            <span class="player-tier">第二档 · 波动明显</span>
+                            <div class="player-analysis">
+                                <h5>杨逍墨小组湖东：</h5>
+                                <p><strong>3-2、3R、二垒打、SB</strong>，并且投 <strong>1局0安、2K</strong>。 <sup class="reference-mark" data-references="1" aria-label="参考资料：10月2日成绩公告">[1]</sup></p>
+                                <h5>但高权重三场：</h5>
+                                <ul>
+                                    <li>九人：2-0，1BB</li>
+                                    <li>成都：2-0</li>
+                                    <li>蓝袜：3-0</li>
+                                </ul>
+                                <p>也就是对前三强敌 <strong>7AB 0H</strong>。 <sup class="reference-mark" data-references="2 3 4" aria-label="参考资料：10月4日竞赛日程；10月5日成绩公告；10月6日成绩公告">[2, 3, 4]</sup></p>
+                                <h5>不过成都投球不能全否定：</h5>
+                                <p><strong>2局、5H、6R/4ER、2BB、2K，46球29好球。</strong></p>
+                                <p>成绩差，但他是真正拿下了6个出局数；后面的 Max Shen、闫勋捷、程思乐加起来控制局面的能力反而更差。 <sup class="reference-mark" data-references="3" aria-label="参考资料：10月5日成绩公告">[3]</sup></p>
+                                <h5>守备是明显短板：</h5>
+                                <ul>
+                                    <li>广州 <strong>2E</strong></li>
+                                    <li>九人 <strong>1E</strong></li>
+                                </ul>
+                                <p>一届至少 <strong>3E</strong>。 <sup class="reference-mark" data-references="1 2" aria-label="参考资料：10月2日成绩公告；10月4日竞赛日程">[1, 2]</sup></p>
+                                <h5>所以杨的评价：</h5>
+                                <p><strong>全能、能吃投球局数，但高强度下打击和守备稳定性都需要提升。</strong></p>
+                            </div>
+                        </article>
+
+                        <article id="player-7" class="player-note player-profile" aria-labelledby="player-title-7" data-action="read_analysis">
+                            <h4 id="player-title-7">7. 程思乐</h4>
+                            <p class="player-focus">小组赛很强，强度一上来明显下降</p>
+                            <span class="player-tier">第二档 · 波动明显</span>
+                            <div class="player-analysis">
+                                <h5>广州其实打得非常好：</h5>
+                                <p><strong>3-2、2R、2RBI、2SB。</strong> <sup class="reference-mark" data-references="1" aria-label="参考资料：10月2日成绩公告">[1]</sup></p>
+                                <h5>湖东又有三垒打，投球还是：</h5>
+                                <p><strong>1局、1H、0R、0BB、2K，11球8好球。</strong> <sup class="reference-mark" data-references="1" aria-label="参考资料：10月2日成绩公告">[1]</sup></p>
+                                <h5>但强队阶段：</h5>
+                                <p>九人 <strong>2-0、2K、1BB</strong>；<br>成都打击靠1BB，上投手丘却是 <strong>0.0局、3H、2ER、1BB，15球6好球</strong>；<br>蓝袜无安打，但非常重要地打回来 <strong>2 RBI</strong>。 <sup class="reference-mark" data-references="2 3 4" aria-label="参考资料：10月4日竞赛日程；10月5日成绩公告；10月6日成绩公告">[2, 3, 4]</sup></p>
+                                <p>另外他做捕手时有几个不错的 caught stealing 配合，包括湖东和蓝袜。</p>
+                                <h5>所以：</h5>
+                                <p><strong>技术面比较全面，但目前更像打中等对手表现突出；碰成都这种级别，投打都被明显压制。</strong></p>
+                            </div>
+                        </article>
+
+                        <article id="player-8" class="player-note player-profile" aria-labelledby="player-title-8" data-action="read_analysis">
+                            <h4 id="player-title-8">8. 付昌泽</h4>
+                            <p class="player-focus">数据不耀眼，但我反而觉得挺实用</p>
+                            <span class="player-tier">第三档 · 角色球员</span>
+                            <div class="player-analysis">
+                                <p>付昌泽这届最有意思的是<strong>AB很少，但上垒率很高</strong>。</p>
+                                <p>广州：1AB、1H、1BB、2R。<br>九人：1AB 0H，但 <strong>1BB、1R</strong>。<br>成都：<strong>1BB</strong>。<br>蓝袜：1AB 0H、<strong>1BB</strong>。 <sup class="reference-mark" data-references="1 2 3 4" aria-label="参考资料：10月2日成绩公告；10月4日竞赛日程；10月5日成绩公告；10月6日成绩公告">[1, 2, 3, 4]</sup></p>
+                                <p>整个比赛只有3个正式AB，却有 <strong>4次保送</strong>。</p>
+                                <p>而且没有记录到他的失误。</p>
+                                <h5>对于下位棒次/一垒角色，这是挺有价值的：</h5>
+                                <p><strong>不一定打得远，但能把打席延长、能上垒、失误少。</strong></p>
+                            </div>
+                        </article>
+
+                        <article id="player-9" class="player-note player-profile" aria-labelledby="player-title-9" data-action="read_analysis">
+                            <h4 id="player-title-9">9. 张景奕</h4>
+                            <p class="player-focus">弱队阶段不错，强队阶段基本被压住</p>
+                            <span class="player-tier">第三档 · 角色球员</span>
+                            <div class="player-analysis">
+                                <p>广州实际上是 <strong>0 AB、2BB、2R</strong>；湖东 <strong>2-1、2R、1BB</strong>，还有盗垒。 <sup class="reference-mark" data-references="1" aria-label="参考资料：10月2日成绩公告">[1]</sup></p>
+                                <h5>但到了：</h5>
+                                <p>九人：<strong>2-0、2K<br></strong>成都：<strong>1-0</strong>，但有一次SB<br>蓝袜：<strong>1-0、1K</strong></p>
+                                <p>强队没有安打。 <sup class="reference-mark" data-references="2 3 4" aria-label="参考资料：10月4日竞赛日程；10月5日成绩公告；10月6日成绩公告">[2, 3, 4]</sup></p>
+                                <p>好处是没有明显守备失误。</p>
+                                <h5>属于：</h5>
+                                <p><strong>跑垒和上垒意识可以，但面对高水平投手的击球能力差距明显。</strong></p>
+                            </div>
+                        </article>
+
+                        <article id="player-10" class="player-note player-profile" aria-labelledby="player-title-10" data-action="read_analysis">
+                            <h4 id="player-title-10">10. 陈诗恩</h4>
+                            <p class="player-focus">不能用打击数据评价，属于功能型替补</p>
+                            <span class="player-tier">第三档 · 角色球员</span>
+                            <div class="player-analysis">
+                                <p>陈诗恩整届正式AB非常少。</p>
+                                <p>湖东只有 <strong>1AB、1BB、2R、1SB</strong>；九人、成都基本是防守替换；蓝袜则执行了一次<strong>牺牲触击</strong>。 <sup class="reference-mark" data-references="1 4" aria-label="参考资料：10月2日成绩公告；10月6日成绩公告">[1, 4]</sup></p>
+                                <p>没有记录到守备失误。</p>
+                                <p>所以她这种球员不能简单拿“0安打”说表现差，因为根本没有和主力打者等量的打席。</p>
+                                <h5>定位更接近：</h5>
+                                <p><strong>外野防守替换 + 跑垒 + 战术触击。</strong></p>
+                                <p>给分不高主要是<strong>可评价样本不足</strong>，不是因为出现很多负表现。</p>
+                            </div>
+                        </article>
+
+                        <article id="player-11" class="player-note player-profile" aria-labelledby="player-title-11" data-action="read_analysis">
+                            <h4 id="player-title-11">11. 张若愚</h4>
+                            <p class="player-focus">机会太少，但唯一亮点质量很高</p>
+                            <span class="player-tier">样本不足</span>
+                            <div class="player-analysis">
+                                <p>只有前两场留下正式打击记录。</p>
+                                <p>广州代打：<strong>1-0、1K</strong>。<br>湖东：<strong>1-1，而且是三垒打，1RBI、1R。</strong> <sup class="reference-mark" data-references="1" aria-label="参考资料：10月2日成绩公告">[1]</sup></p>
+                                <p>此后对九人、成都、蓝袜没有进入主要比赛记录。</p>
+                                <p>所以不能因为总计 <strong>2AB 1H = .500</strong> 就认为他比主力强。</p>
+                                <h5>他的评价只能是：</h5>
+                                <p><strong>有限机会完成得不错，但没有经过前三档对手验证。</strong></p>
+                            </div>
+                        </article>
+
+                        <article id="player-12" class="player-note player-profile" aria-labelledby="player-title-12" data-action="read_analysis">
+                            <h4 id="player-title-12">12. 李牧白</h4>
+                            <p class="player-focus">角色主要集中在第一天，不能和主力轮换直接比较</p>
+                            <span class="player-tier">样本不足</span>
+                            <div class="player-analysis">
+                                <h5>广州投了：</h5>
+                                <p><strong>1局、2H、3R，但0ER、0BB、0K，16球12好球。</strong></p>
+                                <p>75%的好球率其实不错，3分都是非自责分。 <sup class="reference-mark" data-references="1" aria-label="参考资料：10月2日成绩公告">[1]</sup></p>
+                                <p>湖东没有正式AB，但 <strong>2BB、2R</strong>，还有一次盗垒；同时参与了双杀守备。 <sup class="reference-mark" data-references="1" aria-label="参考资料：10月2日成绩公告">[1]</sup></p>
+                                <p>只是进入冠军组以后基本没进入主要轮换，所以排名最后不是“打得最差”，而是：</p>
+                                <p><strong>本届真正高权重比赛没有足够样本。</strong></p>
+                            </div>
+                        </article>
+                    </div>
+                </div></div>
+            </section>
+
+            <section id="tiers" data-action="read_analysis">
+                <h2>把12名球员放回各自的角色</h2>
+                <div class="tier-grid">
+                    <article class="tier-card">
+                        <h3>第一档 · 真正经过强队检验</h3>
+                        <p><strong>田雨稷、高驰庭、周立行、闫勋捷</strong></p>
+                        <p>四个人各有缺点，但在成都／蓝袜／九人至少两场里真正改变了比赛。</p>
+                    </article>
+                    <article class="tier-card">
+                        <h3>第二档 · 能力突出，波动明显</h3>
+                        <p><strong>Max Shen、杨逍墨、程思乐</strong></p>
+                        <p>都有非常亮眼的一面，但碰到最高强度后，出现过明显的失控、失误或打击下降。</p>
+                    </article>
+                    <article class="tier-card">
+                        <h3>第三档 · 角色球员</h3>
+                        <p><strong>付昌泽、张景奕、陈诗恩</strong></p>
+                        <p>不是主要输出点，但有上垒、防守、跑垒和战术价值。</p>
+                    </article>
+                    <article class="tier-card">
+                        <h3>样本不足 · 保留观察空间</h3>
+                        <p><strong>张若愚、李牧白</strong></p>
+                        <p>张若愚有三垒打，李牧白投球好球率不错；缺少成都／蓝袜／九人的足够样本，无法与前面的球员直接比较。</p>
+                    </article>
+                </div>
+            </section>
+
+            <section id="team" data-action="read_analysis">
+                <h2>团队结论：高压下的控球与守备</h2>
+                <p>周立行、闫勋捷、高驰庭、Max Shen 在强队面前都能制造有效进攻。与成都拉开差距的关键，是高压下的投手控球和守备稳定性。</p>
+                <div class="table-responsive" role="region" aria-label="成都与蓝袜比赛对照表，可横向滚动" tabindex="0">
+                    <table class="team-table">
+                        <caption>相同的保送与失误数量，比赛承压情况不同</caption>
+                        <thead><tr><th scope="col">对手</th><th scope="col">烈光投手BB</th><th scope="col">烈光E</th><th scope="col">比赛情况</th></tr></thead>
+                        <tbody>
+                            <tr><th scope="row">成都 ×4</th><td>7</td><td>2</td><td>烈光失13分，投手合计7个自责分</td></tr>
+                            <tr><th scope="row">蓝袜 ×3</th><td>7</td><td>2</td><td>对手仅2支安打，烈光最终4:3守住比赛</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="summary-callout">
+                    <p><strong>复盘重点：</strong>把保送、暴投、捕手漏接、守备失误与投手承担的出局数一起看，才能解释高强度比赛中的表现。</p>
+                    <p>综合排序用于评价本届表现。</p>
+                </div>
+            </section>
+
+            <section id="references" aria-label="参考资料">
+                <h2>参考资料</h2>
+                <ol class="reference-list">
+                    <li>10月2日成绩公告</li>
+                    <li>10月4日竞赛日程</li>
+                    <li>10月5日成绩公告</li>
+                    <li>10月6日成绩公告</li>
+                </ol>
+            </section>
+        </main>
+
+        <footer class="contact-footer">
+            <p>© 2026 烈光少棒赤狐队 · Red Foxes Baseball</p>
+            <p>数据与分析来源：官方成绩公告</p>
+            <p>友谊第一，比赛第二 · 烈光少棒加油</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -95,6 +95,16 @@
       "ai_sources": ["GPT", "Kimi", "Gemini"]
     },
     {
+      "path": "open_tournament_player_analysis.html",
+      "title": "全国青少年棒球公开赛总决赛 U10 球员数据分析",
+      "type": "analysis",
+      "description": "全国青少年棒球公开赛总决赛U10组12名队员按对手权重的投打守跑综合排序、逐人分析与团队复盘",
+      "actions": ["read_analysis", "view_data"],
+      "requires_auth": false,
+      "tags": ["公开赛", "U10", "总决赛", "球员分析", "对手权重", "数据分析"],
+      "ai_sources": ["GPT 5.6 sol max"]
+    },
+    {
       "path": "sponsor_me.html",
       "title": "赞助赤狐",
       "type": "sponsor",

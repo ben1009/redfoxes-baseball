@@ -34,6 +34,7 @@ const PAGE_PATHS = {
     finalstage: 'tigercup_finalstage.html',
     ponyU10Tianjin: 'pony_u10_tianjin.html',
     cbaU10PlayerAnalysis: 'cba_u10_player_analysis.html',
+    openTournamentPlayerAnalysis: 'open_tournament_player_analysis.html',
     sponsor: 'sponsor_me.html'
 };
 
